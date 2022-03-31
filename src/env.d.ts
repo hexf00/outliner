@@ -1,8 +1,7 @@
-declare module '*.vue' {
-  import Vue from 'vue'
-  export default Vue
+declare module '*.module.scss' {
+  const classes: { [key: string]: string }
+  export default classes
 }
-
 
 declare namespace JSX {
   type Element = any
