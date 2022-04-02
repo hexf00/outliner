@@ -3,6 +3,10 @@ declare module '*.module.scss' {
   export default classes
 }
 
+//拓展window的属性 
+declare interface Window {
+}
+
 declare namespace JSX {
   type Element = any
 

@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/wicg-file-system-access": "^2020.9.5",
     "csv": "^6.0.5",
     "dayjs": "^1.11.0",
     "ioc-di": "github:hexf00/ioc-di",
