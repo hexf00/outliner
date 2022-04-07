@@ -1,22 +1,29 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
-import BlockService from './service'
+import { IBlock } from '../types'
 import style from './index.module.scss'
 console.log('style', style)
 export interface IView {
+  addNeighbor (): void
+  toParentDown (): void
+  toBeUpChild (): void
+  tab (order: 'asc' | 'desc'): void
+  setContent (text: string): void
+  children: IView[]
   content: string
+  key: string
 }
 
 @Component
 export default class Block extends Vue {
   declare $props: {
-    service: BlockService
+    service: IView
   }
 
   declare $refs: {
     input: HTMLDivElement
   }
 
-  @Prop() service !: BlockService
+  @Prop() service !: IView
 
 
   /** hack:不知道为啥新增的节点只输入一个字符后失去焦点时调用setData后就会多一个字符 */
@@ -71,7 +78,7 @@ export default class Block extends Vue {
           }}
           onblur={(e: FocusEvent) => {
             // console.log('onblur', (e.target as HTMLElement).innerText)
-            service.setData((e.target as HTMLElement).innerText)
+            service.setContent((e.target as HTMLElement).innerText)
           }}
         >
           {service.content}

@@ -1,7 +1,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { OutlinerService } from './service'
 import style from './index.module.scss'
-import Block from './Block'
+import PageBlock from './PageBlock'
 @Component
 export default class Outliner extends Vue {
   declare $props: {
@@ -11,11 +11,12 @@ export default class Outliner extends Vue {
   @Prop() service !: OutlinerService
   render () {
     const service = this.service
+    const { pageBlock } = this.service
     return <div class={style.red}>
-      <button onclick={() => console.log(service.stringifyPlain())}>toPlain</button>
-      <button onclick={() => console.log(service.parsePlain(service.text))}>parsePlain</button>
+      <button onclick={() => service.stringifyPlain()}>toPlain</button>
+      <button onclick={() => service.parsePlain(service.text)}>parsePlain</button>
       <textarea v-model={service.text}></textarea>
-      {service.content.map(it => <Block key={it.key} service={it} />)}
+      <PageBlock service={pageBlock} />
     </div>
   }
 }

@@ -1,5 +1,4 @@
 import { Destroy } from "ioc-di";
-import Callback from "../../services/Callback/Callback";
 import { focusNextElement } from "../../utils";
 import { IBlock } from "../types";
 
@@ -12,7 +11,6 @@ export default class BlockService implements IBlock {
   content: string = ''
   parent: null | BlockService = null
   children: BlockService[] = []
-  lv: number = 0
 
 
   constructor () {
@@ -20,13 +18,18 @@ export default class BlockService implements IBlock {
 
   setParent (parent: BlockService | null) {
     this.parent = parent
-    this.lv = parent ? parent.lv + 1 : 0
   }
 
 
   getParent () {
     return this.parent
   }
+
+  setChildren (children: BlockService[]) {
+    children.forEach(it => it.setParent(this))
+    this.children = children
+  }
+
   addChild (child: BlockService, pos?: number) {
     child.setParent(this)
     if (pos === undefined) {
@@ -46,17 +49,29 @@ export default class BlockService implements IBlock {
     this.parent?.addChild(new BlockService(), index + 1)
   }
 
-  toPlain (): string {
-    let result = this.content
-    this.children.forEach(child => {
-      result += '\n' + Array(this.lv + 1).fill("  ").join('') + child.toPlain()
-    })
+  toPlain (lv = 0): string {
+    let result = lv > 0 ? this.content + '\n' : ''
+    result += this.children.map(child => (
+      Array(lv).fill("  ").join('') + child.toPlain(lv + 1)
+    )).join('')
     return result
   }
-  setData (innerText: string) {
-    // console.log('innerText', innerText)
-    this.content = innerText
+
+  parse (data: IBlock): BlockService {
+    const block = new BlockService()
+    block.setData(data)
+    return block
   }
+
+  setData (data: IBlock) {
+    this.content = data.content
+    this.setChildren(data.children.map(it => this.parse(it)))
+  }
+
+  setContent (text: string) {
+    this.content = text
+  }
+
   getData (): IBlock {
     return {
       content: this.content,

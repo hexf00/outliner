@@ -6,7 +6,7 @@ import { IBlock } from "./types";
 
 export class OutlinerService {
 
-  content: BlockService[] = []
+  pageBlock: BlockService = new BlockService()
   text = `1
   2
     3
@@ -17,38 +17,24 @@ export class OutlinerService {
     this.parsePlain(this.text)
   }
 
-  parse (data: IBlock, { parent }: { parent?: BlockService }): BlockService {
-    const block = new BlockService()
-    parent && block.setParent(parent)
 
-    block.content = data.content
-    if (data.children && data.children.length) {
-      data.children.forEach(child => {
-        block.children.push(this.parse(child, { parent: block }))
-      })
-    }
-    return block
-  }
 
-  toPlain () {
-    return this.content.map(block => block.toPlain()).join('\n')
-  }
-
-  stringifyPlain (): any {
-    this.text = this.toPlain()
+  stringifyPlain () {
+    //说明：需要删除最后一项多出的换行符
+    this.text = this.pageBlock.toPlain().slice(0, -1)
   }
 
   /** 将文本解析为tree结构 */
   parsePlain (text: string) {
     // console.log()
-    this.setData(PlainParser.parse(text).getChildren())
+    this.setData(PlainParser.parse(text))
   }
 
   getData () {
-    return this.content.map(block => block.getData())
+    return this.pageBlock.getData()
   }
 
-  setData (content: IBlock[]) {
-    this.content = content.map(data => this.parse(data, {}))
+  setData (content: IBlock) {
+    this.pageBlock.setData(content)
   }
 }
