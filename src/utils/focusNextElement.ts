@@ -1,4 +1,4 @@
-export function focusNextElement (order: 'asc' | 'desc' = 'asc') {
+export function focusNextElement (order: 'next' | 'prev' = 'next') {
   let focusableElements = 'div[contenteditable=true]';
 
   let focusable = Array.from(document.querySelectorAll(focusableElements));
@@ -10,7 +10,7 @@ export function focusNextElement (order: 'asc' | 'desc' = 'asc') {
 
 
   let nextElement
-  if (order === 'asc') {
+  if (order === 'next') {
     nextElement = focusable[index + 1] || focusable[0];
   } else {
     nextElement = focusable[index - 1] || focusable[focusable.length - 1];

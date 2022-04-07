@@ -36,6 +36,10 @@ export default class BlockService implements IBlock, IView {
     this.children = children
   }
 
+  getChildren () {
+    return this.children
+  }
+
   addChild (child: BlockService, pos?: number) {
     child.setParent(this)
     if (pos === undefined) {
@@ -92,20 +96,17 @@ export default class BlockService implements IBlock, IView {
     return !this.getParent()
   }
 
+  //#region 获取相邻 block
+
   /** 获取相邻的上一个节点，或者父节，无则返回undefined */
   getPrev () {
     const parent = this.getParent()
-    if (!parent) return
-
-    const index = parent.children.indexOf(this)
+    if (!parent) throw Error('异常情况，无父级')
+    const index = parent.getChildren().indexOf(this)
     if (index === -1) throw Error('异常情况，索引丢失')
 
     if (index === 0) {
-      if (parent.isPage()) {
-        return
-      } else {
-        return parent
-      }
+      if (!parent.isPage()) return parent
     } else {
       //需要找到最末端的节点
       let endNode = parent.children[index - 1]
@@ -116,15 +117,41 @@ export default class BlockService implements IBlock, IView {
     }
   }
 
-  /** 获取相邻的上一个节点 */
-  getUp () {
-    const index = this.parent?.children.indexOf(this)
-    if (index === -1 || index === undefined) {
-      console.warn('需要处理异常情况')
-      return
+  /** 获取第一个子节点，或者下一个同级节点，无则返回undefined */
+  getNext () {
+    // console.log('getNext', this.content, this.getChildren())
+    if (this.getChildren().length) {
+      return this.getChildren()[0]
+    } else {
+      let parent = this.getParent()
+      while (parent) {
+        const next = parent.getDown()
+        if (next) return next
+        parent = parent.getParent()
+      }
     }
-    return this.parent?.children[index - 1]
   }
+
+  /** 获取同级相邻的上一个节点，如果本身是第一个节点，则无相邻的上一个节点，返回undefined */
+  getUp () {
+    const children = this.getParent()?.getChildren()
+    if (!children) throw Error('异常情况，无父级')
+    const index = children.indexOf(this)
+    if (index === -1) throw Error('异常情况，索引丢失')
+    if (index > 0) return children[index - 1]
+  }
+
+  /** 获取同层级相邻的下一个节点 */
+  getDown () {
+    const children = this.getParent()?.getChildren()
+    if (!children) throw Error('异常情况，无父级')
+    const index = children.indexOf(this)
+    if (index === -1) throw Error('异常情况，索引丢失')
+    if (index < children.length - 1) return children[index + 1]
+  }
+
+  // #endregion
+
 
   toBeUpChild () {
     const index = this.parent?.children.indexOf(this)
@@ -165,13 +192,15 @@ export default class BlockService implements IBlock, IView {
   }
 
 
-  tab (order: 'asc' | 'desc' = 'asc') {
+  tab (order: 'next' | 'prev' = 'next') {
+    console.log('tab', order)
 
-    if (order = 'desc') {
+    if (order === 'prev') {
       this.getPrev()?.focus()
+    } else {
+      // console.log('next', this.getNext())
+      this.getNext()?.focus()
     }
-
-    focusNextElement(order)
   }
 
   remove () {

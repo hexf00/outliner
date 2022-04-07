@@ -6,7 +6,7 @@ export interface IView {
   addNeighbor (): void
   toParentDown (): void
   toBeUpChild (): void
-  tab (order: 'asc' | 'desc'): void
+  tab (order: 'next' | 'prev'): void
   setContent (text: string): void
   remove (): void
   bindFocus (fn: () => void): void
@@ -84,9 +84,9 @@ export default class Block extends Vue {
               }
 
               if (e.key === 'ArrowUp') {
-                service.tab('desc')
+                service.tab('prev')
               } else if (e.key === 'ArrowDown') {
-                service.tab('asc')
+                service.tab('next')
               }
             }
           }
