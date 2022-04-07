@@ -23,8 +23,8 @@ export default class PlainParser {
       } else {
         // 找最近父级
         while (spaceNumber <= parent.spaceNumber) {
+          if (!parent.parent) break
           parent = parent.parent
-          if (parent === parent.parent) break
         }
       }
 

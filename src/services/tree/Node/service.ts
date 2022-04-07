@@ -1,20 +1,20 @@
 
 export interface INode {
   children: INode[]
-  parent: INode
+  parent: INode | null
   setParent (parent: INode): void
   addChild (node: INode): void
 }
 
 export default abstract class Node<T extends INode> implements INode {
   children: T[] = []
-  parent: T = this as unknown as T
+  parent: T | null = null
 
   setParent (parent: T) {
     this.parent = parent
   }
 
-  getParent (): T {
+  getParent (): T | null {
     return this.parent
   }
 
