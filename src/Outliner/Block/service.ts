@@ -1,9 +1,10 @@
+import { IView } from './index';
 import { Destroy } from "ioc-di";
 import Callback from "../../services/Callback";
 import { focusNextElement } from "../../utils";
 import { IBlock } from "../types";
 
-export default class BlockService implements IBlock {
+export default class BlockService implements IBlock, IView {
 
 
 
@@ -53,7 +54,7 @@ export default class BlockService implements IBlock {
     }
     const node = new BlockService()
     this.parent?.addChild(node, index + 1)
-    this.focus()
+    node.focus()
   }
 
   toPlain (lv = 0): string {
