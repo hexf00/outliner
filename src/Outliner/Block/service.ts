@@ -40,6 +40,10 @@ export default class BlockService implements IBlock, IView {
     return this.children
   }
 
+  hasChildren (): boolean {
+    return this.children.length > 0
+  }
+
   addChild (child: BlockService, pos?: number) {
     child.setParent(this)
     if (pos === undefined) {
@@ -58,6 +62,13 @@ export default class BlockService implements IBlock, IView {
     }
     const node = new BlockService()
     this.parent?.addChild(node, index + 1)
+    node.focus()
+  }
+
+  /** 在头部插入子节点 */
+  addNewChild () {
+    const node = new BlockService()
+    this.addChild(node, 0)
     node.focus()
   }
 
@@ -152,6 +163,13 @@ export default class BlockService implements IBlock, IView {
 
   // #endregion
 
+  hasDown () {
+    return !!this.getDown()
+  }
+
+  isLv1 () {
+    return !!this.getParent()?.isPage()
+  }
 
   toBeUpChild () {
     const index = this.parent?.children.indexOf(this)
