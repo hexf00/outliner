@@ -1,4 +1,5 @@
 import { Destroy } from "ioc-di";
+import Callback from "../../services/Callback";
 import { focusNextElement } from "../../utils";
 import { IBlock } from "../types";
 
@@ -9,17 +10,21 @@ export default class BlockService implements IBlock {
   // 随机字符串
   key = Math.random().toString(36).substr(2, 16)
   content: string = ''
-  parent: null | BlockService = null
+
+  /** 父节点，如果没有则为自身 */
+  parent: BlockService | null = null
+
   children: BlockService[] = []
+
+  focusCallback = new Callback()
 
 
   constructor () {
   }
 
-  setParent (parent: BlockService | null) {
+  setParent (parent: BlockService) {
     this.parent = parent
   }
-
 
   getParent () {
     return this.parent
@@ -46,7 +51,9 @@ export default class BlockService implements IBlock {
       console.warn('需要处理异常情况')
       return
     }
-    this.parent?.addChild(new BlockService(), index + 1)
+    const node = new BlockService()
+    this.parent?.addChild(node, index + 1)
+    this.focus()
   }
 
   toPlain (lv = 0): string {
@@ -79,6 +86,35 @@ export default class BlockService implements IBlock {
     }
   }
 
+  /** 是否是页面根节点 */
+  isPage () {
+    return !this.getParent()
+  }
+
+  /** 获取相邻的上一个节点，或者父节，无则返回undefined */
+  getPrev () {
+    const parent = this.getParent()
+    if (!parent) return
+
+    const index = parent.children.indexOf(this)
+    if (index === -1) throw Error('异常情况，索引丢失')
+
+    if (index === 0) {
+      if (parent.isPage()) {
+        return
+      } else {
+        return parent
+      }
+    } else {
+      //需要找到最末端的节点
+      let endNode = parent.children[index - 1]
+      while (endNode.children.length) {
+        endNode = endNode.children[endNode.children.length - 1]
+      }
+      return endNode
+    }
+  }
+
   /** 获取相邻的上一个节点 */
   getUp () {
     const index = this.parent?.children.indexOf(this)
@@ -100,6 +136,7 @@ export default class BlockService implements IBlock {
     const up = this.getUp()
     this.parent?.children.splice(index, 1)
     up?.addChild(this)
+    this.focus()
   }
 
   /** 移动到父节点的下一个相邻节点位置 */
@@ -121,14 +158,55 @@ export default class BlockService implements IBlock {
     }
 
     parent.children.splice(index, 1)
+    // 说明：不适用setTimeout,mounted在beforeDestroy前面触发
     parent.parent?.addChild(this, parentIndex + 1)
+    this.focus()
   }
 
+
   tab (order: 'asc' | 'desc' = 'asc') {
+
+    if (order = 'desc') {
+      this.getPrev()?.focus()
+    }
+
     focusNextElement(order)
   }
 
+  remove () {
+    if (this.children.length) return
+    this.getPrev()?.focus()
+    this.parent?.removeChild(this)
+  }
+
+  removeChild (node: BlockService) {
+    const index = this.children.indexOf(node)
+    if (index === -1) return
+    this.children.splice(index, 1)
+  }
+
+
+  //#region 焦点相关
+
+  focus () {
+    setTimeout(() => {
+      // console.log('setTimeout focus')
+      this.focusCallback.run()
+    }, 0)
+  }
+
+  bindFocus (fn: () => void) {
+    this.focusCallback.add(fn)
+  }
+
+  unbindFocus (fn: () => void) {
+    this.focusCallback.remove(fn)
+  }
+
+  //#endregion
+
   @Destroy
   destroy () {
+    this.focusCallback.destroy()
   }
 }

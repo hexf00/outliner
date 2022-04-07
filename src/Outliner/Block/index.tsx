@@ -8,6 +8,9 @@ export interface IView {
   toBeUpChild (): void
   tab (order: 'asc' | 'desc'): void
   setContent (text: string): void
+  remove (): void
+  bindFocus (fn: () => void): void
+  unbindFocus (fn: () => void): void
   children: IView[]
   content: string
   key: string
@@ -34,9 +37,18 @@ export default class Block extends Vue {
     })
   }
 
-  mounted () {
-    // console.log('mounted')
+  // 说明: 为了引用唯一，销毁时要用
+  focus () {
     this.$refs.input.focus()
+  }
+
+  mounted () {
+    // console.log('mounted', this.service.key)
+    this.service.bindFocus(this.focus)
+  }
+  beforeDestroy () {
+    // console.log('beforeDestroy', this.service.key)
+    this.service.unbindFocus(this.focus)
   }
 
   render () {
@@ -52,6 +64,13 @@ export default class Block extends Vue {
               if (e.key === 'Enter') {
                 e.preventDefault() // 阻止默认换行行为，会把dom变乱
                 service.addNeighbor()
+              }
+
+              if (e.key === 'Backspace') {
+                const text = (e.target as HTMLElement).innerText;
+                if (text.length === 0) {
+                  service.remove()
+                }
               }
 
               if (e.key === 'Tab') {
@@ -72,7 +91,7 @@ export default class Block extends Vue {
             }
           }
           oninput={(e: InputEvent) => {
-            console.log((e.target as HTMLElement).innerText)
+            // console.log((e.target as HTMLElement).innerText)
             // 说明: 暂时不能在输入中改变service.content，会导致输入焦点丢失
             // service.setData((e.target as HTMLElement).innerText)
           }}
