@@ -123,8 +123,8 @@ export default class BlockService implements IBlock, IView {
     if (this.getChildren().length) {
       return this.getChildren()[0]
     } else {
-      let parent = this.getParent()
-      while (parent) {
+      let parent: BlockService | null = this
+      while (parent && !parent.isPage()) {
         const next = parent.getDown()
         if (next) return next
         parent = parent.getParent()
