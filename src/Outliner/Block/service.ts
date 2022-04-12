@@ -223,6 +223,9 @@ export default class BlockService implements IBlock, IView {
 
   remove () {
     if (this.children.length) return
+    // 说明：仅有的元素不可删除
+    if (this.isLv1() && this.getParent()?.getChildren().length === 1) return
+
     this.getPrev()?.focus()
     this.parent?.removeChild(this)
   }
