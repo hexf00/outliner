@@ -1,16 +1,16 @@
 /**
  * 提供事件回调注入
  */
-export default class Callback {
-  callbacks: (() => void)[] = []
+export default class Callback<T extends (...args: any[]) => void = () => void> {
+  callbacks: T[] = []
 
   /** 注入或绑定事件动作 */
-  add (cb: () => void) {
+  add (cb: T) {
     this.callbacks.push(cb)
   }
 
   /** 注销事件，按需使用 */
-  remove (cb: () => void) {
+  remove (cb: T) {
     const index = this.callbacks.indexOf(cb)
     if (index > -1) {
       this.callbacks.splice(index, 1)
@@ -18,8 +18,8 @@ export default class Callback {
   }
 
   /** 触发 */
-  run () {
-    this.callbacks.forEach(fn => fn())
+  run (...args: any[]) {
+    this.callbacks.forEach(fn => fn.call(args))
   }
 
   destroy () {
