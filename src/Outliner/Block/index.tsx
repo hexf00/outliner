@@ -43,7 +43,23 @@ export default class Block extends Vue {
 
   // 说明: 为了引用唯一，销毁时要用
   focus () {
-    this.$refs.input.focus()
+    const el = this.$refs.input
+    const textNode = el.childNodes[0] as Text | undefined
+
+    el.focus()
+
+    const range = document.createRange()
+    if (textNode) {
+      range.setStart(textNode, textNode.length)
+      range.setEnd(textNode, textNode.length)
+    } else {
+      range.setStart(el, 0)
+      range.setEnd(el, 0)
+    }
+
+    const selection = document.getSelection()
+    selection?.removeAllRanges()
+    selection?.addRange(range)
   }
 
   mounted () {
