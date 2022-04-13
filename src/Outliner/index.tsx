@@ -12,7 +12,7 @@ export default class Outliner extends Vue {
   render () {
     const service = this.service
     const { pageBlock } = this.service
-    return <div class={style.red}>
+    return <div>
       <button onclick={() => service.stringifyPlain()}>toPlain</button>
       <button onclick={() => service.parsePlain(service.text)}>parsePlain</button>
       <textarea v-model={service.text}></textarea>
