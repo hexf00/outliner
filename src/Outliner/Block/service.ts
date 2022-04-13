@@ -19,8 +19,24 @@ export default class BlockService implements IBlock, IView {
 
   focusCallback = new Callback()
 
+  isExpand = true
+
+  isHover = false
+
+  get isShowExpand (): boolean {
+    return this.children.length > 0 && this.isHover
+  }
+
 
   constructor () {
+  }
+
+  setExpand (status: boolean): void {
+    this.isExpand = status
+  }
+
+  setHover (status: boolean) {
+    this.isHover = status
   }
 
   setParent (parent: BlockService) {
@@ -41,7 +57,7 @@ export default class BlockService implements IBlock, IView {
   }
 
   hasChildren (): boolean {
-    return this.children.length > 0
+    return this.isExpand && this.children.length > 0
   }
 
   addChild (child: BlockService, pos?: number) {
@@ -121,7 +137,7 @@ export default class BlockService implements IBlock, IView {
     } else {
       //需要找到最末端的节点
       let endNode = parent.children[index - 1]
-      while (endNode.children.length) {
+      while (endNode.hasChildren()) {
         endNode = endNode.children[endNode.children.length - 1]
       }
       return endNode
@@ -131,7 +147,7 @@ export default class BlockService implements IBlock, IView {
   /** 获取第一个子节点，或者下一个同级节点，无则返回undefined */
   getNext () {
     // console.log('getNext', this.content, this.getChildren())
-    if (this.getChildren().length) {
+    if (this.hasChildren()) {
       return this.getChildren()[0]
     } else {
       let parent: BlockService | null = this
