@@ -89,9 +89,7 @@ export default class Block extends Vue {
             !service.isShowExpand && style.hide,
             !service.isExpand && style.close
           )} onclick={() => service.setExpand(!service.isExpand)}></span>
-          <span class={classNames(style.bullet, !service.isExpand && style.close)}>
-            <span></span>
-          </span>
+          <span class={classNames(style.bullet, !service.isExpand && style.close)}></span>
           <div ref="input" class={style.input} contentEditable
             onkeydown={
               (e: KeyboardEvent) => {
