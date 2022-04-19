@@ -76,14 +76,14 @@ export default class BlockService implements IBlock, IView {
       console.warn('需要处理异常情况')
       return
     }
-    const node = new BlockService()
+    const node = this.create()
     this.parent?.addChild(node, index + 1)
     node.focus()
   }
 
   /** 在头部插入子节点 */
   addNewChild () {
-    const node = new BlockService()
+    const node = this.create()
     this.addChild(node, 0)
     node.focus()
   }
@@ -96,8 +96,13 @@ export default class BlockService implements IBlock, IView {
     return result
   }
 
-  parse (data: IBlock): BlockService {
-    const block = new BlockService()
+  /** 工厂函数，BlockService可以有不同实现 */
+  create (): BlockService {
+    return new BlockService()
+  }
+
+  parse (data: IBlock) {
+    const block = this.create()
     block.setData(data)
     return block
   }
