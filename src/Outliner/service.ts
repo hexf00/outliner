@@ -2,14 +2,13 @@ import { parse } from 'csv-parse/browser/esm/sync';
 import PlainParser from '../services/tree/PlainParser/service';
 import TextNode from "../services/tree/TextNode/service";
 import BlockService from "./Block/service";
-import MenuBlockService from './services/MenuBlock';
 import { IBlock } from "./types";
 
 export class OutlinerService {
 
   pageBlock: BlockService = new BlockService()
 
-  menuBlock: BlockService = new MenuBlockService()
+  menuBlock: BlockService = new BlockService()
 
   text = `1
   2
