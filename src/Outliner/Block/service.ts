@@ -1,4 +1,4 @@
-import { IView } from './index';
+import Block, { IView } from './index';
 import { Destroy } from "ioc-di";
 import Callback from "../../services/Callback";
 import { focusNextElement } from "../../utils";
@@ -27,6 +27,9 @@ export default class BlockService implements IBlock, IView {
     return this.children.length > 0 && this.isHover
   }
 
+  get vueComponent () {
+    return Block
+  }
 
   constructor () {
   }
@@ -97,7 +100,7 @@ export default class BlockService implements IBlock, IView {
   }
 
   /** 工厂函数，BlockService可以有不同实现 */
-  create (): BlockService {
+  create () {
     return new BlockService()
   }
 

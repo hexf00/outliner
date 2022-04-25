@@ -1,0 +1,11 @@
+.fx {
+  display: flex;
+
+  .menu {
+    border-right: 1px solid #ddd;
+    width: 200px;
+  }
+  .content {
+    flex: 1;
+  }
+}
