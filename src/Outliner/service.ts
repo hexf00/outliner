@@ -19,9 +19,9 @@ export class OutlinerService {
   constructor () {
     this.parsePlain(this.text)
 
-    this.menuBlock.setData(PlainParser.parse(`文件1
-      文件2
-      文件3`))
+    this.menuBlock.setData(PlainParser.parse(`[[文件1]]
+      [[文件2]]
+      [[文件3]]`))
   }
 
 
