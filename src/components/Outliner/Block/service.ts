@@ -1,7 +1,7 @@
 import Block, { IView } from './index';
 import { Destroy } from "ioc-di";
-import Callback from "../../services/Callback";
-import { focusNextElement } from "../../utils";
+import Callback from "../../../services/Callback";
+import { focusNextElement } from "../../../utils";
 import { IBlock } from "../types";
 
 export default class BlockService implements IBlock, IView {

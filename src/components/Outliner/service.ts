@@ -1,6 +1,6 @@
 import { parse } from 'csv-parse/browser/esm/sync';
-import PlainParser from '../services/tree/PlainParser/service';
-import TextNode from "../services/tree/TextNode/service";
+import PlainParser from '../../services/tree/PlainParser/service';
+import TextNode from "../../services/tree/TextNode/service";
 import BlockService from "./Block/service";
 import { IBlock } from "./types";
 

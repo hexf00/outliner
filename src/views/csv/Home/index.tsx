@@ -1,6 +1,6 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import HomeService from './service'
-import CSV from '../../../CSV'
+import CSV from '../CSV'
 import Nav from '../../Nav'
 
 @Component

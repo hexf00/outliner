@@ -1,5 +1,5 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import Outliner from '../../../Outliner'
+import Outliner from '../../../components/Outliner'
 import HomeService from './service'
 import Nav from '../../Nav'
 

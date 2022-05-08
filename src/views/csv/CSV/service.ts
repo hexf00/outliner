@@ -2,7 +2,7 @@ import { parse } from 'csv-parse/browser/esm/sync';
 import { stringify } from 'csv-stringify/browser/esm/sync';
 
 import dayjs from 'dayjs';
-import { saveAs } from '../utils';
+import { saveAs } from '../../../utils';
 import { IOrder, IOrderRaw, IField, IGoodItem, IGoodCalc } from './types';
 
 
