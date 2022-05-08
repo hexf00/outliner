@@ -13,6 +13,7 @@ export default class Router extends Vue {
   @Prop() service !: IRouter
   render () {
     const { active } = this.service
+    // @ts-ignore 此处无法准确识别异步组件，故排除
     return <active.component service={active.service} />
   }
 }
