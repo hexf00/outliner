@@ -1,7 +1,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import Outliner from '../../../components/Outliner'
 import HomeService from './service'
-import Nav from '../../Nav'
+import Nav from '../../components/Nav'
 
 @Component
 export default class Home extends Vue {

@@ -1,5 +1,5 @@
 import { Component, Vue } from 'vue-property-decorator'
-import RouteLink from '../../components/RouteLink'
+import RouteLink from '../../../components/RouteLink'
 
 @Component
 export default class Nav extends Vue {
