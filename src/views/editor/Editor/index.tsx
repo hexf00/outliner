@@ -7,6 +7,7 @@ export interface IAtom {
 }
 export interface IEditor {
   msg: string
+  html: string
   data: IAtom[]
   beforeInput (e: InputEvent): void
   input (e: InputEvent): void
@@ -29,15 +30,16 @@ export default class Editor extends Vue {
         oninput={(e: InputEvent) => {
           service.input(e)
         }}
+        domPropsInnerHTML={service.html}
       >
-        {
+        {/* {
           service.data.map((it, index) => {
             if (it.type === 'link') {
               return <div key={'link' + index} class={style.link} contentEditable="false">{it.text}</div>
             }
             return it.text
           })
-        }
+        } */}
       </div>
     )
   }
