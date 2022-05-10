@@ -13,12 +13,16 @@ export default class RouterService {
   active: IRoute = {} as IRoute
   routers: readonly IRoute[] = []
 
-  to (link: IRouteLink) {
+  to (link: { name: string }) {
     const route = this.routers.find(it => it.name === link.name)
     if (!route) {
       throw new Error(`route not found: ${link.name}`)
     }
     this.setRoute(route)
+  }
+
+  parseUrl () {
+    return window.location.hash.slice(1)
   }
 
   setRouters (routes: readonly IRoute[]) {
@@ -29,7 +33,13 @@ export default class RouterService {
       }
     })
 
-    this.setRoute(routes[0])
+
+    try {
+      this.to({ name: this.parseUrl() })
+    } catch (error) {
+      console.error(error)
+      this.setRoute(routes[0])
+    }
   }
 
   async setRoute (route: IRoute) {
