@@ -1,6 +1,6 @@
 import { Component, Provide, Vue } from 'vue-property-decorator'
 import Router from '../../components/Router'
-import Nav from '../components/Nav'
+import Nav from './Nav'
 import AppService from './service'
 
 @Component

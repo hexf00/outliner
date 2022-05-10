@@ -1,6 +1,6 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import HomeService from './service'
-import Nav from '../../components/Nav'
+import Nav from '../../App/Nav'
 import Explorer from '../Explorer'
 
 @Component
