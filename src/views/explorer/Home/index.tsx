@@ -11,7 +11,6 @@ export default class Home extends Vue {
   @Prop() service !: HomeService
   render () {
     return <div>
-      <Nav />
       <Explorer service={this.service.explorer} />
     </div>
   }

@@ -21,8 +21,6 @@ export default class Explorer extends Vue {
           <div>当前文件名: {service.currentFile?.path}</div>
           <div>当前文件大小: {service.currentFile?.file.size}</div>
         </div>
-
-
       </div>
     )
   }

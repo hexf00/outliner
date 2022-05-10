@@ -1,0 +1,9 @@
+.nav {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  .list {
+    display: flex;
+    gap: 5px;
+  }
+}

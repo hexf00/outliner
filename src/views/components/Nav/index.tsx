@@ -1,13 +1,36 @@
+import classNames from 'classnames'
 import { Component, Vue } from 'vue-property-decorator'
 import RouteLink from '../../../components/RouteLink'
+import NavService from './service'
+import style from './style.module.scss'
+
+
+export interface INav {
+  isOpen: boolean
+  open (): void
+  close (): void
+}
 
 @Component
 export default class Nav extends Vue {
+  service: INav = new NavService()
   render () {
-    return <div style="display:flex;gap:5px;">
-      <RouteLink to={{ name: 'outliner' }}>outliner</RouteLink>
-      <RouteLink to={{ name: 'csv' }}>csv</RouteLink>
-      <RouteLink to={{ name: 'explorer' }}>explorer</RouteLink>
-    </div>
+    const service = this.service
+    return service.isOpen
+      ? (
+        <div class={classNames(style.nav)}>
+          <button onclick={() => service.close()}>收起菜单</button>
+          <div class={style.list}>
+            <RouteLink to={{ name: 'outliner' }}>大纲编辑器</RouteLink>
+            <RouteLink to={{ name: 'csv' }}>CSV数据分析</RouteLink>
+            <RouteLink to={{ name: 'explorer' }}>文件API（基于wicg-file-system-access）</RouteLink>
+          </div>
+        </div>
+      )
+      : (
+        <div class={classNames(style.nav)}>
+          <button onclick={() => service.open()}>展开菜单</button>
+        </div>
+      )
   }
 }

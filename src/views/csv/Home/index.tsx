@@ -11,7 +11,6 @@ export default class Home extends Vue {
   @Prop() service !: HomeService
   render () {
     return <div>
-      <Nav />
       <CSV service={this.service.csv} />
     </div>
   }

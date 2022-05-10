@@ -11,7 +11,6 @@ export default class Home extends Vue {
   @Prop() service !: HomeService
   render () {
     return <div>
-      <Nav />
       <Outliner service={this.service.outliner} />
     </div>
   }
