@@ -5,8 +5,9 @@ import RouteLink from '../../../components/RouteLink'
 export default class Nav extends Vue {
   render () {
     return <div style="display:flex;gap:5px;">
-      <RouteLink to={{ path: '/outliner' }}>outliner</RouteLink>
-      <RouteLink to={{ path: '/csv' }}>csv</RouteLink>
+      <RouteLink to={{ name: 'outliner' }}>outliner</RouteLink>
+      <RouteLink to={{ name: 'csv' }}>csv</RouteLink>
+      <RouteLink to={{ name: 'explorer' }}>explorer</RouteLink>
     </div>
   }
 }

@@ -2,7 +2,7 @@ import { Concat, Service } from "ioc-di"
 import { IRouteLink } from "../RouteLink"
 
 export interface IRoute {
-  path: string,
+  name: string,
   component: Vue.VueConstructor | Vue.AsyncComponent
   Service: any
   service?: any
@@ -14,9 +14,9 @@ export default class RouterService {
   routers: readonly IRoute[] = []
 
   to (link: IRouteLink) {
-    const route = this.routers.find(it => it.path === link.path)
+    const route = this.routers.find(it => it.name === link.name)
     if (!route) {
-      throw new Error(`route not found: ${link.path}`)
+      throw new Error(`route not found: ${link.name}`)
     }
     this.setRoute(route)
   }
@@ -41,7 +41,7 @@ export default class RouterService {
       route.service = Concat(this, new route.Service())
     }
 
-    window.location.hash = route.path
+    window.location.hash = route.name
     this.active = route
   }
 }
