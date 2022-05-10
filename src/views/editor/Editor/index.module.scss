@@ -1,0 +1,17 @@
+.textarea {
+  height: 100px;
+  border: 1px solid black;
+  border-radius: 4px;
+  padding: 6px 8px;
+  user-select: text;
+  white-space: pre-wrap;
+}
+
+.link {
+  background: teal;
+  color: white;
+  padding: 0 2px;
+  border-radius: 2px;
+  display: inline-block;
+  user-select: all;
+}

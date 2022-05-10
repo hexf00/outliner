@@ -12,6 +12,7 @@ export default class Home extends Vue {
     const { editor } = this.service
     return <div>
       <Editor service={editor} />
+      <pre>{JSON.stringify(editor.data, null, 2)}</pre>
     </div>
   }
 }
