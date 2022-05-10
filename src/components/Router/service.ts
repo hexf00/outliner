@@ -11,7 +11,7 @@ export interface IRoute {
 @Service()
 export default class RouterService {
   active: IRoute = {} as IRoute
-  routers: IRoute[] = []
+  routers: readonly IRoute[] = []
 
   to (link: IRouteLink) {
     const route = this.routers.find(it => it.path === link.path)
@@ -21,7 +21,7 @@ export default class RouterService {
     this.setRoute(route)
   }
 
-  setRouters (routes: IRoute[]) {
+  setRouters (routes: readonly IRoute[]) {
     this.routers = routes.map(it => {
       return {
         ...it,

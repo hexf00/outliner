@@ -1,8 +1,8 @@
 import { Component, Inject, Prop, Vue } from 'vue-property-decorator'
 import RouterService from '../Router/service'
-
+import { paths } from '../../router'
 export interface IRouteLink {
-  path: string
+  path: paths
 }
 
 @Component

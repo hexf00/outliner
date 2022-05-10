@@ -1,8 +1,6 @@
 import RouterService from "../components/Router/service";
 
-export const router = new RouterService()
-
-router.setRouters([
+export const routers = [
   {
     path: '/outliner',
     component: () => import("../views/outliner/Home"),
@@ -11,6 +9,11 @@ router.setRouters([
   {
     path: '/csv',
     component: () => import("../views/csv/Home"),
-    Service: () => import("../views/csv/Home/service")
+    Service: () => import("../views/csv/Home/service"),
   }
-])
+] as const
+
+export type paths = typeof routers[number]['path']
+export const router = new RouterService()
+
+router.setRouters(routers)
