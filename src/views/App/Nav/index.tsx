@@ -24,6 +24,7 @@ export default class Nav extends Vue {
             <RouteLink to={{ name: 'outliner' }}>大纲编辑器</RouteLink>
             <RouteLink to={{ name: 'csv' }}>CSV数据分析</RouteLink>
             <RouteLink to={{ name: 'explorer' }}>文件API（基于wicg-file-system-access）</RouteLink>
+            <RouteLink to={{ name: 'editor' }}>富文本编辑器</RouteLink>
           </div>
         </div>
       )

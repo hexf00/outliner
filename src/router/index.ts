@@ -15,6 +15,11 @@ export const routers = [
     name: 'explorer',
     component: () => import("../views/explorer/Home"),
     Service: () => import("../views/explorer/Home/service"),
+  },
+  {
+    name: 'editor',
+    component: () => import("../views/editor/Home"),
+    Service: () => import("../views/editor/Home/service"),
   }
 ] as const
 
