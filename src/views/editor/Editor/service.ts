@@ -2,6 +2,7 @@ import { Inject, Service } from 'ioc-di'
 import { Vue } from 'vue-property-decorator'
 import { nodeIndexOf } from '../../../utils/dom/nodeIndexOf'
 import { insertAt } from '../../../utils/string/insertAt'
+import { splitOffset } from '../../../utils/string/splitOffset'
 import ContextMenuService from '../ContextMenu/service'
 import { IEditor, IAtom } from './index'
 @Service()
@@ -40,6 +41,7 @@ export class EditorService implements IEditor {
   beforeInput (e: InputEvent): void {
     const el = e.target as HTMLElement
 
+    console.log('beforeInput', e)
     if (['insertFromPaste' /** 粘贴 */,
       'deleteByDrag' /** 拖拽删除 */,
       'insertFromDrop' /** 拖拽插入 */]
@@ -87,6 +89,33 @@ export class EditorService implements IEditor {
         )
         el.dispatchEvent(new Event('input'))
       })
+    } else if (e.inputType === 'deleteContentBackward') {
+      //删除字符时，如果是左括号，则删除右括号
+
+      const { startContainer, startOffset, endContainer, endOffset } = window.getSelection()!.getRangeAt(0)
+      // 如果是单个字符
+      if (startContainer === endContainer && startOffset === endOffset) {
+
+        const startIndex = nodeIndexOf(el, startContainer)
+        if (startIndex === -1) throw Error('未能找到start节点')
+        const [before, after] = splitOffset(this.data[startIndex].text, startOffset)
+
+        //如果左括号和右括号
+        if (before[before.length - 1] === '[' && after[0] === ']') {
+          e.stopPropagation()
+          e.preventDefault()
+
+          this.data[startIndex].text = before.slice(0, before.length - 1) + after.slice(1)
+
+          // 渲染后需要更新选取
+          Vue.nextTick(() => {
+            window.getSelection()?.setBaseAndExtent(
+              startContainer!, startOffset - 1, startContainer!, startOffset - 1
+            )
+            el.dispatchEvent(new Event('input'))
+          })
+        }
+      }
     }
   }
 

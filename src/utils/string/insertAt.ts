@@ -1,5 +1,6 @@
+import { splitOffset } from "./splitOffset"
+
 export function insertAt (baseText: string, offset: number, text: string) {
-  const before = baseText.substring(0, offset)
-  const after = baseText.substring(offset)
+  const [before, after] = splitOffset(baseText, offset)
   return before + text + after
 }
