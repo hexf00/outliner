@@ -11,17 +11,55 @@ export class EditorService implements IEditor {
     { text: "456" },
   ]
 
+  /** 从一个空的div输入需要特殊处理，不能让浏览器改变dom */
+  firstInput (data: string) {
+    // 不能存储对象，因为对象会被改变
+    const { anchorNode, focusNode } = window.getSelection()!
+    this.data.push({ text: data })
+
+    //渲染后恢复选区，可与setTimeout替换
+    Vue.nextTick(() => {
+      // 写死为1
+      window.getSelection()?.setBaseAndExtent(
+        anchorNode!, 1, focusNode!, 1
+      )
+    })
+  }
+
   beforeInput (e: InputEvent): void {
+    const el = e.target as HTMLElement
+
     if (['insertFromPaste' /** 粘贴 */,
       'deleteByDrag' /** 拖拽删除 */,
       'insertFromDrop' /** 拖拽插入 */]
       .includes(e.inputType)) {
+      // 这些交互会改变dom，导致render异常所以屏蔽
+      // 如果需要以后再额外实现
+
       e.stopPropagation()
       e.preventDefault()
 
-      // 这些交互会改变dom，导致render异常所以屏蔽
-      // 如果需要以后再额外实现
+    } else if (el.textContent === '' && e.data) {
+      // 输入第一个字符，阻止默认行为，会改变dom元素，导致渲染效果异常
+      e.stopPropagation()
+      e.preventDefault()
+      this.firstInput(e.data)
     }
+  }
+
+  /** 记录和恢复选取 */
+  warpSelection (fn: () => void) {
+    // 不能存储对象，因为对象会被改变
+    const { anchorNode, anchorOffset, focusNode, focusOffset } = window.getSelection()!
+
+    fn()
+
+    //渲染后恢复选区，可与setTimeout替换
+    Vue.nextTick(() => {
+      window.getSelection()?.setBaseAndExtent(
+        anchorNode!, anchorOffset, focusNode!, focusOffset
+      )
+    })
   }
 
 
@@ -30,12 +68,6 @@ export class EditorService implements IEditor {
     console.log('input', e)
     e.stopPropagation()
     e.preventDefault()
-
-    // 不能存储对象，因为对象会被改变
-    const { anchorNode, anchorOffset, focusNode, focusOffset } = window.getSelection()!
-
-    // 在setTimeout中设置选取会导致光标闪烁，需要清除选区，nextTick中设置不会
-    // window.getSelection()?.removeAllRanges()
 
     const childNodes = (e.target as HTMLElement).childNodes
     const result: IAtom[] = []
@@ -51,19 +83,7 @@ export class EditorService implements IEditor {
       }
     }
 
-    // hack:如果删除为空会空，浏览器插入了新的dom，导致展现异常
-    if (result.length === 0) {
-      result.push({ text: ' ' })
-    }
-
-    this.data = result
-
-    //渲染后恢复选区，可与setTimeout替换
-    Vue.nextTick(() => {
-      window.getSelection()?.setBaseAndExtent(
-        anchorNode!, anchorOffset, focusNode!, focusOffset
-      )
-    })
+    this.warpSelection(() => this.data = result)
   }
 
 }
