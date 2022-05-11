@@ -1,5 +1,6 @@
 import { Inject, Service } from 'ioc-di'
 import { Vue } from 'vue-property-decorator'
+import { insertAtCursor } from '../../../utils/dom/insertAtCursor'
 import ContextMenuService from '../ContextMenu/service'
 import { IEditor, IAtom } from './index'
 @Service()
@@ -71,14 +72,9 @@ export class EditorService implements IEditor {
     })
   }
 
-
-  //说明：这里偷懒使用dom来生成全新的ast，实际可以在beforeInput内处理完成
-  input (e: InputEvent): void {
-    console.log('input', e)
-    e.stopPropagation()
-    e.preventDefault()
-
-    const childNodes = (e.target as HTMLElement).childNodes
+  /** 偷懒做法，在input之后从dom生成最新的ast数据，要求不能改变dom结构才能正常工作 */
+  dom2ast (dom: HTMLElement): IAtom[] {
+    const childNodes = dom.childNodes
     const result: IAtom[] = []
     for (let index = 0; index < childNodes.length; index++) {
       const el = childNodes[index]
@@ -91,10 +87,33 @@ export class EditorService implements IEditor {
         el.textContent && result.push({ type: 'link', text: el.textContent })
       }
     }
+    return result
+  }
 
-    this.warpSelection(() => this.data = result)
+  //说明：这里偷懒使用dom来生成全新的ast，实际可以在beforeInput内处理完成
+  input (e: InputEvent): void {
+    console.log('input', e)
+    e.stopPropagation()
+    e.preventDefault()
 
-    this.openContextMenu({ x: 100, y: 100 })
+
+
+    this.warpSelection(() => {
+      if (e.data === '[') {
+        console.log(e.target)
+
+        // 说明：这是一个过期的api，但是暂时能用
+        document.execCommand('insertText', false, ']')
+
+        // 会改变dom，导致渲染错乱，所以还是应该直接操作ast data
+        // insertAtCursor(']')
+      }
+      this.data = this.dom2ast(e.target as HTMLElement)
+    })
+
+
+
+    // this.openContextMenu({ x: 100, y: 100 })
   }
 
 }
