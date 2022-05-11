@@ -10,22 +10,21 @@ export class EditorService implements IEditor {
     { text: "456" },
   ]
 
-  html = this.encode(this.data)
-
-  //实现二  直接改ast
   beforeInput (e: InputEvent): void {
-    e.stopPropagation()
-    e.preventDefault()
+    if (['insertFromPaste' /** 粘贴 */,
+      'deleteByDrag' /** 拖拽删除 */,
+      'insertFromDrop' /** 拖拽插入 */]
+      .includes(e.inputType)) {
+      e.stopPropagation()
+      e.preventDefault()
 
-    console.log('beforeInput', e)
+      // 这些交互会改变dom，导致render异常所以屏蔽
+      // 如果需要以后再额外实现
+    }
   }
 
 
-  // 实现一  html->ast
-  // 存在问题: vue不会对dom操作多出的元素进行diff，会出现重复的元素
-  // 触发动作包括： 拖拽link元素、复制link粘贴元素
-  // 解决思路：innerHTML不能使用vue渲染 
-  // 实测使用拼接innerHTML 拖拽（deleteByDrag、insertFromDrop）彻底工作异常，复制粘贴工作正常
+  //说明：这里偷懒使用dom来生成全新的ast，实际可以在beforeInput内处理完成
   input (e: InputEvent): void {
     console.log('input', e)
     e.stopPropagation()
@@ -37,24 +36,19 @@ export class EditorService implements IEditor {
     for (let index = 0; index < childNodes.length; index++) {
       const el = childNodes[index]
       if (el.nodeType === 3/** text */) {
-        console.log(el.textContent)
-        el.textContent && result.push({ text: el.textContent })
+        if (el.textContent) {
+          const last = result[result.length - 1]
+          // 如果上一个是文本，则合并
+          if (last && last.type === undefined) {
+            last.text += el.textContent
+          } else {
+            el.textContent && result.push({ text: el.textContent })
+          }
+        }
       } else {
-        console.log(el.textContent)
         el.textContent && result.push({ type: 'link', text: el.textContent })
       }
     }
     this.data = result
-    this.html = this.encode(result)
-  }
-
-  encode (data: IAtom[]): string {
-    return data.map(it => {
-      if (it.type === 'link') {
-        return `<div class=${style.link} contentEditable="false">${it.text}</div>`
-      } else {
-        return it.text
-      }
-    }).join('')
   }
 }
