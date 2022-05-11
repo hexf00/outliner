@@ -1,4 +1,5 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
+import ContextMenu from '../ContextMenu'
 import Editor from '../Editor'
 import HomeService from './service'
 
@@ -12,6 +13,7 @@ export default class Home extends Vue {
     const { editor } = this.service
     return <div>
       <Editor service={editor} />
+      <ContextMenu service={editor.contextMenu} />
       <pre>{JSON.stringify(editor.data, null, 2)}</pre>
     </div>
   }

@@ -1,7 +1,10 @@
+import { Inject, Service } from 'ioc-di'
 import { Vue } from 'vue-property-decorator'
-import Callback from '../../../services/Callback'
+import ContextMenuService from '../ContextMenu/service'
 import { IEditor, IAtom } from './index'
+@Service()
 export class EditorService implements IEditor {
+  @Inject(ContextMenuService) contextMenu!: ContextMenuService
 
   msg = '富文本编辑器'
 
@@ -24,6 +27,12 @@ export class EditorService implements IEditor {
         anchorNode!, 1, focusNode!, 1
       )
     })
+  }
+
+  openContextMenu ({ x, y }: { x: number, y: number }): void {
+    this.contextMenu.show({ x, y }, [
+      { label: '新建' },
+    ])
   }
 
   beforeInput (e: InputEvent): void {
@@ -84,6 +93,8 @@ export class EditorService implements IEditor {
     }
 
     this.warpSelection(() => this.data = result)
+
+    this.openContextMenu({ x: 100, y: 100 })
   }
 
 }
