@@ -64,21 +64,29 @@ export class EditorService implements IEditor {
 
       const { startContainer, startOffset, endContainer, endOffset } = window.getSelection()!.getRangeAt(0)
 
-      if (startContainer === endContainer && startOffset === endOffset) {
+      // console.log(startContainer, startOffset, endContainer, endOffset)
 
-        const index = nodeIndexOf(el, startContainer)
-        if (index === -1) throw Error('未能找到节点')
+      // 相同节点，需要加上`[`的字符长度
+      const realEndOffset = startContainer === endContainer ? endOffset + 1 : endOffset
 
-        // 插入一对括号
-        this.data[index].text = insertAt(this.data[index].text, startOffset, '[]')
+      const startIndex = nodeIndexOf(el, startContainer)
+      const endIndex = nodeIndexOf(el, endContainer)
 
-        // 渲染后需要更新选取
-        Vue.nextTick(() => window.getSelection()?.setBaseAndExtent(
-          startContainer!, startOffset + 1, endContainer!, startOffset + 1
-        ))
-      } else {
-        //选区
-      }
+      if (startIndex === -1) throw Error('未能找到start节点')
+      if (endIndex === -1) throw Error('未能找到end节点')
+
+      // 插入左括号
+      this.data[startIndex].text = insertAt(this.data[startIndex].text, startOffset, '[')
+      // 插入右括号
+      this.data[endIndex].text = insertAt(this.data[endIndex].text, realEndOffset, ']')
+
+      // 渲染后需要更新选取
+      Vue.nextTick(() => {
+        window.getSelection()?.setBaseAndExtent(
+          startContainer!, startOffset + 1, endContainer!, realEndOffset
+        )
+        el.dispatchEvent(new Event('input'))
+      })
     }
   }
 
