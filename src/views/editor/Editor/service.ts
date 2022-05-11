@@ -1,6 +1,7 @@
 import { Inject, Service } from 'ioc-di'
 import { Vue } from 'vue-property-decorator'
-import { insertAtCursor } from '../../../utils/dom/insertAtCursor'
+import { nodeIndexOf } from '../../../utils/dom/nodeIndexOf'
+import { insertAt } from '../../../utils/string/insertAt'
 import ContextMenuService from '../ContextMenu/service'
 import { IEditor, IAtom } from './index'
 @Service()
@@ -54,6 +55,30 @@ export class EditorService implements IEditor {
       e.stopPropagation()
       e.preventDefault()
       this.firstInput(e.data)
+    } else if (e.data === '[') {
+      //1. 未选中时，自动补全]
+      //2. 选中时，自动不全]
+
+      e.stopPropagation()
+      e.preventDefault()
+
+      const { startContainer, startOffset, endContainer, endOffset } = window.getSelection()!.getRangeAt(0)
+
+      if (startContainer === endContainer && startOffset === endOffset) {
+
+        const index = nodeIndexOf(el, startContainer)
+        if (index === -1) throw Error('未能找到节点')
+
+        // 插入一对括号
+        this.data[index].text = insertAt(this.data[index].text, startOffset, '[]')
+
+        // 渲染后需要更新选取
+        Vue.nextTick(() => window.getSelection()?.setBaseAndExtent(
+          startContainer!, startOffset + 1, endContainer!, startOffset + 1
+        ))
+      } else {
+        //选区
+      }
     }
   }
 
@@ -96,18 +121,7 @@ export class EditorService implements IEditor {
     e.stopPropagation()
     e.preventDefault()
 
-
-
     this.warpSelection(() => {
-      if (e.data === '[') {
-        console.log(e.target)
-
-        // 说明：这是一个过期的api，但是暂时能用
-        document.execCommand('insertText', false, ']')
-
-        // 会改变dom，导致渲染错乱，所以还是应该直接操作ast data
-        // insertAtCursor(']')
-      }
       this.data = this.dom2ast(e.target as HTMLElement)
     })
 
