@@ -1,0 +1,51 @@
+.contextMenu {
+  display: block;
+  z-index: 1500;
+  position: fixed;
+  max-height: calc(100% - 50px);
+  width: 180px;
+  background: #fff;
+  box-shadow: 0px 14px 35px 0px rgba(33, 33, 40, 0.21);
+  border-radius: 4px;
+
+  ul {
+    list-style: none;
+    //TODO: 加入到全局样式
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    line-height: 36px;
+  }
+
+  .title {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    gap: 5px;
+
+    &.disabled {
+      color: #ccc;
+      cursor: not-allowed;
+    }
+
+    &:hover {
+      background-color: #f3f5fa;
+    }
+
+    .expand {
+      width: 1em;
+      height: 1em;
+      transform: rotate(-90deg);
+
+      &.open {
+        transform: inherit;
+      }
+    }
+
+    span {
+      flex: 1;
+    }
+  }
+}
