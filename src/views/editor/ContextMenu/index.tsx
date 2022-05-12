@@ -14,6 +14,8 @@ export interface IItem {
   children?: IItem[]
   /** 是否禁用 */
   isDisabled?: boolean
+  /** 是否激活 */
+  isActive?: boolean
 }
 
 /** 视图层依赖定义 */
@@ -63,7 +65,7 @@ export default class ContextMenu extends Vue {
     function getItem (it: IItem, level = 0) {
       return (
         <li key={it.label}>
-          <div class={classNames(style.title, it.isDisabled && style.disabled)}
+          <div class={classNames(style.title, it.isDisabled && style.disabled, it.isActive && style.active)}
             style={{ 'padding-left': 1 + level * 1.5 + 'em' }}
             onClick={useStop(() => service.itemClick(it))}>
             <div class={style.icon}>

@@ -33,6 +33,9 @@
     &:hover {
       background-color: #f3f5fa;
     }
+    &.active {
+      background-color: #ccc;
+    }
 
     .expand {
       width: 1em;

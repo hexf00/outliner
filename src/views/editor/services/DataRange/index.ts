@@ -57,6 +57,8 @@ export class DataRange implements IDataRange {
             //此处需要实时获取
             text: this.editor.getText(this)
           })
+          //销毁双链上下文菜单
+          this.contextMenu.hide()
         }
       },
     ])
