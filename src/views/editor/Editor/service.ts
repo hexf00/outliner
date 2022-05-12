@@ -10,6 +10,7 @@ import { IEditor, IAtom } from './index'
 
 @Service()
 export class EditorService implements IEditor {
+
   @Inject(ContextMenuService) contextMenu!: ContextMenuService
   @Inject(DataRange) range!: DataRange
 
@@ -297,9 +298,10 @@ export class EditorService implements IEditor {
       if (index !== -1) {
         rightStr = rightStr.slice(0, index)
         //找到 ]] 标识，判断是否已有开头
-        rightFlag = rightStr.indexOf('[[') === -1
+        // 说明：indexOf需要偏移，否则可能会读到其它组的 ]] 标识
+        rightFlag = rightStr.indexOf('[[', endOffset) === -1
         if (rightFlag) {
-          rightOffset = this.data[i].text.indexOf(']]')
+          rightOffset = this.data[i].text.indexOf(']]', endOffset)
           rightIndex = i
         }
         break
@@ -378,4 +380,24 @@ export class EditorService implements IEditor {
     this.checkLinkMenu()
   }
 
+  updateRange (range: IDataRange, node: IAtom) {
+
+
+    console.log('updateRange', range.startIndex, range.endIndex)
+    // this.data
+    const startNode = this.data[range.startIndex]
+    const endNode = this.data[range.endIndex]
+
+    const leftNode = { text: startNode.text.slice(0, range.startOffset - 2) }
+    const rightNode = { text: endNode.text.slice(range.endOffset + 2) }
+
+    console.log(leftNode, rightNode)
+
+    const left = this.data.slice(0, range.startIndex)
+    const right = this.data.slice(range.endIndex + 1)
+
+    this.data = [...left, leftNode, node, rightNode, ...right]
+
+    console.log(range, left, node, right)
+  }
 }

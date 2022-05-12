@@ -48,7 +48,17 @@ export class DataRange implements IDataRange {
   openContextMenu (): void {
     const text = this.editor.getText(this)
     this.contextMenu.show(this.getSelectionXy(), [
-      { label: `创建[[${text}]]` },
+      {
+        label: `创建[[${text}]]`,
+        callback: () => {
+          //将选区替换为type:link
+          this.editor.updateRange(this, {
+            type: "link",
+            //此处需要实时获取
+            text: this.editor.getText(this)
+          })
+        }
+      },
     ])
   }
 

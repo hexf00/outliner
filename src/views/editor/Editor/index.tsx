@@ -38,6 +38,7 @@ export default class Editor extends Vue {
         ref="input"
         class={style.textarea}
         contentEditable
+        spellCheck="false"
         on={{
           input: (e: InputEvent) => service.input(e),
           beforeinput: (e: InputEvent) => service.beforeInput(e),
