@@ -398,6 +398,12 @@ export class EditorService implements IEditor {
 
     this.data = [...left, leftNode, node, rightNode, ...right]
 
-    console.log(range, left, node, right)
+
+    // 将输入焦点移动到新的位置
+    const newIndex = left.length + 1 + 1
+    Vue.nextTick(() => {
+      const selection = window.getSelection()
+      selection?.setBaseAndExtent(this.el, newIndex, this.el, newIndex,)
+    })
   }
 }
