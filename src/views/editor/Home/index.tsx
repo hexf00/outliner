@@ -12,7 +12,7 @@ export default class Home extends Vue {
   render () {
     const { editor } = this.service
     return <div>
-      <Editor service={editor} />
+      <Editor style="width:120px" service={editor} />
       <ContextMenu service={editor.contextMenu} />
       <pre>{JSON.stringify(editor.data, null, 2)}</pre>
     </div>
