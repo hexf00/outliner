@@ -20,6 +20,11 @@ export const routers = [
     name: 'editor',
     component: () => import("../views/editor/Home"),
     Service: () => import("../views/editor/Home/service"),
+  },
+  {
+    name: 'iframe',
+    component: () => import("../views/iframe/Home"),
+    Service: () => import("../views/iframe/Home/service"),
   }
 ] as const
 
