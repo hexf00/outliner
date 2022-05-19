@@ -1,4 +1,5 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
+import Sheet from '../components/Sheet'
 import HomeService from './service'
 
 @Component
@@ -8,8 +9,12 @@ export default class Home extends Vue {
   }
   @Prop() service !: HomeService
   render () {
-    return <div>
-      iframe测试
-    </div>
+    const { sheet1, sheet2 } = this.service
+    return (
+      <div>
+        <Sheet service={sheet1} />
+        <Sheet service={sheet2} />
+      </div>
+    )
   }
 }
