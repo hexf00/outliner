@@ -1,0 +1,23 @@
+.pdfContainer {
+  width: 500px;
+  > .card {
+    margin-bottom: 10px;
+  }
+}
+
+.card {
+  height: 500px;
+  border: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+
+  h2 {
+    padding-left: 2em;
+  }
+  .content {
+    flex: 1;
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid #ddd;
+  }
+}

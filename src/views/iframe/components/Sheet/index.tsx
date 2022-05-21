@@ -15,6 +15,6 @@ export default class Sheet extends Vue {
     this.service.init(this.$el)
   }
   render () {
-    return <iframe></iframe>
+    return <iframe style="height:100%;width:100%;border:none;"></iframe>
   }
 }
