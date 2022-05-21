@@ -79,7 +79,23 @@ export const html2canvas = async (element: HTMLElement, options?: Partial<Option
   // iframe额外处理
   for (let i = 0; i < iframeList.length; i++) {
     const iframe = iframeList[i];
-    const iframeCanvas = await _html2canvas(iframe.dom.contentDocument!.body, options);
+
+    const contentWindow = iframe.dom.contentWindow as (Window & { html2canvas?: typeof _html2canvas }) | null
+    const contentDocument = iframe.dom.contentDocument
+
+    if (!contentWindow || !contentDocument) {
+      console.warn('无权限iframe')
+      continue
+    }
+
+    // 说明：html2canvas在clone元素时不会装载字体，导致字体乱码，这里通过iframe内注入html2canvas来解决
+    const html2canvas = contentWindow.html2canvas || _html2canvas
+
+    const iframeCanvas = await html2canvas(contentDocument.body, {
+      ...options,
+      // 需要清除容器的高度
+      height: undefined
+    });
 
     //将iframe的canvas绘制到原始的canvas上
     const ctx = canvas.getContext('2d')!;
