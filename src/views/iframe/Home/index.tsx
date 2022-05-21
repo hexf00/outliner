@@ -60,6 +60,7 @@ export default class Home extends Vue {
           {sheets.map((it, index) => (
             <div class={classNames($.card, 'card')}>
               <h2>第 {index + 1} 条名言</h2>
+              <div class={classNames($.remove, 'remove')}>remove</div>
               <div class={$.content}>
                 <Sheet service={it} />
               </div>

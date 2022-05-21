@@ -10,7 +10,7 @@ interface IRect {
 interface IDomRect {
   dom: HTMLIFrameElement
   /** dom的rect */
-  rect: DOMRect
+  rect: IRect
   /** 相对坐标 */
   relativeRect: IRect
 }
@@ -28,11 +28,10 @@ const getRect = (rect: DOMRect, baseRect?: DOMRect) => {
   }
 }
 
-/** 兼容iframe */
-export const html2canvas = async (element: HTMLElement, options?: Partial<Options>): Promise<HTMLCanvasElement> => {
-  // 记录位置信息
+/** 记录位置信息 */
+export const cacheIframeRect = function (element: HTMLElement): IFrameRect[] {
   const originRect = element.getBoundingClientRect();
-  const iframeList: IFrameRect[] = Array.from(element.querySelectorAll('iframe')).map(it => {
+  return Array.from(element.querySelectorAll('iframe')).map(it => {
     const rect = it.getBoundingClientRect();
     return {
       dom: it,
@@ -40,7 +39,42 @@ export const html2canvas = async (element: HTMLElement, options?: Partial<Option
       relativeRect: getRect(rect, originRect)
     }
   })
-  const canvas = await _html2canvas(element, options);
+}
+
+/** 兼容iframe */
+export const html2canvas = async (element: HTMLElement, options?: Partial<Options>): Promise<HTMLCanvasElement> => {
+  let iframeList: IFrameRect[] = cacheIframeRect(element);
+  const canvas = await _html2canvas(element, {
+    ...options,
+    onclone: (document: Document, element: HTMLElement) => {
+      const cloneIframeList = cacheIframeRect(element);
+      iframeList.forEach((it, index) => {
+
+        // 说明：ignoreElements 
+        // 会导致iframe位置发生变化，需要对x,y做一个偏移，左上角对齐
+        // 且可能导致iframe可能变得更大了，不可做等比缩放，会导致字体大小不统一，可以做裁剪
+        const rawRect = it.rect;
+        const relativeRect = it.relativeRect;
+
+        const realRect = cloneIframeList[index].rect;
+        const realRelativeRect = cloneIframeList[index].relativeRect;
+
+        it.rect = {
+          x: realRect.x,
+          y: realRect.y,
+          width: realRect.width > rawRect.width ? rawRect.width : realRect.width,
+          height: realRect.height > rawRect.height ? rawRect.height : realRect.height
+        }
+
+        it.relativeRect = {
+          x: realRelativeRect.x,
+          y: realRelativeRect.y,
+          width: realRelativeRect.width > relativeRect.width ? relativeRect.width : realRelativeRect.width,
+          height: realRelativeRect.height > relativeRect.height ? relativeRect.height : realRelativeRect.height
+        }
+      })
+    }
+  });
 
   // iframe额外处理
   for (let i = 0; i < iframeList.length; i++) {
@@ -57,3 +91,5 @@ export const html2canvas = async (element: HTMLElement, options?: Partial<Option
 
   return canvas
 }
+
+export default html2canvas;

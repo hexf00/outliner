@@ -80,7 +80,11 @@ export default class HomeService {
   async iframeToCanvas () {
     const el = document.querySelector('.pdfContainer')
     if (!el) throw Error('未找到pdfContainer')
-    const canvas = await html2canvas(el as HTMLElement)
+    const canvas = await html2canvas(el as HTMLElement, {
+      ignoreElements: (node: Element) => {
+        return node.classList.contains('remove')
+      }
+    })
     // console.log('iframe:', el, 'canvas:', canvas)
     this.setCanvas(canvas)
   }
