@@ -19,7 +19,7 @@ export default class Callback<T extends (...args: any) => void = () => void> {
 
   /** 触发 */
   run (...args: Parameters<T>) {
-    console.log('run', args, arguments)
+    // console.log('run', args, arguments)
     this.callbacks.forEach(fn => fn.apply(null, args))
   }
 

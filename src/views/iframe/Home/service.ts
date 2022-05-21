@@ -3,6 +3,7 @@ import html2canvas from "html2canvas";
 import { Service } from "ioc-di";
 import Callback from "../../../services/Callback";
 import SheetService from "../components/Sheet/service";
+import ImageConverter from "../services/ImageConverter";
 import { MaoQuotations } from "./data";
 
 declare global {
@@ -12,9 +13,12 @@ declare global {
 }
 @Service()
 export default class HomeService {
+
   sheets: SheetService[] = []
 
   setCanvasCallback = new Callback<(el: HTMLCanvasElement) => void>()
+
+  converter = new ImageConverter()
 
   constructor () {
 
@@ -52,7 +56,7 @@ export default class HomeService {
   toPDF () {
     throw new Error('Method not implemented.');
   }
-  iframeToCanvas () {
+  iframeToCanvasDefault () {
     const el = document.querySelector('iframe')
 
     if (!el) throw Error('未找到iframe')
@@ -75,7 +79,11 @@ export default class HomeService {
       this.setCanvas(canvas)
     })
   }
-  iframeToCanvasByInject () {
-    throw new Error('Method not implemented.');
+  async iframeToCanvas () {
+    const el = document.querySelector('.pdfContainer')
+    if (!el) throw Error('未找到pdfContainer')
+    const canvas = await this.converter.toImage(el as HTMLElement)
+    // console.log('iframe:', el, 'canvas:', canvas)
+    this.setCanvas(canvas)
   }
 }
