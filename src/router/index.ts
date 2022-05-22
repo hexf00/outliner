@@ -25,6 +25,11 @@ export const routers = [
     name: 'iframe',
     component: () => import("../views/iframe/Home"),
     Service: () => import("../views/iframe/Home/service"),
+  },
+  {
+    name: 'images',
+    component: () => import("../views/images/Home"),
+    Service: () => import("../views/images/Home/service"),
   }
 ] as const
 
