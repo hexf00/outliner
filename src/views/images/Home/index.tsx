@@ -1,6 +1,5 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import HomeService from './service'
-import Nav from '../../App/Nav'
 
 @Component
 export default class Home extends Vue {
@@ -9,8 +8,16 @@ export default class Home extends Vue {
   }
   @Prop() service !: HomeService
   render () {
+
+    const { dirProxy } = this.service
+    const { handler, hasAuth } = dirProxy
+
     return <div>
-      images
+      <div>handler:{handler ? handler.name : ''}</div>
+      <div>hasAuth:{hasAuth ? '有' : '无'}
+        {!hasAuth && <button onclick={() => this.service.getAuth()}>授权</button>}
+      </div>
+      <div><button onclick={() => this.service.changeDir()}>change dir</button></div>
     </div>
   }
 }
