@@ -1,7 +1,7 @@
 /**
  * 提供事件回调注入
  */
-export default class Callback<T extends (...args: any) => void = () => void> {
+ export default class Callback<T extends (...args: any) => void = () => void> {
   callbacks: (T)[] = []
 
   /** 注入或绑定事件动作 */
@@ -19,8 +19,8 @@ export default class Callback<T extends (...args: any) => void = () => void> {
 
   /** 触发 */
   run (...args: Parameters<T>) {
-    // console.log('run', args, arguments)
-    this.callbacks.forEach(fn => fn.apply(null, args))
+    // 仅 target:es5 + tslib 允许这个用法
+    this.callbacks.forEach(fn => fn(...args))
   }
 
   destroy () {

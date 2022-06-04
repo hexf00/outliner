@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "experimentalDecorators": true,
-    "target": "esnext",
+    "target": "es5",
     "useDefineForClassFields": true,
     "module": "esnext",
     "moduleResolution": "node",
@@ -10,6 +10,18 @@
     "sourceMap": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
+    "downlevelIteration": true,
+    "allowJs": true,
+    "checkJs": false,
+    "importHelpers": true,
+    "allowSyntheticDefaultImports": true,
+    /** 允许不写any类型，适合js转ts的初期阶段，建议后期关闭并逐步减少显式any的使用 */
+    "noImplicitAny": false,
+    /** 不允许未使用的变量 */
+    "noUnusedLocals": true,
+    /** 装饰器获取类型元数据 */
+    "emitDecoratorMetadata": true,
+    "baseUrl": "./",
     "lib": [
       "esnext",
       "dom"
