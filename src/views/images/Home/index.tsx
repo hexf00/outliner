@@ -10,7 +10,7 @@ export default class Home extends Vue {
   render () {
 
     const { dirProxy } = this.service
-    const { handler, hasAuth } = dirProxy
+    const { handler, hasAuth, files } = dirProxy
 
     return <div>
       <div>handler:{handler ? handler.name : ''}</div>
@@ -18,6 +18,15 @@ export default class Home extends Vue {
         {!hasAuth && <button onclick={() => this.service.getAuth()}>授权</button>}
       </div>
       <div><button onclick={() => this.service.changeDir()}>change dir</button></div>
+
+      <div>
+        {files.map(file => <div>
+          <div onclick={() => this.service.preview(file)}>{file.name}</div>
+          <div>{file.type}</div>
+          <div>{file.size}</div>
+          <div>{file.lastModified}</div>
+        </div>)}
+      </div>
     </div>
   }
 }

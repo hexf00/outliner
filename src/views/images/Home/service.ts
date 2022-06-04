@@ -1,6 +1,7 @@
 
 import { Already, Inject, Service } from "ioc-di";
 import DirProxy from "../services/DirProxy";
+import { IFileProxy } from "../services/FileProxy";
 
 @Service()
 export default class HomeService {
@@ -36,4 +37,9 @@ export default class HomeService {
     console.log(await this.dirProxy.getFiles())
   }
 
+  async preview (file: IFileProxy) {
+    if (file.type.includes('image')) {
+      document.body.append(await file.getContents())
+    }
+  }
 }

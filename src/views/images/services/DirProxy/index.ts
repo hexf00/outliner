@@ -1,4 +1,3 @@
-import { Already } from "ioc-di"
 import Cache from "../Cache"
 import FileProxy, { IFileProxy } from "../FileProxy"
 
@@ -14,6 +13,8 @@ export default class DirProxy implements IDirProxy {
   handler: FileSystemDirectoryHandle | null = null
 
   hasAuth = false
+
+  files: IFileProxy[] = []
 
   constructor () {
     // 改为外部初始化，因为init是异步动作，内部初始化外部无法判断初始化完成的时机
@@ -83,6 +84,8 @@ export default class DirProxy implements IDirProxy {
         )
       }
     }
+
+    this.files = result
 
     return result
   }
