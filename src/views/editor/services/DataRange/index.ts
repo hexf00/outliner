@@ -51,11 +51,16 @@ export class DataRange implements IDataRange {
       {
         label: `创建[[${text}]]`,
         callback: () => {
+          // 说明：此处需要实时获取
+          const text = this.editor.getText(this);
+          if (!text) {
+            return
+          }
+
           //将选区替换为type:link
           this.editor.updateRange(this, {
             type: "link",
-            //此处需要实时获取
-            text: this.editor.getText(this)
+            text
           })
           //销毁双链上下文菜单
           this.contextMenu.hide()
