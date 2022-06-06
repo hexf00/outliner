@@ -4,9 +4,12 @@
   border-radius: 4px;
   padding: 6px 8px;
   user-select: text;
-  // 允许文字断开
+
+  // 允许文字断开 wolai
   word-break: break-all;
-  // 不忽略换行,否则元素后无光标
+  // notion`
+  // word-break: break-word;
+  // 不忽略换行,否则元素后无光标 wolai notion
   white-space: pre-wrap;
 }
 
@@ -15,6 +18,10 @@
   color: white;
   padding: 0 2px;
   border-radius: 2px;
-  display: inline-block;
+  margin: 0 1px 0 2px;
+
+  // wolai 说明 inline+inline-block 会在换行显示时 发现光标丢失问题
+  // display: inline-block;
+
   user-select: all;
 }

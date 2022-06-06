@@ -16,10 +16,14 @@ export class EditorService implements IEditor {
 
   msg = '富文本编辑器'
 
-  data = [
+  data: IAtom[] = [
     { text: "123" },
-    { type: "link" as const, text: "tag" },
+    { type: "link", text: "tag" },
+    { type: "space", text: "" },
+    { type: "link", text: "tag" },
     { text: "456" },
+    { type: "link", text: "tag" },
+    { type: "space", text: "" },
   ]
 
   el: HTMLElement = document.createElement('div')
@@ -188,11 +192,15 @@ export class EditorService implements IEditor {
       const el = childNodes[index]
       if (el.nodeType === 3/** text */) {
         if (el.textContent) {
-          const last = result[result.length - 1]
           result.push({ text: el.textContent })
         }
       } else {
-        el.textContent && result.push({ type: 'link', text: el.textContent })
+        const type = (el as HTMLElement).dataset.type
+        if (type === 'link') {
+          result.push({ type: 'link', text: el.textContent || '' })
+        } else if (type === 'space') {
+          result.push({ type: 'space', text: '' })
+        }
       }
     }
     return result
@@ -358,6 +366,10 @@ export class EditorService implements IEditor {
       e.preventDefault()
     }
 
+    if (e.key === 'Enter') {
+      e.preventDefault()
+    }
+
     if (this.contextMenu.isShow) {
       setTimeout(() => {
         if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
@@ -380,7 +392,7 @@ export class EditorService implements IEditor {
     this.checkLinkMenu()
   }
 
-  updateRange (range: IDataRange, node: IAtom) {
+  updateRange (range: IDataRange, nodes: IAtom[]) {
 
 
     console.log('updateRange', range.startIndex, range.endIndex)
@@ -396,7 +408,13 @@ export class EditorService implements IEditor {
     const left = this.data.slice(0, range.startIndex)
     const right = this.data.slice(range.endIndex + 1)
 
-    this.data = [...left, leftNode, node, rightNode, ...right]
+    this.data = [
+      ...left,
+      ...(leftNode.text ? [leftNode] : []),
+      ...nodes,
+      ...(rightNode.text ? [rightNode] : []),
+      ...right
+    ]
 
 
     // 将输入焦点移动到新的位置

@@ -2,7 +2,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import style from './index.module.scss'
 
 export interface IAtom {
-  type?: 'link'
+  type?: 'link' | 'space'
   text: string
 }
 export interface IEditor {
@@ -48,7 +48,9 @@ export default class Editor extends Vue {
         {
           service.data.map((it, index) => {
             if (it.type === 'link') {
-              return <span key={'link' + index} class={style.link} contentEditable="false">{it.text}</span>
+              return <span key={'link' + index} data-type="link" class={style.link} contentEditable="false">{it.text}</span>
+            } else if (it.type === 'space') {
+              return <span data-type="space"></span>
             }
             return it.text
           })
