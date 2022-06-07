@@ -1,12 +1,16 @@
 /**
  * 提供事件回调注入
  */
- export default class Callback<T extends (...args: any) => void = () => void> {
+export default class Callback<T extends (...args: any) => void = () => void> {
   callbacks: (T)[] = []
 
   /** 注入或绑定事件动作 */
   add (cb: T) {
     this.callbacks.push(cb)
+    return () => {
+      this.remove(cb)
+      cb = null!// gc
+    }
   }
 
   /** 注销事件，按需使用 */
