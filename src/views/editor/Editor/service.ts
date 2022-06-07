@@ -9,6 +9,7 @@ import { DataRange } from '../services/DataRange'
 import { IEditor, IAtom } from './index'
 import El from '../services/El';
 import Data from '../services/Data';
+import Ranger from '../services/Ranger';
 
 
 @Service()
@@ -19,6 +20,7 @@ export class EditorService implements IEditor {
   @Inject(El) elManger !: El
 
   @Inject(Data) _data !: Data
+  @Inject(Ranger) ranger !: Ranger
 
 
   msg = '富文本编辑器'
