@@ -1,5 +1,5 @@
 import { Already, Inject, Service } from "ioc-di"
-import SetElCallBacks from "../services/SetElCallback"
+import El from "../services/El"
 
 @Service()
 export default class CursorService {
@@ -7,7 +7,7 @@ export default class CursorService {
   y = 0
 
 
-  @Inject(SetElCallBacks) setElCallbacks !: SetElCallBacks
+  @Inject(El) el !: El
 
 
   constructor () {
@@ -16,7 +16,7 @@ export default class CursorService {
 
   @Already
   init () {
-    this.setElCallbacks.add(el => {
+    this.el.onSetEl(el => {
       el.addEventListener('focus', () => this.getSelectionXy(el))
       el.addEventListener('keyup', () => this.getSelectionXy(el))
       el.addEventListener('mouseup', () => this.getSelectionXy(el))

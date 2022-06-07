@@ -7,7 +7,7 @@ import { splitOffset } from '../../../utils/string/splitOffset'
 import ContextMenuService from '../ContextMenu/service'
 import { DataRange } from '../services/DataRange'
 import { IEditor, IAtom } from './index'
-import SetElCallBacks from '../services/SetElCallback';
+import El from '../services/El';
 import Data from '../services/Data';
 
 
@@ -16,7 +16,7 @@ export class EditorService implements IEditor {
 
   @Inject(ContextMenuService) contextMenu!: ContextMenuService
   @Inject(DataRange) range!: DataRange
-  @Inject(SetElCallBacks) setElCallbacks !: SetElCallBacks
+  @Inject(El) elManger !: El
 
   @Inject(Data) _data !: Data
 
@@ -29,12 +29,10 @@ export class EditorService implements IEditor {
 
 
 
-  el: HTMLElement = document.createElement('div')
 
 
   setEl (el: HTMLElement): void {
-    this.el = el
-    this.setElCallbacks.run(el)
+    this.elManger.setEl(el)
   }
 
   /** 存储光标所在区域的双链区域对象 */
@@ -225,7 +223,7 @@ export class EditorService implements IEditor {
 
   /** 如果焦点在根元素，有一些逻辑不一样 */
   isRoot (el: Node) {
-    return this.el === el
+    return this.elManger.getEl() === el
   }
 
   /** 通过range获取文本 */
@@ -262,8 +260,7 @@ export class EditorService implements IEditor {
       return false
     }
 
-
-    const [startIndex, endIndex] = this.getSelectionDataIndex({ startContainer, endContainer }, this.el)
+    const [startIndex, endIndex] = this.getSelectionDataIndex({ startContainer, endContainer }, this.elManger.getEl())
 
     const centerText = this.getText({
       startIndex,
@@ -439,7 +436,9 @@ export class EditorService implements IEditor {
     const newIndex = left.length + (leftNode ? 1 : 0) + 1
     Vue.nextTick(() => {
       const selection = window.getSelection()
-      selection?.setBaseAndExtent(this.el, newIndex, this.el, newIndex,)
+
+      const el = this.elManger.getEl()
+      selection?.setBaseAndExtent(el, newIndex, el, newIndex,)
     })
   }
 
