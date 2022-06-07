@@ -1,17 +1,17 @@
-import { IDataRange } from './../services/DataRange/index';
-import { Inject, Service } from 'ioc-di'
-import { Vue } from 'vue-property-decorator'
-import { nodeIndexOf } from '../../../utils/dom/nodeIndexOf'
-import { insertAt } from '../../../utils/string/insertAt'
-import { splitOffset } from '../../../utils/string/splitOffset'
-import ContextMenuService from '../ContextMenu/service'
-import { DataRange } from '../services/DataRange'
-import { IEditor, IAtom } from './index'
-import El from '../services/El';
+import { Inject, Service } from 'ioc-di';
+import { Vue } from 'vue-property-decorator';
+
+import { nodeIndexOf } from '../../../utils/dom/nodeIndexOf';
+import { insertAt } from '../../../utils/string/insertAt';
+import { splitOffset } from '../../../utils/string/splitOffset';
+import ContextMenuService from '../ContextMenu/service';
 import Data from '../services/Data';
+import { DataRange } from '../services/DataRange';
+import El from '../services/El';
 import Ranger from '../services/Ranger';
+import { IAtom, IEditor } from './index';
 
-
+import type { IDataRange } from '../types';
 @Service()
 export class EditorService implements IEditor {
 
@@ -90,7 +90,7 @@ export class EditorService implements IEditor {
       e.preventDefault()
 
       //第一个被插入的[,也需要补全]
-      this.updateRange({
+      this._data.updateRange({
         startIndex: startOffset,
         startOffset: 0,
         endIndex: startOffset,
@@ -408,41 +408,6 @@ export class EditorService implements IEditor {
     this.checkLinkMenu()
   }
 
-  updateRange (range: IDataRange, nodes: IAtom[]) {
-
-
-    console.log('updateRange', range.startIndex, range.endIndex)
-    // this.data
-    const startNode = this.data[range.startIndex]
-    const endNode = this.data[range.endIndex]
-
-    const leftNode = startNode ? { text: startNode.text.slice(0, range.startOffset - 2) } : null
-    const rightNode = endNode ? { text: endNode.text.slice(range.endOffset + 2) } : null
-
-    console.log(leftNode, rightNode)
-
-    const left = this.data.slice(0, range.startIndex)
-    const right = this.data.slice(range.endIndex + 1)
-
-    const data = [
-      ...left,
-      ...(leftNode?.text ? [leftNode] : []),
-      ...nodes,
-      ...(rightNode?.text ? [rightNode] : []),
-      ...right
-    ]
-
-    this._data.setData(data)
-
-    // 将输入焦点移动到新的位置
-    const newIndex = left.length + (leftNode ? 1 : 0) + 1
-    Vue.nextTick(() => {
-      const selection = window.getSelection()
-
-      const el = this.elManger.getEl()
-      selection?.setBaseAndExtent(el, newIndex, el, newIndex,)
-    })
-  }
 
   setData (data: IAtom[]) {
     this._data.setData(data)

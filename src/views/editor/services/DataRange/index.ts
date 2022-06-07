@@ -1,21 +1,11 @@
-import { Inject, InjectRef, Service } from "ioc-di"
-import ContextMenuService from "../../ContextMenu/service"
-import { IAtom } from "../../Editor"
-import { EditorService } from "../../Editor/service"
+import { Inject, InjectRef, Service } from 'ioc-di';
 
-/**
- * 自定义构建的range对象
- */
-export interface IDataRange {
-  /** 单元索引起始 */
-  startIndex: number
-  /** 单元索引结束 */
-  endIndex: number
-  /** 内容索引起始 */
-  startOffset: number
-  /** 内容索引结束 */
-  endOffset: number
-}
+import ContextMenuService from '../../ContextMenu/service';
+import { IAtom } from '../../Editor';
+import { EditorService } from '../../Editor/service';
+import Data from '../Data';
+
+import type { IDataRange } from '../../types';
 
 /**
  * 双链上下文菜单
@@ -23,6 +13,7 @@ export interface IDataRange {
 @Service()
 export class DataRange implements IDataRange {
   @Inject(ContextMenuService) contextMenu!: ContextMenuService
+  @Inject(Data) data!: Data
 
   @InjectRef(() => EditorService) editor!: EditorService
 
@@ -81,7 +72,7 @@ export class DataRange implements IDataRange {
           // }
 
           //将选区替换为type:link
-          this.editor.updateRange(this, replaceNodes)
+          this.data.updateRange(this, replaceNodes)
           //销毁双链上下文菜单
           this.contextMenu.hide()
         }

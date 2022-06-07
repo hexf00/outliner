@@ -1,17 +1,11 @@
-import { IDataRange } from './../DataRange/index';
-import { Inject, Service } from "ioc-di";
-import Data from "../Data";
-import El from '../El';
+import { Inject, Service } from 'ioc-di';
+
 import { nodeIndexOf } from '@/utils/dom/nodeIndexOf';
 
-/** 精简版的Range对象 */
-export type IRange = {
-  endContainer: Node;
-  endOffset: number;
-  startContainer: Node;
-  startOffset: number;
-}
+import Data from '../Data';
+import El from '../El';
 
+import type { IDataRange, IRange } from '../../types';
 /** 将Range转换为DataRange */
 @Service()
 export default class Ranger {
