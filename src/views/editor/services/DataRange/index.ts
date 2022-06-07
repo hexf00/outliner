@@ -6,6 +6,7 @@ import { EditorService } from '../../Editor/service';
 import Data from '../Data';
 
 import type { IDataRange } from '../../types';
+import Ranger from '../Ranger';
 
 /**
  * 双链上下文菜单
@@ -14,7 +15,7 @@ import type { IDataRange } from '../../types';
 export class DataRange implements IDataRange {
   @Inject(ContextMenuService) contextMenu!: ContextMenuService
   @Inject(Data) data!: Data
-
+  @Inject(Ranger) ranger !: Ranger
   @InjectRef(() => EditorService) editor!: EditorService
 
   startIndex = 0
@@ -72,7 +73,7 @@ export class DataRange implements IDataRange {
           // }
 
           //将选区替换为type:link
-          this.data.updateRange(this, replaceNodes)
+          this.ranger.updateByRange(this, replaceNodes)
           //销毁双链上下文菜单
           this.contextMenu.hide()
         }
@@ -91,4 +92,12 @@ export class DataRange implements IDataRange {
     return { x, y: y + 26 }
   }
 
+  bindSetRange (): void {
+
+  }
+
+  /** 更新range范围 */
+  setRange (range: Range): void {
+
+  }
 }

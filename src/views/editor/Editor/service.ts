@@ -90,7 +90,7 @@ export class EditorService implements IEditor {
       e.preventDefault()
 
       //第一个被插入的[,也需要补全]
-      this._data.updateRange({
+      this.ranger.updateByRange({
         startIndex: startOffset,
         startOffset: 0,
         endIndex: startOffset,

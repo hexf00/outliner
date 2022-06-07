@@ -31,6 +31,10 @@ describe('Hello', () => {
     const dataRange = editor.ranger.toDataRange(range)
 
     expect(dataRange).toStrictEqual({ startIndex: 0, endIndex: 0, startOffset: 0, endOffset: 0 })
+
+    editor.ranger.updateByRange(dataRange, [{ text: 'a' }])
+
+    expect(editor._data.getData()).toStrictEqual([{ text: 'a' }])
   })
 
 })

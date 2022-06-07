@@ -6,6 +6,8 @@ import Data from '../Data';
 import El from '../El';
 
 import type { IDataRange, IRange } from '../../types';
+import { IAtom } from '../../Editor';
+import Vue from 'vue';
 /** 将Range转换为DataRange */
 @Service()
 export default class Ranger {
@@ -46,5 +48,25 @@ export default class Ranger {
       }
     }
 
+  }
+
+  /** 操作数据，并更新选区 */
+  updateByRange (dataRange: IDataRange, nodes: IAtom[]): void {
+    const [nodeIndex, textIndex] = this.data.updateByRange(dataRange, nodes)
+
+    console.log('newIndex', nodeIndex, textIndex)
+    // 将输入焦点移动到新的位置
+    Vue.nextTick(() => {
+      const selection = window.getSelection()
+      const el = this.elManager.getEl()
+
+      if (textIndex === undefined) {
+        // 只需要设置节点的索引
+        selection?.setBaseAndExtent(el, nodeIndex, el, nodeIndex)
+      } else {
+        // 需要设置节点的索引和文本的索引
+        throw new Error('not implemented')
+      }
+    })
   }
 }

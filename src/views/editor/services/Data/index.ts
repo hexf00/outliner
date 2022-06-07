@@ -6,8 +6,9 @@ import type { IDataRange } from '../../types';
 export default class Data {
   data: IAtom[] = []
 
-  updateRange (range: IDataRange, nodes: IAtom[]) {
 
+  /** 操作数据，并返回新索引 */
+  updateByRange (range: IDataRange, nodes: IAtom[]): number[] {
     console.log('updateRange', range.startIndex, range.endIndex)
     // this.data
     const startNode = this.data[range.startIndex]
@@ -31,15 +32,11 @@ export default class Data {
 
     this.setData(data)
 
+    // 新节点的索引
+    const newIndex = left.length + (leftNode ? 1 : 0) + 1
 
-    // TODO: 在DataRange中实现
-    // 将输入焦点移动到新的位置
-    // const newIndex = left.length + (leftNode ? 1 : 0) + 1
-    // Vue.nextTick(() => {
-    //   const selection = window.getSelection()
-    //   const el = this.elManger.getEl()
-    //   selection?.setBaseAndExtent(el, newIndex, el, newIndex,)
-    // })
+    // TODO: 新节点的内容索引
+    return [newIndex]
   }
 
   getData () {
