@@ -7,48 +7,59 @@ import { splitOffset } from '../../../utils/string/splitOffset'
 import ContextMenuService from '../ContextMenu/service'
 import { DataRange } from '../services/DataRange'
 import { IEditor, IAtom } from './index'
+import SetElCallBacks from '../services/SetElCallback';
+import Data from '../services/Data';
+
 
 @Service()
 export class EditorService implements IEditor {
 
   @Inject(ContextMenuService) contextMenu!: ContextMenuService
   @Inject(DataRange) range!: DataRange
+  @Inject(SetElCallBacks) setElCallbacks !: SetElCallBacks
+
+  @Inject(Data) _data !: Data
+
 
   msg = '富文本编辑器'
 
-  data: IAtom[] = [
-    { text: "123" },
-    { type: "link", text: "tag" },
-    { type: "space", text: "" },
-    { type: "link", text: "tag" },
-    { text: "456" },
-    { type: "link", text: "tag" },
-    { type: "space", text: "" },
-  ]
+  get data () {
+    return this._data.data
+  }
+
+
 
   el: HTMLElement = document.createElement('div')
+
+
+  setEl (el: HTMLElement): void {
+    this.el = el
+    this.setElCallbacks.run(el)
+  }
 
   /** 存储光标所在区域的双链区域对象 */
   @Inject(DataRange) linkRange!: DataRange
 
-  /** 
-   * 从一个空的div输入，或者光标位于顶级的不可编辑位置，需要特殊处理
-   * 不能让浏览器改变dom
-   * */
-  firstInput (data: string, el: Node) {
-    // 不能存储对象，因为对象会被改变
-    this.data.push({ text: data })
-
-    //渲染后恢复选区，可与setTimeout替换
-    Vue.nextTick(() => {
-      // 写死为1
-      const lastChild = el.childNodes.item(el.childNodes.length - 1)
-      window.getSelection()?.setBaseAndExtent(
-        lastChild, 1, lastChild, 1
-      )
-      el.dispatchEvent(new Event('input'))
-    })
-  }
+  // /** 
+  //  * 从一个空的div输入，或者光标位于顶级的不可编辑位置，需要特殊处理
+  //  * 不能让浏览器改变dom
+  //  * */
+  // firstInput (data: string) {
+  //   // 不能存储对象，因为对象会被改变
+  //   this.data.push({ text: data })
+  // 
+  //   // 渲染后恢复选区，可与setTimeout替换
+  //   // 不一定是在最后，此处需要修改
+  //   Vue.nextTick(() => {
+  //     const el = this.el
+  //     // 写死为1
+  //     const lastChild = el.childNodes.item(el.childNodes.length - 1)
+  //     window.getSelection()?.setBaseAndExtent(
+  //       lastChild, 1, lastChild, 1
+  //     )
+  //     el.dispatchEvent(new Event('input'))
+  //   })
+  // }
 
 
   hideContextMenu () {
@@ -59,7 +70,7 @@ export class EditorService implements IEditor {
     const el = e.target as HTMLElement
 
     console.log('beforeInput', e)
-    const { startContainer } = window.getSelection()!.getRangeAt(0)
+    const { startContainer, startOffset, } = window.getSelection()!.getRangeAt(0)
     if (['insertFromPaste' /** 粘贴 */,
       'deleteByDrag' /** 拖拽删除 */,
       'insertFromDrop' /** 拖拽插入 */,
@@ -71,7 +82,7 @@ export class EditorService implements IEditor {
       e.stopPropagation()
       e.preventDefault()
 
-    } else if (el === startContainer && e.data) {
+    } else if (el === startContainer /** 容器插入 */ && e.data) {
       // 说明会创建一个的新的textNode
       // 输入第一个字符，阻止默认行为，会改变dom元素，导致渲染效果异常
       // 或者光标在顶级
@@ -79,7 +90,13 @@ export class EditorService implements IEditor {
       e.preventDefault()
 
       //第一个被插入的[,也需要补全]
-      this.firstInput(e.data === '[' ? '[]' : e.data, el)
+      this.updateRange({
+        startIndex: startOffset,
+        startOffset: 0,
+        endIndex: startOffset,
+        endOffset: 0
+      }, [{ text: e.data === '[' ? '[]' : e.data }])
+
     } else if (e.data === '[') {
       //1. 未选中时，自动补全]
       //2. 选中时，自动不全]
@@ -386,7 +403,7 @@ export class EditorService implements IEditor {
     e.preventDefault()
 
     this.warpSelection(() => {
-      this.data = this.dom2ast(e.target as HTMLElement)
+      this._data.setData(this.dom2ast(e.target as HTMLElement))
     })
 
     this.checkLinkMenu()
@@ -400,28 +417,33 @@ export class EditorService implements IEditor {
     const startNode = this.data[range.startIndex]
     const endNode = this.data[range.endIndex]
 
-    const leftNode = { text: startNode.text.slice(0, range.startOffset - 2) }
-    const rightNode = { text: endNode.text.slice(range.endOffset + 2) }
+    const leftNode = startNode ? { text: startNode.text.slice(0, range.startOffset - 2) } : null
+    const rightNode = endNode ? { text: endNode.text.slice(range.endOffset + 2) } : null
 
     console.log(leftNode, rightNode)
 
     const left = this.data.slice(0, range.startIndex)
     const right = this.data.slice(range.endIndex + 1)
 
-    this.data = [
+    const data = [
       ...left,
-      ...(leftNode.text ? [leftNode] : []),
+      ...(leftNode?.text ? [leftNode] : []),
       ...nodes,
-      ...(rightNode.text ? [rightNode] : []),
+      ...(rightNode?.text ? [rightNode] : []),
       ...right
     ]
 
+    this._data.setData(data)
 
     // 将输入焦点移动到新的位置
-    const newIndex = left.length + 1 + 1
+    const newIndex = left.length + (leftNode ? 1 : 0) + 1
     Vue.nextTick(() => {
       const selection = window.getSelection()
       selection?.setBaseAndExtent(this.el, newIndex, this.el, newIndex,)
     })
+  }
+
+  setData (data: IAtom[]) {
+    this._data.setData(data)
   }
 }
