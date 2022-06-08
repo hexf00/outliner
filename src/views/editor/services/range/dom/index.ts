@@ -1,10 +1,10 @@
 import { Inject, Service } from 'ioc-di';
 import Vue from 'vue';
-import El from '../El';
+import El from '../../El';
 
 
 @Service()
-export class DomRange {
+export default class DomRange {
   @Inject(El) elManager!: El
 
   // startIndex = 0

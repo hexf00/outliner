@@ -2,12 +2,12 @@ import { Inject, Service } from 'ioc-di';
 
 import { nodeIndexOf } from '@/utils/dom/nodeIndexOf';
 
+import { IAtom } from '../../Editor';
 import Data from '../Data';
 import El from '../El';
+import DomRange from '../range/dom';
 
 import type { IDataRange, IRange } from '../../types';
-import { IAtom } from '../../Editor';
-import { DomRange } from '../DomRange';
 /** 将Range转换为DataRange */
 @Service()
 export default class Ranger {
