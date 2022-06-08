@@ -6,8 +6,8 @@ import { insertAt } from '../../../utils/string/insertAt';
 import { splitOffset } from '../../../utils/string/splitOffset';
 import ContextMenuService from '../ContextMenu/service';
 import Data from '../services/Data';
-import { DataRange } from '../services/DataRange';
 import El from '../services/El';
+import DataRange from '../services/range/data';
 import Ranger from '../services/Ranger';
 import { IAtom, IEditor } from './index';
 

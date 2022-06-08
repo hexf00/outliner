@@ -1,18 +1,18 @@
 import { Inject, InjectRef, Service } from 'ioc-di';
 
-import ContextMenuService from '../../ContextMenu/service';
-import { IAtom } from '../../Editor';
-import { EditorService } from '../../Editor/service';
-import Data from '../Data';
+import ContextMenuService from '../../../ContextMenu/service';
+import { IAtom } from '../../../Editor';
+import { EditorService } from '../../../Editor/service';
+import Data from '../../Data';
 
-import type { IDataRange } from '../../types';
-import Ranger from '../Ranger';
+import type { IDataRange } from '../../../types';
+import Ranger from '../../Ranger';
 
 /**
  * 双链上下文菜单
  */
 @Service()
-export class DataRange implements IDataRange {
+export default class DataRange implements IDataRange {
   @Inject(ContextMenuService) contextMenu!: ContextMenuService
   @Inject(Data) data!: Data
   @Inject(Ranger) ranger !: Ranger
