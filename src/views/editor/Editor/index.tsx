@@ -13,6 +13,11 @@ export interface IEditor {
   input (e: InputEvent): void
   keydown (e: KeyboardEvent): void
   setEl (el: HTMLElement): void
+
+  elManger: {
+    /** 挂载后才更新Dom选区 */
+    mounted (): void
+  }
 }
 
 @Component
@@ -29,6 +34,7 @@ export default class Editor extends Vue {
 
   mounted () {
     this.service.setEl(this.$refs.input)
+    this.service.elManger.mounted()
     this.$once('hook:beforeDestroy', () => this.service.setEl(document.createElement('div')))
   }
 

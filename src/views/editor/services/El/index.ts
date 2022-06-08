@@ -23,4 +23,15 @@ export default class El {
   onSetEl (fn: (el: HTMLElement) => void) {
     return this.setElCallbacks.add(fn)
   }
+
+  private _isMounted = false
+
+  mounted () {
+    this._isMounted = true
+  }
+
+  /** 判断是否处于测试环境 */
+  isMounted () {
+    return this._isMounted
+  }
 }
