@@ -6,6 +6,29 @@ import type { IDataRange } from '../../types';
 export default class Data {
   data: IAtom[] = []
 
+  /** 通过range获取文本 */
+  getText ({ startIndex, startOffset, endIndex, endOffset }: IDataRange) {
+    if (startIndex === endIndex) {
+      if (startOffset === endOffset) {
+        return ''
+      } else {
+        return this.data[startIndex].text.slice(startOffset, endOffset)
+      }
+    }
+
+    let text = ''
+    for (let index = startIndex; index <= endIndex; index++) {
+      const item = this.data[index]
+      if (index === startIndex) {
+        text += item.text.slice(startOffset)
+      } else if (index === endIndex) {
+        text += item.text.slice(0, endOffset)
+      } else {
+        text += item.text
+      }
+    }
+    return text
+  }
 
   /** 操作数据，并返回新索引 */
   updateByRange (range: IDataRange, nodes: IAtom[]): number[] {

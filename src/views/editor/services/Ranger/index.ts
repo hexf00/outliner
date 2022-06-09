@@ -1,13 +1,12 @@
 import { Inject, Service } from 'ioc-di';
 
 import { nodeIndexOf } from '@/utils/dom/nodeIndexOf';
-
-import { IAtom } from '../../Editor';
 import Data from '../Data';
 import El from '../El';
 import DomRange from '../range/dom';
 
 import type { IDataRange, IRange } from '../../types';
+import { IAtom } from '../../Editor';
 /** 将Range转换为DataRange */
 @Service()
 export default class Ranger {
@@ -51,7 +50,7 @@ export default class Ranger {
 
   }
 
-  /** 操作数据，并更新选区 */
+  /** 操作数据，并更新Dom选区 */
   updateByRange (dataRange: IDataRange, nodes: IAtom[]): void {
     const [nodeIndex, textIndex] = this.data.updateByRange(dataRange, nodes)
     this.domRange.setDomRange({ nodeIndex, textIndex })

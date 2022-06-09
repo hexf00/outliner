@@ -4,23 +4,21 @@ import { Vue } from 'vue-property-decorator';
 import { nodeIndexOf } from '../../../utils/dom/nodeIndexOf';
 import { insertAt } from '../../../utils/string/insertAt';
 import { splitOffset } from '../../../utils/string/splitOffset';
-import ContextMenuService from '../ContextMenu/service';
 import Data from '../services/Data';
 import El from '../services/El';
-import DataRange from '../services/range/data';
+import LinkMenu from '../services/LinkMenu';
+import LinkRange from '../services/range/link';
 import Ranger from '../services/Ranger';
 import { IAtom, IEditor } from './index';
 
-import type { IDataRange } from '../types';
 @Service()
 export class EditorService implements IEditor {
-
-  @Inject(ContextMenuService) contextMenu!: ContextMenuService
-  @Inject(DataRange) range!: DataRange
   @Inject(El) elManger !: El
-
   @Inject(Data) _data !: Data
   @Inject(Ranger) ranger !: Ranger
+
+  @Inject(LinkRange) linkRange !: LinkRange
+  @Inject(LinkMenu) linkMenu!: LinkMenu
 
 
   msg = '富文本编辑器'
@@ -29,16 +27,15 @@ export class EditorService implements IEditor {
     return this._data.data
   }
 
-
+  get contextMenu () {
+    return this.linkMenu.contextMenu
+  }
 
 
 
   setEl (el: HTMLElement): void {
     this.elManger.setEl(el)
   }
-
-  /** 存储光标所在区域的双链区域对象 */
-  @Inject(DataRange) linkRange!: DataRange
 
   // /** 
   //  * 从一个空的div输入，或者光标位于顶级的不可编辑位置，需要特殊处理
@@ -228,30 +225,6 @@ export class EditorService implements IEditor {
     return this.elManger.getEl() === el
   }
 
-  /** 通过range获取文本 */
-  getText ({ startIndex, startOffset, endIndex, endOffset }: IDataRange) {
-    if (startIndex === endIndex) {
-      if (startOffset === endOffset) {
-        return ''
-      } else {
-        return this.data[startIndex].text.slice(startOffset, endOffset)
-      }
-    }
-
-    let text = ''
-    for (let index = startIndex; index <= endIndex; index++) {
-      const item = this.data[index]
-      if (index === startIndex) {
-        text += item.text.slice(startOffset)
-      } else if (index === endIndex) {
-        text += item.text.slice(0, endOffset)
-      } else {
-        text += item.text
-      }
-    }
-    return text
-  }
-
   /** 输入光标是否在双链语法中 */
   isInLink (): boolean {
 
@@ -263,13 +236,6 @@ export class EditorService implements IEditor {
     }
 
     const [startIndex, endIndex] = this.getSelectionDataIndex({ startContainer, endContainer }, this.elManger.getEl())
-
-    const centerText = this.getText({
-      startIndex,
-      startOffset,
-      endIndex,
-      endOffset
-    })
     //往左找[[ , 不能有]]
     let leftFlag = false
     let leftStr = ''
@@ -337,26 +303,15 @@ export class EditorService implements IEditor {
       return false
     }
 
-
-
-    console.log('innerText', leftStr, centerText, rightStr)
-    console.log('innerText',
-      leftIndex, leftOffset,
-      rightIndex, rightOffset,
-      this.getText({
-        startIndex: leftIndex,
-        startOffset: leftOffset,
-        endIndex: rightIndex,
-        endOffset: rightOffset
-      }))
-
     //配置双链选区
-    this.linkRange.set({
+    this.linkRange.setData({
       startIndex: leftIndex,
       startOffset: leftOffset,
       endIndex: rightIndex,
       endOffset: rightOffset
     })
+    // 展示菜单
+    this.linkMenu.openContextMenu()
 
     return true
   }
