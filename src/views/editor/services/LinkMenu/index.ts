@@ -1,7 +1,6 @@
 import { Inject, Service } from "ioc-di";
 import ContextMenuService from "../../ContextMenu/service";
 import { IAtom } from "../../Editor";
-import Data from "../Data";
 import LinkRange from "../range/link";
 
 
@@ -9,14 +8,13 @@ import LinkRange from "../range/link";
 @Service()
 export default class LinkMenu {
   contextMenu = new ContextMenuService()
-  @Inject(Data) data!: Data
   @Inject(LinkRange) linkRange !: LinkRange
 
   /**
    * 显示双链上下文菜单
    */
   openContextMenu (): void {
-    const text = this.data.getText(this.linkRange)
+    const text = this.linkRange.getText()
 
     // 更新双链上下文菜单显示的文字
     if (this.contextMenu.isShow) {
@@ -30,7 +28,7 @@ export default class LinkMenu {
         label: `创建[[${text}]]`,
         callback: () => {
           // 说明：此处需要实时获取
-          const text = this.data.getText(this.linkRange);
+          const text = this.linkRange.getText();
           if (!text) {
             return
           }

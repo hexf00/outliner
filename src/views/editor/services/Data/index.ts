@@ -31,35 +31,77 @@ export default class Data {
   }
 
   /** 操作数据，并返回新索引 */
-  updateByRange (range: IDataRange, nodes: IAtom[]): number[] {
+  updateByRange (range: IDataRange, nodes: IAtom[]): IDataRange {
     console.log('updateRange', range.startIndex, range.endIndex)
-    // this.data
-    const startNode = this.data[range.startIndex]
-    const endNode = this.data[range.endIndex]
 
-    const leftNode = startNode ? { text: startNode.text.slice(0, range.startOffset - 2) } : null
-    const rightNode = endNode ? { text: endNode.text.slice(range.endOffset + 2) } : null
+    const data = this.data
+
+
+    // this.data
+    const startNode = data[range.startIndex]
+    const endNode = data[range.endIndex]
+
+    const leftNode = startNode ? { text: startNode.text.slice(0, range.startOffset) } : null
+    const rightNode = endNode ? { text: endNode.text.slice(range.endOffset) } : null
+
+
+
+    const left: IAtom[] = [...data.slice(0, range.startIndex), ...(leftNode?.text ? [leftNode] : [])]
+    const right: IAtom[] = [...(rightNode?.text ? [rightNode] : []), ...data.slice(range.endIndex + 1)]
+    const center = nodes
 
     console.log(leftNode, rightNode)
 
-    const left = this.data.slice(0, range.startIndex)
-    const right = this.data.slice(range.endIndex + 1)
+    //判断首尾是否需要合并
+    const leftLast = left.slice(-1)[0]
+    const rightFirst = right[0]
 
-    const data = [
+    const centerLast = center.slice(-1)[0]
+    const centerFirst = center[0]
+
+    if (leftLast && !leftLast.type && !centerFirst.type) {
+      centerFirst.text = leftLast.text + centerFirst.text
+      left.pop()
+    }
+
+
+    if (rightFirst && !rightFirst.type && !centerLast.type) {
+      centerLast.text = centerLast.text + rightFirst.text
+      right.shift()
+    }
+
+    const newData = [
       ...left,
-      ...(leftNode?.text ? [leftNode] : []),
-      ...nodes,
-      ...(rightNode?.text ? [rightNode] : []),
+      ...center,
       ...right
     ]
 
-    this.setData(data)
+    this.setData(newData)
 
     // 新节点的索引
-    const newIndex = left.length + (leftNode ? 1 : 0) + 1
 
-    // TODO: 新节点的内容索引
-    return [newIndex]
+    let endIndex: number
+    let endOffset: number
+
+
+    // 原则：基于能不能编辑来决定如何展示
+    if (centerLast.type) {
+      // 不可编辑，索引变成顶级
+      endIndex = left.length + center.length
+      endOffset = 0
+    } else {
+      // 可编辑，索引变成内部
+      endIndex = left.length + center.length - 1
+      endOffset = centerLast.text.length - (rightFirst?.text.length || 0)
+    }
+
+    return {
+      endIndex,
+      endOffset,
+      //TODO:暂时没用到，如果用到可以进一步实现
+      startIndex: endIndex,
+      startOffset: endOffset,
+    }
   }
 
   getData () {

@@ -7,6 +7,7 @@ import { splitOffset } from '../../../utils/string/splitOffset';
 import Data from '../services/Data';
 import El from '../services/El';
 import LinkMenu from '../services/LinkMenu';
+import DomRange from '../services/range/dom';
 import LinkRange from '../services/range/link';
 import Ranger from '../services/Ranger';
 import { IAtom, IEditor } from './index';
@@ -16,6 +17,9 @@ export class EditorService implements IEditor {
   @Inject(El) elManger !: El
   @Inject(Data) _data !: Data
   @Inject(Ranger) ranger !: Ranger
+
+  // 需要在此初始化，测试用
+  @Inject(DomRange) domRange!: DomRange
 
   @Inject(LinkRange) linkRange !: LinkRange
   @Inject(LinkMenu) linkMenu!: LinkMenu
@@ -80,20 +84,36 @@ export class EditorService implements IEditor {
       e.preventDefault()
 
     } else if (el === startContainer /** 容器插入 */ && e.data) {
-      // 说明会创建一个的新的textNode
-      // 输入第一个字符，阻止默认行为，会改变dom元素，导致渲染效果异常
+      // 说明:
+      // 浏览器默认行为是 在输入第一个字符后，会创建一个的新的textNode
+      // 需要 阻止默认行为
+      // 由于浏览器对 dom元素的变更，会导致Vue的diff机制异常，渲染异常
       // 或者光标在顶级
       e.stopPropagation()
       e.preventDefault()
 
       //第一个被插入的[,也需要补全]
-      this.ranger.updateByRange({
+
+      const curr = {
         startIndex: startOffset,
         startOffset: 0,
         endIndex: startOffset,
         endOffset: 0
-      }, [{ text: e.data === '[' ? '[]' : e.data }])
+      }
 
+      if (e.data === '[') {
+        const newRange = this._data.updateByRange(curr, [{ text: '[]' }])
+        // 说明：光标置于[[]]中间
+        this.domRange.setByDataRange({
+          ...newRange,
+          startOffset: newRange.endOffset - 1,
+          endOffset: newRange.endOffset - 1
+        })
+
+      } else {
+        const newRange = this._data.updateByRange(curr, [{ text: e.data }])
+        this.domRange.setByDataRange(newRange)
+      }
     } else if (e.data === '[') {
       //1. 未选中时，自动补全]
       //2. 选中时，自动不全]
@@ -127,6 +147,9 @@ export class EditorService implements IEditor {
       //删除字符时，如果是左括号，则删除右括号
 
       const { startContainer, startOffset, endContainer, endOffset } = window.getSelection()!.getRangeAt(0)
+
+      // TODO: 依然需要重新实现删除逻辑
+      console.log('deleteContentBackward', window.getSelection()!.getRangeAt(0))
       // 如果是单个字符
       if (this.isRoot(startContainer)) {
         //删除了link
@@ -306,9 +329,9 @@ export class EditorService implements IEditor {
     //配置双链选区
     this.linkRange.setData({
       startIndex: leftIndex,
-      startOffset: leftOffset,
+      startOffset: leftOffset - 2,
       endIndex: rightIndex,
-      endOffset: rightOffset
+      endOffset: rightOffset + 2
     })
     // 展示菜单
     this.linkMenu.openContextMenu()
