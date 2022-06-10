@@ -1,0 +1,8 @@
+.box {
+  display: flex;
+  gap: 10px;
+  .list {
+    width: 100px;
+    border: 1px solid #ddd;
+  }
+}

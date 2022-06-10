@@ -18,6 +18,7 @@
     "idb-keyval": "^6.1.0",
     "ioc-di": "github:hexf00/ioc-di",
     "jspdf": "^2.5.1",
+    "jsplumb": "^2.15.6",
     "sass": "^1.49.10",
     "tslib": "^2.4.0",
     "vue": "^2.6.14",

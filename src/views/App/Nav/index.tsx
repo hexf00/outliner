@@ -27,6 +27,7 @@ export default class Nav extends Vue {
             <RouteLink to={{ name: 'editor' }}>富文本编辑器</RouteLink>
             <RouteLink to={{ name: 'iframe' }}>iframe测试</RouteLink>
             <RouteLink to={{ name: 'images' }}>images(裁剪、缩放、ocr)</RouteLink>
+            <RouteLink to={{ name: 'jsplumb' }}>jsplumb 拖拽映射列表</RouteLink>
           </div>
         </div>
       )
