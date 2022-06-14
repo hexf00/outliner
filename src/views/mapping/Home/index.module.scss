@@ -1,0 +1,58 @@
+.box {
+  display: flex;
+  gap: 30px;
+  position: relative;
+
+  .list {
+    width: 240px;
+    border: 1px solid #ddd;
+    height: 300px;
+    overflow: auto;
+
+    > div {
+      height: 20px;
+      padding: 5px 0;
+      > div {
+        background-color: #ddd;
+        height: 20px;
+      }
+    }
+  }
+
+  .canvas {
+    position: absolute;
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+
+    :global {
+      path {
+        pointer-events: visiblestroke;
+        cursor: pointer;
+      }
+      circle,
+      rect {
+        fill: #ffa500;
+        stroke: none;
+      }
+      .line {
+        stroke: #ffa500;
+        stroke-width: 2;
+        stroke-dasharray: 6 8;
+      }
+    }
+  }
+}
+
+:global {
+  .drag-active {
+    background-color: #cbeae1 !important;
+  }
+
+  .drag-hover {
+    > div {
+      background-color: #5c96bc !important;
+      color: white;
+    }
+  }
+}

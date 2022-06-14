@@ -35,6 +35,11 @@ export const routers = [
     name: 'jsplumb',
     component: () => import("../views/jsplumb/Home"),
     Service: () => import("../views/jsplumb/Home/service"),
+  },
+  {
+    name: 'mapping',
+    component: () => import("../views/mapping/Home"),
+    Service: () => import("../views/mapping/Home/service"),
   }
 ] as const
 

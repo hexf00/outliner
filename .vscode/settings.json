@@ -1,6 +1,13 @@
 {
   "cSpell.words": [
     "endregion",
-    "gityoog"
-  ]
+    "gityoog",
+    "visiblestroke"
+  ],
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
 }
