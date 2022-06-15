@@ -1,6 +1,7 @@
 import Callback from '@/services/Callback';
-import { Inject, Service } from 'ioc-di';
+import { Concat, Inject, Service } from 'ioc-di';
 import Drag from '../../services/Drag';
+import Sort from '../../services/Sort';
 import { IRect, ISize } from "../../types";
 
 
@@ -11,6 +12,12 @@ export default class ListService<T = string>  {
   data: T[] = []
 
   onSizeChangeCallbacks = new Callback()
+
+  sort = Concat(this, new Sort())
+
+  constructor () {
+    this.sort.setList(this as any)
+  }
 
   itemSize: ISize = {
     width: 10,

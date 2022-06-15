@@ -43,15 +43,21 @@ export const drop: DirectiveOptions = {
 
       if (value) {
         // 与drag类型评判才添加对应的class
-        if (value.class && e.dataTransfer?.types.includes(value.class)) {
-          el.classList.add(value.class)
+        if (value.class) {
+          const classNames = !Array.isArray(value.class) ? [value.class] : value.class
+          classNames.forEach(className => {
+            if (e.dataTransfer?.types.includes(className)) {
+              el.classList.add(className)
+            }
+          })
         }
       }
     }
     const removeClass = () => {
       el.classList.remove('drag-hover')
       if (value) {
-        value.class && el.classList.remove(value.class)
+        const classNames = !Array.isArray(value.class) ? [value.class] : value.class
+        classNames.forEach(className => el.classList.remove(className))
       }
     }
 

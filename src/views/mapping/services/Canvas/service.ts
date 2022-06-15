@@ -23,6 +23,23 @@ export default class CanvasService implements IView {
     this.rerender()
   }
 
+  // 改变排序后需要重新计算
+  replaceIndex (oldIndex, newIndex) {
+    this.paths.forEach(path => {
+      let target
+      if (path.target === oldIndex) {
+        target = newIndex
+      } else if (path.target === newIndex) {
+        target = oldIndex
+      }
+
+      if (target !== undefined) {
+        // 更新位置
+        path.setData({ source: path.source, target })
+      }
+    })
+  }
+
   rerender () {
     this.paths.forEach(path => {
       path.calc()

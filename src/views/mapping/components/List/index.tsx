@@ -47,8 +47,8 @@ export default class List extends Vue {
     if (this.service.isSource) {
       directives.push({ name: 'drag', value: { class: 'mapping' } })
     }
-    if (this.service.isTarget) {
-      directives.push({ name: 'drop', value: { class: 'mapping' } })
+    if (this.service.isTarget || this.service.sort) {
+      directives.push({ name: 'drop', value: { class: ['mapping', 'sort'] } })
     }
 
     return <div onScroll={(e) => {
@@ -70,11 +70,26 @@ export default class List extends Vue {
               },
               drop: (e: DragEvent) => {
                 this.service.isTarget && this.service.drag.drop(e, it)
+              },
+              dragover: (e: DragEvent) => {
+                this.service.sort && this.service.sort.move(e, it)
               }
             }}>
 
             <div>
-              <span v-drag={{ class: 'sort' }}>sort</span>
+              <span v-drag={{ class: 'sort' }}
+                ondragstart={(e: DragEvent) => {
+                  this.service.sort && this.service.sort.start(e, it)
+                }}
+                ondrag={(e: DragEvent) => {
+                  // 说明：阻止父dom的拖拽事件，严谨一点
+                  e.stopPropagation()
+                }}
+                ondragend={(e: DragEvent) => {
+                  this.service.sort && this.service.sort.end(e)
+                  e.stopPropagation()
+                }}
+              >sort</span>
               {it}
               <input type="text" />
             </div>

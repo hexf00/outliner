@@ -52,4 +52,7 @@ export default class Drag {
     this.mapping.addEdge({ source: this.source, target })
   }
 
+  remove () {
+    throw new Error("Method not implemented.")
+  }
 }
