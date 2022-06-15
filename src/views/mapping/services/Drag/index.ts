@@ -45,6 +45,7 @@ export default class Drag {
   }
 
   drop (e: DragEvent, target) {
+    if (this.isDrag === false) return
     console.log(e, e.dataTransfer!.getData('obj'))
 
     console.log(this.source, target)

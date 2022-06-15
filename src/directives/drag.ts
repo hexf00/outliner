@@ -5,7 +5,9 @@ export const drag: DirectiveOptions = {
     el.draggable = true
     el.ondragstart = e => {
       // 拖拽物的标识
-      e.dataTransfer!.setData('obj', value.name)
+      if (value && value) {
+        e.dataTransfer!.setData('obj', value.name)
+      }
     }
   }
 }

@@ -7,6 +7,11 @@ export interface IView {
   setPos (pos: IRect): void
   setItemSize (size: ISize): void
   setScrollTop (number: number): void
+  /** 来源可以触发拖拽 */
+  isSource: boolean
+  /** 目标可以释放拖拽 */
+  isTarget: boolean
+
   drag: Drag
 }
 
@@ -34,26 +39,32 @@ export default class List extends Vue {
 
   render () {
 
-    const directives = []
+    const directives: any[] = []
+
+    if (this.service.isSource) {
+      directives.push({ name: 'drag' })
+    }
+    if (this.service.isTarget) {
+      directives.push({ name: 'drop' })
+    }
+
     return <div onScroll={(e) => {
       this.service.setScrollTop(e.target.scrollTop)
     }}>
       {
         this.service.data.map((it, index) => (
-          <div key={index} v-drop
-            directives={directives}
+          <div key={index}
+            {...{ directives }}
             on={{
-              dragstart: (e: DragEvent) => this.service.drag.start(e, it),
-              drag: (e: DragEvent) => this.service.drag.move(e),
-              dragend: (e: DragEvent) => this.service.drag.end(e),
-              drop: (e: DragEvent) => this.service.drag.drop(e, it)
+              dragstart: (e: DragEvent) => this.service.isSource && this.service.drag.start(e, it),
+              drag: (e: DragEvent) => this.service.isSource && this.service.drag.move(e),
+              dragend: (e: DragEvent) => this.service.isSource && this.service.drag.end(e),
+              drop: (e: DragEvent) => this.service.isTarget && this.service.drag.drop(e, it)
             }}>
 
             <div>
-              <span v-drag={{ name: it }} >o</span>
               {it}
               <input type="text" />
-              <span v-drag={{ name: it }} >o</span>
             </div>
           </div>
         ))

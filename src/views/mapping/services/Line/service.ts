@@ -20,6 +20,21 @@ export default class LineService implements IView {
   }
 
 
+  remove () {
+    // const source = this.mapping.source?.data[this.source]
+    // const target = this.mapping.target?.data[this.target]
+
+    const index = this.canvas.paths.indexOf(this)
+
+    //.findIndex(it => (it.source === source && it.target === target))
+    this.canvas.paths.splice(index, 1)
+
+    // if (!source || !target) {
+    //   throw Error('线段数据异常')
+    // }
+    // this.mapping.remove({ source, target })
+  }
+
   getY (index: number, list: { pos: IRect, itemSize: ISize, scrollTop: number }): number {
     const { y: oy, height: maxHeight } = list.pos
     const { height } = list.itemSize

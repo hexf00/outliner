@@ -26,6 +26,9 @@ export default class ListService<T = string>  {
 
   scrollTop = 0
 
+  isSource = false
+
+  isTarget = false
 
   setScrollTop (top: number) {
     this.scrollTop = top

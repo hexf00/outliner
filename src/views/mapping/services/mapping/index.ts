@@ -14,6 +14,7 @@ export default class Mapping {
 
   setSource (source: ListService) {
     this.source = source
+    this.source.isSource = true
 
     this.source.onSizeChange(() => {
       this.canvas.rerender()
@@ -22,7 +23,7 @@ export default class Mapping {
 
   setTarget (target: ListService) {
     this.target = target
-
+    this.target.isTarget = true
 
     this.target.onSizeChange(() => {
       this.canvas.rerender()
@@ -42,6 +43,11 @@ export default class Mapping {
 
     // console.log(sourceIndex, targetIndex)
 
+  }
+
+  remove ({ source, target }: { source: any, target: any }) {
+    const index = this.canvas.paths.findIndex(it => (it.source === source && it.target === target))
+    this.canvas.paths.splice(index, 1)
   }
 
 }

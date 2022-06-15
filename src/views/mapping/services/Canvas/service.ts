@@ -1,4 +1,4 @@
-import { Inject, InjectRef, Service } from 'ioc-di';
+import { InjectRef, Service } from 'ioc-di';
 
 import { IView } from '../../components/Canvas';
 import { IRect } from '../../types';
