@@ -3,11 +3,11 @@ import { InjectRef, Service } from 'ioc-di';
 import { IView } from '../../components/Canvas';
 import { IRect } from '../../types';
 import Drag from '../Drag';
-import LineService from '../Line/service';
+import PathService from '../Path/service';
 
 @Service()
 export default class CanvasService implements IView {
-  paths: LineService[] = []
+  paths: PathService[] = []
   @InjectRef(() => Drag) tip !: Drag
 
   pos: IRect = {

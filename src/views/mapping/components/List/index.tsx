@@ -57,7 +57,7 @@ export default class List extends Vue {
     return <div onScroll={(e) => { this.service.setScrollTop(e.target.scrollTop) }}>
       {
         this.service.data.map((it, index) => (
-          <div key={index}
+          <div key={it}
             {...{ directives }}
             on={{
               dragstart: (e: DragEvent) => {

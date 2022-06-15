@@ -1,7 +1,7 @@
 import { Concat, Inject, Service } from "ioc-di";
 import ListService from "../../components/List/service";
 import CanvasService from "../Canvas/service";
-import LineService from "../Line/service";
+import PathService from "../Path/service";
 
 @Service()
 export default class Mapping {
@@ -37,7 +37,7 @@ export default class Mapping {
     const targetIndex = this.target.getIndex(target)
 
 
-    const line = Concat(this, new LineService());
+    const line = Concat(this, new PathService());
     line.setData({ source: sourceIndex, target: targetIndex })
     this.canvas.paths.push(line)
 

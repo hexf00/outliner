@@ -1,6 +1,6 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { IRect } from '../../types'
-import Path, * as NPath from '../Line'
+import Path, * as NPath from '../Path'
 
 export interface IView {
   paths: NPath.IView[]
