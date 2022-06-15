@@ -1,5 +1,6 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import Drag from '../../services/Drag'
+import Sort from '../../services/Sort'
 import { IRect, ISize } from '../../types'
 
 export interface IView {
@@ -13,6 +14,8 @@ export interface IView {
   isTarget: boolean
 
   drag: Drag
+
+  sort?: Sort
 }
 
 @Component
@@ -42,10 +45,10 @@ export default class List extends Vue {
     const directives: any[] = []
 
     if (this.service.isSource) {
-      directives.push({ name: 'drag' })
+      directives.push({ name: 'drag', value: { class: 'mapping' } })
     }
     if (this.service.isTarget) {
-      directives.push({ name: 'drop' })
+      directives.push({ name: 'drop', value: { class: 'mapping' } })
     }
 
     return <div onScroll={(e) => {
@@ -56,13 +59,22 @@ export default class List extends Vue {
           <div key={index}
             {...{ directives }}
             on={{
-              dragstart: (e: DragEvent) => this.service.isSource && this.service.drag.start(e, it),
-              drag: (e: DragEvent) => this.service.isSource && this.service.drag.move(e),
-              dragend: (e: DragEvent) => this.service.isSource && this.service.drag.end(e),
-              drop: (e: DragEvent) => this.service.isTarget && this.service.drag.drop(e, it)
+              dragstart: (e: DragEvent) => {
+                this.service.isSource && this.service.drag.start(e, it)
+              },
+              drag: (e: DragEvent) => {
+                this.service.isSource && this.service.drag.move(e)
+              },
+              dragend: (e: DragEvent) => {
+                this.service.isSource && this.service.drag.end(e)
+              },
+              drop: (e: DragEvent) => {
+                this.service.isTarget && this.service.drag.drop(e, it)
+              }
             }}>
 
             <div>
+              <span v-drag={{ class: 'sort' }}>sort</span>
               {it}
               <input type="text" />
             </div>

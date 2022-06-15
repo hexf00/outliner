@@ -32,13 +32,13 @@
       }
       circle,
       rect {
-        fill: #ffa500;
+        fill: #00b9a8;
         stroke: none;
       }
       .line {
-        stroke: #ffa500;
+        stroke: #00b9a8;
         stroke-width: 2;
-        stroke-dasharray: 6 8;
+        stroke-dasharray: 12 8;
       }
     }
   }
@@ -46,10 +46,12 @@
 
 :global {
   .drag-active {
-    background-color: #cbeae1 !important;
+    > div {
+      background-color: #cbeae1 !important;
+    }
   }
 
-  .drag-hover {
+  .drag-hover.mapping {
     > div {
       background-color: #5c96bc !important;
       color: white;
