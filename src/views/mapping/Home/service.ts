@@ -31,6 +31,7 @@ export default class HomeService {
 
     this.left.setData(upper)
     this.right.setData(lower)
+    this.right.enableSort()
 
     this.mapping.setSource(this.left)
     this.mapping.setTarget(this.right)

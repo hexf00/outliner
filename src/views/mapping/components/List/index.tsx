@@ -41,19 +41,20 @@ export default class List extends Vue {
   }
 
   render () {
+    const service = this.service
+    const { sort } = service
 
     const directives: any[] = []
 
     if (this.service.isSource) {
       directives.push({ name: 'drag', value: { class: 'mapping' } })
     }
-    if (this.service.isTarget || this.service.sort) {
+    if (this.service.isTarget || sort) {
       directives.push({ name: 'drop', value: { class: ['mapping', 'sort'] } })
     }
 
-    return <div onScroll={(e) => {
-      this.service.setScrollTop(e.target.scrollTop)
-    }}>
+
+    return <div onScroll={(e) => { this.service.setScrollTop(e.target.scrollTop) }}>
       {
         this.service.data.map((it, index) => (
           <div key={index}
@@ -72,24 +73,18 @@ export default class List extends Vue {
                 this.service.isTarget && this.service.drag.drop(e, it)
               },
               dragover: (e: DragEvent) => {
-                this.service.sort && this.service.sort.move(e, it)
+                sort && sort.move(e, it)
               }
             }}>
 
             <div>
-              <span v-drag={{ class: 'sort' }}
-                ondragstart={(e: DragEvent) => {
-                  this.service.sort && this.service.sort.start(e, it)
-                }}
-                ondrag={(e: DragEvent) => {
-                  // 说明：阻止父dom的拖拽事件，严谨一点
-                  e.stopPropagation()
-                }}
-                ondragend={(e: DragEvent) => {
-                  this.service.sort && this.service.sort.end(e)
-                  e.stopPropagation()
-                }}
-              >sort</span>
+              {sort && <span v-drag={{ class: 'sort' }}
+                ondragstart={(e: DragEvent) => sort.start(e, it)}
+                // 说明：阻止父dom的拖拽事件，严谨一点
+                ondrag={(e: DragEvent) => e.stopPropagation()}
+                ondragend={(e: DragEvent) => { sort && sort.end(e); e.stopPropagation() }}
+              >sort</span>}
+
               {it}
               <input type="text" />
             </div>

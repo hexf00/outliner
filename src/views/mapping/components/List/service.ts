@@ -13,10 +13,10 @@ export default class ListService<T = string>  {
 
   onSizeChangeCallbacks = new Callback()
 
-  sort = Concat(this, new Sort())
+  sort: Sort | undefined
 
   constructor () {
-    this.sort.setList(this as any)
+
   }
 
   itemSize: ISize = {
@@ -62,5 +62,12 @@ export default class ListService<T = string>  {
 
   getIndex (item: T): number {
     return this.data.indexOf(item)
+  }
+
+  enableSort () {
+    if (!this.sort) {
+      this.sort = Concat(this, new Sort())
+      this.sort.setList(this as any)
+    }
   }
 }

@@ -1,7 +1,5 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import List from '../components/List'
 import HomeService from './service'
-import $ from './index.module.scss'
 import './index.scss'
 
 
