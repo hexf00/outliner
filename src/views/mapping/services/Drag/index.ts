@@ -2,6 +2,7 @@ import { Inject, InjectRef, Service } from "ioc-di"
 import CanvasService from "../Canvas/service"
 import Mapping from "../mapping"
 
+type IItem = unknown
 
 @Service()
 export default class Drag {
@@ -22,8 +23,8 @@ export default class Drag {
   }
   isDrag = false
 
-  source: any = null
-  target: any = null
+  source: IItem | null = null
+  target: IItem | null = null
 
 
   getY (y: number) {
@@ -31,7 +32,7 @@ export default class Drag {
     return y - oy
   }
 
-  start (e: DragEvent, source: any) {
+  start (e: DragEvent, source: unknown) {
     this.isDrag = true
     this.x1 = e.clientX
     this.y1 = this.getY(e.clientY)
@@ -57,11 +58,9 @@ export default class Drag {
     this.isDrag = false
   }
 
+  /** 拖拽结束 */
   drop (e: DragEvent, target) {
     if (this.isDrag === false) return
-    console.log(e, e.dataTransfer!.getData('obj'))
-
-    console.log(this.source, target)
     this.mapping.addEdge({ source: this.source, target })
   }
 

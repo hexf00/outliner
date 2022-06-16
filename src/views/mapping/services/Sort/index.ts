@@ -1,7 +1,15 @@
-import { Inject, Service } from "ioc-di"
-import ListService from "../../components/List/service"
-import CanvasService from "../Canvas/service"
+import { Inject, Service } from 'ioc-di';
 
+import CanvasService from '../Canvas/service';
+
+type IItem = unknown
+interface IList {
+  data: IItem[];
+  isSource: boolean;
+  isTarget: boolean;
+  getIndex (item: IItem): number;
+  onSizeChange (fn: () => void): void;
+}
 
 @Service()
 export default class Sort {
@@ -13,9 +21,9 @@ export default class Sort {
   x2: number = 10
   y2: number = 10
 
-  list: ListService | null = null
+  list: IList | null = null
 
-  setList (list: ListService) {
+  setList (list: IList) {
     this.list = list
   }
 
@@ -25,17 +33,17 @@ export default class Sort {
   }
   isSort = false
 
-  source: any = null
-  target: any = null
+  source: IItem = null
+  target: IItem = null
 
-  start (e: DragEvent, source: any) {
+  start (e: DragEvent, source: IItem) {
     this.isSort = true
     this.x1 = e.clientX
     this.y1 = e.clientY
     this.source = source
   }
 
-  move (e: DragEvent, target: any) {
+  move (e: DragEvent, target: IItem) {
     if (!this.isSort) return
 
     if (e.dataTransfer?.dropEffect === 'none' && e.clientX === 0 && e.clientY === 0) {

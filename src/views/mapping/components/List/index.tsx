@@ -42,7 +42,7 @@ export default class List extends Vue {
     const service = this.service
     const { sort } = service
 
-    const directives: any[] = []
+    const directives: Vue.VNodeDirective[] = []
 
     if (this.service.isSource) {
       directives.push({ name: 'drag', value: { class: 'mapping' } })

@@ -1,5 +1,5 @@
 import Callback from '@/services/Callback';
-import { Concat, Inject, Service } from 'ioc-di';
+import { Concat, Destroy, Inject, Service } from 'ioc-di';
 import Drag from '../../services/Drag';
 import Sort from '../../services/Sort';
 import { IRect, ISize } from "../../types";
@@ -14,10 +14,6 @@ export default class ListService<T = string>  {
   onSizeChangeCallbacks = new Callback()
 
   sort: Sort | undefined
-
-  constructor () {
-
-  }
 
   itemSize: ISize = {
     width: 10,
@@ -67,7 +63,12 @@ export default class ListService<T = string>  {
   enableSort () {
     if (!this.sort) {
       this.sort = Concat(this, new Sort())
-      this.sort.setList(this as any)
+      this.sort.setList(this)
     }
+  }
+
+  @Destroy
+  destroy () {
+    this.onSizeChangeCallbacks.destroy()
   }
 }
