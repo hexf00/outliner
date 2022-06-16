@@ -1,10 +1,13 @@
-import { Inject, Service } from "ioc-di"
+import { Inject, InjectRef, Service } from "ioc-di"
+import CanvasService from "../Canvas/service"
 import Mapping from "../mapping"
 
 
 @Service()
 export default class Drag {
   @Inject(Mapping) mapping!: Mapping
+  @InjectRef(() => CanvasService) canvas !: CanvasService
+
 
   x1: number = 0
   y1: number = 0
@@ -24,6 +27,8 @@ export default class Drag {
     this.isDrag = true
     this.x1 = e.clientX
     this.y1 = e.clientY
+    this.x2 = e.clientX
+    this.y2 = e.clientY
     this.source = source
   }
 
