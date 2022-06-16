@@ -6,6 +6,7 @@ export interface IView {
   paths: NPath.IView[]
   tip: NPath.IView & { isShow: boolean }
   setPos (pos: IRect): void
+  setEl (el: Element): void
 }
 
 @Component
@@ -17,11 +18,12 @@ export default class Canvas extends Vue {
 
   mounted () {
     this.service.setPos(this.$el.getBoundingClientRect())
+    this.service.setEl(this.$el)
   }
 
   render () {
     return <svg version="1.1" xmlns="http://www.w3.org/2000/svg">
-      {this.service.paths.map((it, index) => <Path service={it} />)}
+      {this.service.paths.map((it, index) => <Path key={index} service={it} />)}
       <Path v-show={this.service.tip.isShow} service={this.service.tip} />
     </svg >
   }

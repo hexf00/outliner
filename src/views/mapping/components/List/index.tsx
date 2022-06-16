@@ -27,17 +27,15 @@ export default class List extends Vue {
 
   mounted () {
 
-    // console.log(this.$el, this.$el.clientHeight, this.$el.scrollTop)
-    // console.log(this.$el, this.$el.clientHeight, this.$el.scrollTop)
 
     this.service.setPos(this.$el.getBoundingClientRect())
+
+    /** 说明：如果没有第一个元素，则该方式是有问题的，暂时写死 */
     this.service.setItemSize({
       // ...this.$el.children[0]?.getBoundingClientRect(),
       width: 223,
       height: 30
     })
-
-    // temp1.childNodes[0].clientWidth
   }
 
   render () {
@@ -86,7 +84,7 @@ export default class List extends Vue {
               >sort</span>}
 
               {it}
-              <input type="text" />
+              {/* <input type="text" /> */}
             </div>
           </div>
         ))

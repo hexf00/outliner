@@ -10,11 +10,23 @@ export default class CanvasService implements IView {
   paths: PathService[] = []
   @InjectRef(() => Drag) tip !: Drag
 
+  el: Element | null = null
+
+  setEl (el: Element) {
+    this.el = el
+  }
+
   pos: IRect = {
     x: 0,
     y: 0,
     width: 0,
     height: 0,
+  }
+
+  /** 要想渲染 鼠标位置的偏移，需要获取实时数据 */
+  getPosRealTime () {
+    if (!this.el) throw Error('canvas el is null')
+    return this.el.getBoundingClientRect()
   }
 
   setPos (pos: IRect) {

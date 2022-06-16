@@ -23,12 +23,18 @@ export default class Drag {
   source: any = null
   target: any = null
 
+
+  getY (y: number) {
+    const { y: oy } = this.canvas.getPosRealTime()
+    return y - oy
+  }
+
   start (e: DragEvent, source: any) {
     this.isDrag = true
     this.x1 = e.clientX
-    this.y1 = e.clientY
+    this.y1 = this.getY(e.clientY)
     this.x2 = e.clientX
-    this.y2 = e.clientY
+    this.y2 = this.getY(e.clientY)
     this.source = source
   }
 
@@ -41,7 +47,7 @@ export default class Drag {
     }
 
     this.x2 = e.clientX
-    this.y2 = e.clientY
+    this.y2 = this.getY(e.clientY)
   }
 
   /** 结束拖拽 */
