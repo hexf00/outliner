@@ -1,12 +1,14 @@
-import { Inject, InjectRef, Service } from "ioc-di"
-import CanvasService from "../Canvas/service"
-import Mapping from "../mapping"
+import { InjectRef, Service } from 'ioc-di';
+
+import { IView } from '../../components/Path';
+import CanvasService from '../Canvas/service';
+import Mapping from '../mapping';
 
 type IItem = unknown
 
 @Service()
-export default class Drag {
-  @Inject(Mapping) mapping!: Mapping
+export default class Drag implements IView {
+  @InjectRef(() => Mapping) mapping!: Mapping
   @InjectRef(() => CanvasService) canvas !: CanvasService
 
 
@@ -15,6 +17,7 @@ export default class Drag {
   x2: number = 10
   y2: number = 10
 
+  isEnable = true
   isSeeSource = true
   isSeeTarget = true
 
@@ -66,5 +69,13 @@ export default class Drag {
 
   remove () {
     throw new Error("Method not implemented.")
+  }
+
+  enable () {
+    this.isEnable = true
+  }
+  disable () {
+    this.isEnable = false
+    console.log(this.isEnable)
   }
 }

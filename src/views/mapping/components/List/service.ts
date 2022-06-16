@@ -67,6 +67,13 @@ export default class ListService<T = string>  {
     }
   }
 
+  disableSort () {
+    if (this.sort) {
+      this.sort.destroy()
+      this.sort = undefined
+    }
+  }
+
   @Destroy
   destroy () {
     this.onSizeChangeCallbacks.destroy()

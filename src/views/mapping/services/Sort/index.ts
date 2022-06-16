@@ -1,4 +1,4 @@
-import { Inject, Service } from 'ioc-di';
+import { Destroy, Inject, Service } from 'ioc-di';
 
 import CanvasService from '../Canvas/service';
 
@@ -66,6 +66,8 @@ export default class Sort {
     this.isSort = false
   }
 
+  @Destroy
+  destroy () {
 
-
+  }
 }

@@ -30,6 +30,11 @@ export const drag: DirectiveOptions = {
     el.ondragend = e => {
       removeClass(e)
     }
+  },
+  unbind (el) {
+    el.draggable = false
+    el.ondragstart = null
+    el.ondragend = null
   }
 }
 
@@ -79,5 +84,12 @@ export const drop: DirectiveOptions = {
       e.preventDefault()
       removeClass()
     }
+  },
+  unbind (el) {
+    el.removeAttribute('dropable')
+    el.ondragover = null
+    el.ondragenter = null
+    el.ondragleave = null
+    el.ondrop = null
   }
 }

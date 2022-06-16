@@ -13,7 +13,6 @@ export default class HomeService {
   right = Concat(this, new ListService())
 
   @Inject(Mapping) mapping!: Mapping
-
   @Inject(CanvasService) canvas !: CanvasService
 
   constructor () {
@@ -35,21 +34,18 @@ export default class HomeService {
 
     this.mapping.setSource(this.left)
     this.mapping.setTarget(this.right)
-
-    this.mapping.addEdge({
-      source: this.left.data[0],
-      target: this.right.data[5],
-    })
-
-
-    this.mapping.addEdge({
-      source: this.left.data[3],
-      target: this.right.data[6],
-    })
-    this.mapping.addEdge({
-      source: this.left.data[1],
-      target: this.right.data[25],
-    })
+    this.mapping.setData([
+      {
+        source: this.left.data[0],
+        target: this.right.data[5],
+      }, {
+        source: this.left.data[3],
+        target: this.right.data[6],
+      }, {
+        source: this.left.data[1],
+        target: this.right.data[25],
+      }
+    ])
   }
 
 
