@@ -30,9 +30,12 @@
         pointer-events: visiblestroke;
         cursor: pointer;
       }
-      circle,
-      rect {
+      circle {
         fill: #00b9a8;
+        stroke: none;
+      }
+      rect {
+        fill: #ddd;
         stroke: none;
       }
       .line {

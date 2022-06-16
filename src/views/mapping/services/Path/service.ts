@@ -13,6 +13,9 @@ export default class PathService implements IView {
   source = 0
   target = 0
 
+  isSeeSource = true
+  isSeeTarget = true
+
   setData ({ source, target }: { source: number, target: number }) {
     this.source = source
     this.target = target
@@ -35,38 +38,41 @@ export default class PathService implements IView {
     // this.mapping.remove({ source, target })
   }
 
-  getY (index: number, list: { pos: IRect, itemSize: ISize, scrollTop: number }): number {
+  getY (index: number, list: { pos: IRect, itemSize: ISize, scrollTop: number }): { y: number, isSee: boolean } {
     const { y: oy, height: maxHeight } = list.pos
     const { height } = list.itemSize
     const scrollTop = list.scrollTop
 
     let y = oy + index * height + height / 2 - scrollTop
+    let isSee = true
     if (y < oy) {
       y = oy
+      isSee = false
     } else if (y > oy + maxHeight) {
       y = oy + maxHeight
+      isSee = false
     }
 
-    return y;
+    return { y, isSee };
   }
 
 
-  getSourcePos (index: number, list: { pos: IRect, itemSize: ISize, scrollTop: number }): IPos {
+  getSourcePos (index: number, list: { pos: IRect, itemSize: ISize, scrollTop: number }): IPos & { isSee: boolean } {
     const { x: ox } = list.pos
     const { width } = list.itemSize
     return {
       x: ox + width,
-      y: this.getY(index, list)
+      ...this.getY(index, list)
     }
   }
 
-  getTargetPos (index: number, list: { pos: IRect, itemSize: ISize, scrollTop: number }): IPos {
+  getTargetPos (index: number, list: { pos: IRect, itemSize: ISize, scrollTop: number }): IPos & { isSee: boolean } {
     const { x } = list.pos
 
 
     return {
       x: x,
-      y: this.getY(index, list)
+      ...this.getY(index, list)
     }
   }
 
@@ -74,14 +80,16 @@ export default class PathService implements IView {
     console.count('calc')
     if (!this.mapping.source || !this.mapping.target) throw new Error("source or target is undefined")
 
-    const { x: x1, y: y1 } = this.getSourcePos(this.source, this.mapping.source)
-    const { x: x2, y: y2 } = this.getTargetPos(this.target, this.mapping.target)
+    const { x: x1, y: y1, isSee: isSeeSource } = this.getSourcePos(this.source, this.mapping.source)
+    const { x: x2, y: y2, isSee: isSeeTarget } = this.getTargetPos(this.target, this.mapping.target)
     const { x, y } = this.canvas.pos
 
     this.x1 = x1 - x
     this.y1 = y1 - y
     this.x2 = x2 - x
     this.y2 = y2 - y
+    this.isSeeSource = isSeeSource
+    this.isSeeTarget = isSeeTarget
   }
 
   x1: number = 0

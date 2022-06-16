@@ -14,6 +14,8 @@ export default class Drag {
   x2: number = 10
   y2: number = 10
 
+  isSeeSource = true
+  isSeeTarget = true
 
   get isShow () {
     return this.isDrag
