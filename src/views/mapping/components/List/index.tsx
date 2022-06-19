@@ -1,7 +1,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import Drag from '../../services/Drag'
 import Sort from '../../services/Sort'
-import { IRect, ISize } from '../../types'
+import { IRect, ISize } from '../../../../types'
 
 export interface IView {
   data: string[]

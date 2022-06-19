@@ -1,7 +1,7 @@
 import { InjectRef, Service } from 'ioc-di';
 
 import { IView } from '../../components/Canvas';
-import { IRect } from '../../types';
+import { IRect } from '../../../../types';
 import Drag from '../Drag';
 import PathService from '../Path/service';
 

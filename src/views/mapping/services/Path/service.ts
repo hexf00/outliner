@@ -1,6 +1,6 @@
 import { InjectRef, Service } from 'ioc-di';
 import { IView } from '../../components/Path';
-import { IPos, IRect, ISize } from '../../types';
+import { IPos, IRect, ISize } from '../../../../types';
 import CanvasService from '../Canvas/service';
 import Mapping from '../mapping';
 

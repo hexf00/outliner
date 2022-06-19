@@ -2,7 +2,7 @@ import Callback from '@/services/Callback';
 import { Concat, Destroy, Inject, Service } from 'ioc-di';
 import Drag from '../../services/Drag';
 import Sort from '../../services/Sort';
-import { IRect, ISize } from "../../types";
+import { IRect, ISize } from "../../../../types";
 
 
 @Service()

@@ -1,6 +1,6 @@
 import { Concat, Inject, InjectRef, Service } from 'ioc-di';
 
-import { IRect, ISize } from '../../types';
+import { IRect, ISize } from '../../../../types';
 import CanvasService from '../Canvas/service';
 import Drag from '../Drag';
 import PathService from '../Path/service';
