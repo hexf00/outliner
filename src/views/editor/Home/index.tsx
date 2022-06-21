@@ -10,10 +10,12 @@ export default class Home extends Vue {
   }
   @Prop() service !: HomeService
   render () {
-    const { editor } = this.service
+    const { editor, looker } = this.service
     return <div>
       <Editor style="width:120px" service={editor} />
       <ContextMenu service={editor.contextMenu} />
+
+      <pre>{JSON.stringify(looker.data)}</pre>
       <pre>{JSON.stringify(editor.data, null, 2)}</pre>
     </div>
   }

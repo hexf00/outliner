@@ -1,10 +1,12 @@
 
 import { Already, Inject, Service } from "ioc-di";
 import { EditorService } from "../Editor/service";
+import RangeLooker from "../services/RangeLooker";
 
 @Service()
 export default class HomeService {
   @Inject(EditorService) editor!: EditorService
+  @Inject(RangeLooker) looker!: RangeLooker
 
   constructor () {
     this.init()
