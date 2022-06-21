@@ -29,6 +29,7 @@ export default class Nav extends Vue {
             <RouteLink to={{ name: 'images' }}>images(裁剪、缩放、ocr)</RouteLink>
             <RouteLink to={{ name: 'jsplumb' }}>jsplumb 拖拽映射列表</RouteLink>
             <RouteLink to={{ name: 'mapping' }}>mapping</RouteLink>
+            <RouteLink to={{ name: 'pos' }}>pos</RouteLink>
           </div>
         </div>
       )

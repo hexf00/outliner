@@ -1,5 +1,4 @@
 import { Concat, Service } from "ioc-di"
-import { IRouteLink } from "../RouteLink"
 
 export interface IRoute {
   name: string,
