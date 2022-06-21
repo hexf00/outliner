@@ -14,14 +14,30 @@ export default class HomeService {
 
   @Already
   init () {
+
+    // const old = [
+    //   { text: "123" },
+    //   { type: "link", text: "tag" },
+    //   // { type: "space", text: "" },
+    //   { type: "link", text: "tag" },
+    //   { text: "456" },
+    //   { type: "link", text: "tag" },
+    //   // { type: "space", text: "" },
+    // ]
+
     this.editor.setData([
-      { text: "123" },
-      { type: "link", text: "tag" },
-      // { type: "space", text: "" },
-      { type: "link", text: "tag" },
-      { text: "456" },
-      { type: "link", text: "tag" },
-      // { type: "space", text: "" },
+      {
+        "text": "1"
+      },
+      // {
+      //   "type": "link",
+      //   "text": "2"
+      // },
+      {
+        "text": "3"
+      }
     ])
+
+
   }
 }

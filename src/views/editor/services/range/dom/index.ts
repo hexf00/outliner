@@ -26,12 +26,20 @@ export default class DomRange {
     // if (el.nodeType === 3/*** 文本节点 */) {
     // }
 
-    return nodeIndexOf(this.elManager.getEl(), el)
+    /** 找到顶级El */
+    let lv0El = el
+
+    while (lv0El.parentNode !== this.elManager.getEl()) {
+      lv0El = lv0El.parentNode!
+    }
+
+    return nodeIndexOf(this.elManager.getEl(), lv0El)
   }
 
 
   /** 将浏览的选区转换为Data的选区 */
   toDataRange (range: IRange): IDataRange {
+    console.log('range', range)
     if (this.isRoot(range.startContainer) && this.isRoot(range.endContainer)) {
       // lv 0
       return {

@@ -1,7 +1,6 @@
 import { Inject, Service } from 'ioc-di';
 import { Vue } from 'vue-property-decorator';
 
-import { nodeIndexOf } from '../../../utils/dom/nodeIndexOf';
 import { insertAt } from '../../../utils/string/insertAt';
 import { splitOffset } from '../../../utils/string/splitOffset';
 import Data from '../services/Data';
@@ -163,7 +162,7 @@ export class EditorService implements IEditor {
         }
 
 
-        const startIndex = nodeIndexOf(el, startContainer)
+        const startIndex = this.domRange.getDataIndex(startContainer)
         if (startIndex === -1) throw Error('未能找到start节点')
         const [before, after] = splitOffset(this.data[startIndex].text, startOffset)
 
@@ -186,13 +185,17 @@ export class EditorService implements IEditor {
           el.dispatchEvent(new Event('input'))
         })
       }
+
+      // 拦截一切删除事件
+      // e.preventDefault()
+      // e.stopPropagation()
     }
   }
 
   /** 获取选区开头、结束在data对应的位置 */
   getSelectionDataIndex ({ startContainer, endContainer }: { startContainer: Node, endContainer: Node }, container: Node) {
-    const startIndex = nodeIndexOf(container, startContainer)
-    const endIndex = nodeIndexOf(container, endContainer)
+    const startIndex = this.domRange.getDataIndex(startContainer)
+    const endIndex = this.domRange.getDataIndex(endContainer)
 
     if (startIndex === -1) {
       console.error('startContainer', startContainer)
@@ -228,6 +231,9 @@ export class EditorService implements IEditor {
     for (let index = 0; index < childNodes.length; index++) {
       const el = childNodes[index]
       if (el.nodeType === 3/** text */) {
+
+        // old
+
         if (el.textContent) {
           result.push({ text: el.textContent })
         }
@@ -237,6 +243,10 @@ export class EditorService implements IEditor {
           result.push({ type: 'link', text: el.textContent || '' })
         } else if (type === 'space') {
           result.push({ type: 'space', text: '' })
+        } else {
+          if (el.textContent) {
+            result.push({ text: el.textContent })
+          }
         }
       }
     }
