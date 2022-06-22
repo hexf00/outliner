@@ -19,44 +19,68 @@ export default class DomRange {
     return el === this.elManager.getEl()
   }
 
-  getDataIndex (el: Node): number {
+  getDataIndex ({ el, offset }: { el: Node, offset: number }): { index: number, offset: number } {
     // TODO: 暂时没有考虑到有样式的文本
     // 说明：对于有样式的文本，方案也是通过style来实现样式。
     // 获取到lv1的索引
     // if (el.nodeType === 3/*** 文本节点 */) {
     // }
 
-    /** 找到顶级El */
-    let lv0El = el
+    if (this.isRoot(el)) {
+      return {
+        index: offset,
+        offset: 0
+      }
+    } else {
 
-    while (lv0El.parentNode !== this.elManager.getEl()) {
-      lv0El = lv0El.parentNode!
+      /** 找到顶级El */
+      let lv0El = el
+
+      while (lv0El.parentNode !== this.elManager.getEl()) {
+        lv0El = lv0El.parentNode!
+      }
+
+      const index = nodeIndexOf(this.elManager.getEl(), lv0El)
+      return {
+        index,
+        offset
+      }
     }
-
-    return nodeIndexOf(this.elManager.getEl(), lv0El)
   }
 
 
   /** 将浏览的选区转换为Data的选区 */
   toDataRange (range: IRange): IDataRange {
     console.log('range', range)
-    if (this.isRoot(range.startContainer) && this.isRoot(range.endContainer)) {
-      // lv 0
-      return {
-        startIndex: range.startOffset,
-        endIndex: 0,
-        startOffset: range.endOffset,
-        endOffset: 0
-      }
-    } else {
-      // lv n
-      return {
-        startIndex: this.getDataIndex(range.startContainer),
-        endIndex: this.getDataIndex(range.endContainer),
-        startOffset: range.startOffset,
-        endOffset: range.endOffset
-      }
+    // if (this.isRoot(range.startContainer) && this.isRoot(range.endContainer)) {
+    //   // lv 0
+    //   return {
+    //     startIndex: range.startOffset,
+    //     startOffset: range.endOffset,
+    //     endIndex: 0,
+    //     endOffset: 0
+    //   }
+    // } else {
+    // lv n
+
+    const { index: startIndex, offset: startOffset } = this.getDataIndex({
+      el: range.startContainer,
+      offset: range.startOffset
+    })
+
+    const { index: endIndex, offset: endOffset } = this.getDataIndex({
+      el: range.endContainer,
+      offset: range.endOffset
+    })
+
+
+    return {
+      startIndex,
+      startOffset,
+      endIndex,
+      endOffset
     }
+    // }
   }
 
   /**

@@ -32,7 +32,7 @@ export default class Data {
 
   /** 操作数据，并返回新索引 */
   updateByRange (range: IDataRange, nodes: IAtom[]): IDataRange {
-    console.log('updateRange', range.startIndex, range.endIndex)
+    console.warn('updateRange', JSON.stringify(range))
 
     const data = this.data
 
@@ -59,15 +59,19 @@ export default class Data {
     const centerLast = center.slice(-1)[0]
     const centerFirst = center[0]
 
-    if (leftLast && !leftLast.type && !centerFirst.type) {
-      centerFirst.text = leftLast.text + centerFirst.text
-      left.pop()
+    if (leftLast && !leftLast.type) {
+      if (centerFirst && !centerFirst.type) {
+        centerFirst.text = leftLast.text + centerFirst.text
+        left.pop()
+      }
     }
 
 
-    if (rightFirst && !rightFirst.type && !centerLast.type) {
-      centerLast.text = centerLast.text + rightFirst.text
-      right.shift()
+    if (rightFirst && !rightFirst.type) {
+      if (centerLast && !centerLast.type) {
+        centerLast.text = centerLast.text + rightFirst.text
+        right.shift()
+      }
     }
 
     const newData = [
@@ -85,14 +89,14 @@ export default class Data {
 
 
     // 原则：基于能不能编辑来决定如何展示
-    if (centerLast.type) {
+    if (centerLast?.type) {
       // 不可编辑，索引变成顶级
       endIndex = left.length + center.length
       endOffset = 0
     } else {
       // 可编辑，索引变成内部
       endIndex = left.length + center.length - 1
-      endOffset = centerLast.text.length - (rightFirst?.text.length || 0)
+      endOffset = (centerLast?.text.length || 0) - (rightFirst?.text.length || 0)
     }
 
     return {
@@ -101,6 +105,33 @@ export default class Data {
       //TODO:暂时没用到，如果用到可以进一步实现
       startIndex: endIndex,
       startOffset: endOffset,
+    }
+  }
+
+  getPrevPos ({ index, offset }: { index: number, offset: number }) {
+    const data = this.data
+
+    if (offset === 0 /** 返回索引在上一个元素 */) {
+      if (index > 0) {
+        const prev = data[index - 1]!
+
+        if (prev.type /** 需要整个删除 */) {
+          return { index: index - 1, offset: 0 }
+        } else {
+          return { index: index - 1, offset: prev.text.length - 1 > 0 ? prev.text.length - 1 : 0 }
+        }
+      } else {
+        // 到顶了
+        return { index: 0, offset: 0 }
+      }
+    } else {
+      const item = data[index]!
+      if (item.type /** 需要整个删除 */) {
+        console.warn('不应该出现这种情况', { index, offset })
+        return { index: index, offset: 0 }
+      } else {
+        return { index, offset: offset - 1 }
+      }
     }
   }
 

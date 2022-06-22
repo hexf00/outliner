@@ -5,4 +5,5 @@ export type IRange = {
   endOffset: number;
   startContainer: Node;
   startOffset: number;
+  collapsed?: boolean
 };

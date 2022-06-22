@@ -1,27 +1,29 @@
-import { Inject, Service } from 'ioc-di';
+import { Concat, Inject, Service } from 'ioc-di';
 import { Vue } from 'vue-property-decorator';
 
 import { insertAt } from '../../../utils/string/insertAt';
-import { splitOffset } from '../../../utils/string/splitOffset';
 import Data from '../services/Data';
 import El from '../services/El';
+import Remove from '../services/handlers/remove';
 import LinkMenu from '../services/LinkMenu';
 import DomRange from '../services/range/dom';
 import LinkRange from '../services/range/link';
-import Ranger from '../services/Ranger';
+import RangeManager from '../services/range/manager';
+import { IRange } from '../types';
+import { IHandler } from '../types/IHandler';
 import { IAtom, IEditor } from './index';
 
 @Service()
 export class EditorService implements IEditor {
   @Inject(El) elManger !: El
   @Inject(Data) _data !: Data
-  @Inject(Ranger) ranger !: Ranger
 
   // 需要在此初始化，测试用
   @Inject(DomRange) domRange!: DomRange
 
   @Inject(LinkRange) linkRange !: LinkRange
   @Inject(LinkMenu) linkMenu!: LinkMenu
+  @Inject(RangeManager) ranger!: RangeManager
 
 
   msg = '富文本编辑器'
@@ -66,8 +68,15 @@ export class EditorService implements IEditor {
     this.contextMenu.hide()
   }
 
+  handlers: IHandler[] = [
+    Concat(this, new Remove())
+  ]
+
   beforeInput (e: InputEvent): void {
     const el = e.target as HTMLElement
+
+    this.ranger.update()
+    this.handlers.forEach(it => it.onBeforeInput(e))
 
     console.log('beforeInput', e)
     const { startContainer, startOffset, } = window.getSelection()!.getRangeAt(0)
@@ -120,14 +129,15 @@ export class EditorService implements IEditor {
       e.stopPropagation()
       e.preventDefault()
 
-      const { startContainer, startOffset, endContainer, endOffset } = window.getSelection()!.getRangeAt(0)
+      const range = window.getSelection()!.getRangeAt(0)
+      const { startContainer, startOffset, endContainer, endOffset } = range
 
       // console.log(startContainer, startOffset, endContainer, endOffset)
 
       // 相同节点，需要加上`[`的字符长度
       const realEndOffset = startContainer === endContainer ? endOffset + 1 : endOffset
 
-      const [startIndex, endIndex] = this.getSelectionDataIndex({ startContainer, endContainer }, el)
+      const [startIndex, endIndex] = this.getSelectionDataIndex(range)
       // 插入左括号
       this.data[startIndex].text = insertAt(this.data[startIndex].text, startOffset, '[')
       // 插入右括号
@@ -140,69 +150,20 @@ export class EditorService implements IEditor {
         )
         el.dispatchEvent(new Event('input'))
       })
-    } else if (e.inputType === 'deleteContentBackward') {
-      // 说明：需要避免交互对dom的改动，比如说删除vue有记录的dom，则vue会按index删除
-
-      //删除字符时，如果是左括号，则删除右括号
-
-      const { startContainer, startOffset, endContainer, endOffset } = window.getSelection()!.getRangeAt(0)
-
-      // TODO: 依然需要重新实现删除逻辑
-      console.log('deleteContentBackward', window.getSelection()!.getRangeAt(0))
-      // 如果是单个字符
-      if (this.isRoot(startContainer)) {
-        //删除了link
-        console.log('删除了link')
-      } else if (startContainer === endContainer && startOffset === endOffset) {
-        //text中删除，有一种情况是text存在，但是是为了删除前面的元素
-        // console.log(startContainer, startOffset)
-
-        if (startOffset === 0 /** 目的是删除上一个元素，让浏览器默认行为处理 */) {
-          return
-        }
-
-
-        const startIndex = this.domRange.getDataIndex(startContainer)
-        if (startIndex === -1) throw Error('未能找到start节点')
-        const [before, after] = splitOffset(this.data[startIndex].text, startOffset)
-
-        e.stopPropagation()
-        e.preventDefault()
-
-        //如果左括号和右括号
-        if (before[before.length - 1] === '[' && after[0] === ']') {
-          this.data[startIndex].text = before.slice(0, before.length - 1) + after.slice(1)
-        } else {
-          //只需要删除前面的字符即可
-          this.data[startIndex].text = before.slice(0, before.length - 1) + after
-        }
-
-        // 渲染后需要更新选取
-        Vue.nextTick(() => {
-          window.getSelection()?.setBaseAndExtent(
-            startContainer!, startOffset - 1, startContainer!, startOffset - 1
-          )
-          el.dispatchEvent(new Event('input'))
-        })
-      }
-
-      // 拦截一切删除事件
-      // e.preventDefault()
-      // e.stopPropagation()
     }
   }
 
   /** 获取选区开头、结束在data对应的位置 */
-  getSelectionDataIndex ({ startContainer, endContainer }: { startContainer: Node, endContainer: Node }, container: Node) {
-    const startIndex = this.domRange.getDataIndex(startContainer)
-    const endIndex = this.domRange.getDataIndex(endContainer)
+  getSelectionDataIndex (range: IRange) {
+    const { index: startIndex } = this.domRange.getDataIndex({ el: range.startContainer, offset: range.startOffset })
+    const { index: endIndex } = this.domRange.getDataIndex({ el: range.endContainer, offset: range.endOffset })
 
     if (startIndex === -1) {
-      console.error('startContainer', startContainer)
+      console.error('startContainer', range)
       throw Error('未能找到start节点')
     }
     if (endIndex === -1) {
-      console.error('endContainer', endContainer)
+      console.error('endContainer', range)
       throw Error('未能找到end节点')
     }
 
@@ -262,13 +223,14 @@ export class EditorService implements IEditor {
   isInLink (): boolean {
 
     // 判断光标是否位于[[]]中
-    const { startContainer, startOffset, endContainer, endOffset } = window.getSelection()!.getRangeAt(0)
+    const range = window.getSelection()!.getRangeAt(0)
+    const { startContainer, startOffset, endOffset } = range
     if (this.isRoot(startContainer)) {
       console.log('startContainer 是 容器')
       return false
     }
 
-    const [startIndex, endIndex] = this.getSelectionDataIndex({ startContainer, endContainer }, this.elManger.getEl())
+    const [startIndex, endIndex] = this.getSelectionDataIndex(range)
     //往左找[[ , 不能有]]
     let leftFlag = false
     let leftStr = ''
