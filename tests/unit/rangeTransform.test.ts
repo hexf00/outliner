@@ -21,37 +21,37 @@ describe('domRange转换为dataRange', () => {
   it('空', async () => {
     el.innerHTML = ``
     const domRange = {
-      endContainer: el,
-      endOffset: 0,
       startContainer: el,
       startOffset: 0,
+      endContainer: el,
+      endOffset: 0,
     }
     const dataRange = editor.domRange.toDataRange(domRange)
-    expect(dataRange).toStrictEqual({ startIndex: 0, endIndex: 0, startOffset: 0, endOffset: 0 })
+    expect(dataRange).toStrictEqual({ startIndex: 0, startOffset: 0, endIndex: 0, endOffset: 0 })
   })
 
   it('文本节点开头', async () => {
     el.innerHTML = `1`
     const domRange = {
-      endContainer: el.childNodes[0],
-      endOffset: 0,
       startContainer: el.childNodes[0],
       startOffset: 0,
+      endContainer: el.childNodes[0],
+      endOffset: 0,
     }
     const dataRange = editor.domRange.toDataRange(domRange)
-    expect(dataRange).toStrictEqual({ startIndex: 0, endIndex: 0, startOffset: 0, endOffset: 0 })
+    expect(dataRange).toStrictEqual({ startIndex: 0, startOffset: 0, endIndex: 0, endOffset: 0 })
   })
 
   it('文本节点结尾', async () => {
     el.innerHTML = `1`
     const domRange = {
-      endContainer: el.childNodes[0],
-      endOffset: 1,
       startContainer: el.childNodes[0],
       startOffset: 1,
+      endContainer: el.childNodes[0],
+      endOffset: 1,
     }
     const dataRange = editor.domRange.toDataRange(domRange)
-    expect(dataRange).toStrictEqual({ startIndex: 0, endIndex: 0, startOffset: 1, endOffset: 1 })
+    expect(dataRange).toStrictEqual({ startIndex: 0, startOffset: 1, endIndex: 0, endOffset: 1 })
   })
 
 })
@@ -63,9 +63,9 @@ describe('dataRange转换为domRange', () => {
     el.innerHTML = ``
     const range = {
       startIndex: 0,
+      startOffset: 0,
       endIndex: 0,
       endOffset: 0,
-      startOffset: 0,
     }
     const domRange = editor.domRange.toDomRange(range)
 
@@ -79,9 +79,9 @@ describe('dataRange转换为domRange', () => {
     el.innerHTML = `1`
     const range = {
       startIndex: 0,
+      startOffset: 1,
       endIndex: 0,
       endOffset: 1,
-      startOffset: 1,
     }
     const domRange = editor.domRange.toDomRange(range)
 
@@ -95,9 +95,9 @@ describe('dataRange转换为domRange', () => {
     el.innerHTML = `1`
     const range = {
       startIndex: 1,
+      startOffset: 0,
       endIndex: 1,
       endOffset: 0,
-      startOffset: 0,
     }
     const domRange = editor.domRange.toDomRange(range)
 
@@ -105,6 +105,22 @@ describe('dataRange转换为domRange', () => {
     expect(Object.is(domRange.endContainer, el)).toBe(true)
     expect(domRange.startOffset).toBe(1)
     expect(domRange.endOffset).toBe(1)
+  })
+
+  it('spanEl末尾', async () => {
+    el.innerHTML = `<span data-type="text">12</span>`
+    const range = {
+      startIndex: 0,
+      startOffset: 2,
+      endIndex: 0,
+      endOffset: 2,
+    }
+    const domRange = editor.domRange.toDomRange(range)
+
+    expect(Object.is(domRange.startContainer, el.childNodes[0].childNodes[0])).toBe(true)
+    expect(Object.is(domRange.endContainer, el.childNodes[0].childNodes[0])).toBe(true)
+    expect(domRange.startOffset).toBe(2)
+    expect(domRange.endOffset).toBe(2)
   })
 
 })

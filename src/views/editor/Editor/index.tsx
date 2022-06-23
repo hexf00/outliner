@@ -60,7 +60,7 @@ export default class Editor extends Vue {
               } else if (it.type === 'space') {
                 return <span data-type="space"></span>
               }
-              return <span>{it.text}</span>
+              return <span data-type="text">{it.text}</span>
             })
           }
         </div>

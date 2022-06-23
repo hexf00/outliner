@@ -92,7 +92,6 @@ export default class DomRange {
     const getEl = (index: number, offset: number): [Node, number] => {
 
 
-
       const spanEl = el.childNodes[index];
       if (!spanEl) {
         if (index === el.childNodes.length /** 位于末尾 */) {
@@ -107,8 +106,11 @@ export default class DomRange {
         return [el, index]
       }
 
-      if (spanEl.nodeType === 3) {
+      if (spanEl.nodeType === 3 /** 是不是一个文本节点 */) {
         return [spanEl, offset]
+      } else if ((spanEl as HTMLElement).dataset.type === 'text') {
+        //获取文本节点的dom容器
+        return [spanEl.childNodes[0], offset]
       } else {
         // throw new Error('未实现')
         return [el, index]
@@ -117,13 +119,20 @@ export default class DomRange {
 
     const [startContainer, startOffset] = getEl(startIndex, start)
     const [endContainer, endOffset] = getEl(endIndex, end)
-
-    return {
+    const result = {
       startContainer,
       endContainer,
       startOffset,
       endOffset
     }
+
+    console.warn('toDomRange', JSON.stringify(arguments[0]), {
+      startContainer,
+      endContainer,
+      startOffset,
+      endOffset
+    })
+    return result
   }
 
 
@@ -137,8 +146,6 @@ export default class DomRange {
     Vue.nextTick(() => {
       const selection = window.getSelection()
       const domRange = this.toDomRange(range)
-
-      console.log('newDomRange', range, domRange)
       selection?.setBaseAndExtent(domRange.startContainer, domRange.startOffset, domRange.endContainer, domRange.endOffset)
     })
   }

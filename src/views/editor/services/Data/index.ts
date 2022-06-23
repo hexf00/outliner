@@ -32,7 +32,6 @@ export default class Data {
 
   /** 操作数据，并返回新索引 */
   updateByRange (range: IDataRange, nodes: IAtom[]): IDataRange {
-    console.warn('updateRange', JSON.stringify(range))
 
     const data = this.data
 
@@ -48,7 +47,7 @@ export default class Data {
 
     const left: IAtom[] = [...data.slice(0, range.startIndex), ...(leftNode?.text ? [leftNode] : [])]
     const right: IAtom[] = [...(rightNode?.text ? [rightNode] : []), ...data.slice(range.endIndex + 1)]
-    const center = nodes
+    const center = JSON.parse(JSON.stringify(nodes))
 
     console.log(leftNode, rightNode)
 
@@ -82,6 +81,8 @@ export default class Data {
 
     this.setData(newData)
 
+    console.log('setData', newData)
+
     // 新节点的索引
 
     let endIndex: number
@@ -89,7 +90,7 @@ export default class Data {
 
 
     // 原则：基于能不能编辑来决定如何展示
-    if (centerLast?.type) {
+    if (!centerLast || centerLast?.type) {
       // 不可编辑，索引变成顶级
       endIndex = left.length + center.length
       endOffset = 0
@@ -98,6 +99,10 @@ export default class Data {
       endIndex = left.length + center.length - 1
       endOffset = (centerLast?.text.length || 0) - (rightFirst?.text.length || 0)
     }
+
+
+    console.warn('updateRange end', JSON.stringify(range), JSON.stringify(nodes), { index: endIndex, offset: endOffset });
+
 
     return {
       endIndex,

@@ -20,8 +20,10 @@ export default class Remove extends BaseHandler {
     const range = Concat(this, new DataRange())
     range.setData(this.ranger.getData()!)
 
-    const newRange = range.backward()
-    console.warn('newRange', newRange)
+
+    const dataRange = range.backward()
+    this.domRange.setByDataRange(dataRange)
+
 
 
     // if (raw?.collapsed === false /** 区域 */) {

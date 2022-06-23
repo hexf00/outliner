@@ -351,9 +351,9 @@ export class EditorService implements IEditor {
     e.stopPropagation()
     e.preventDefault()
 
-    this.warpSelection(() => {
-      this._data.setData(this.dom2ast(e.target as HTMLElement))
-    })
+    // this.warpSelection(() => {
+    //   this._data.setData(this.dom2ast(e.target as HTMLElement))
+    // })
 
     this.checkLinkMenu()
   }
