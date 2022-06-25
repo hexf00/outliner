@@ -12,9 +12,9 @@ import LinkMenu from '../../services/LinkMenu';
 import DomRange from '../../services/range/dom';
 import LinkRange from '../../services/range/link';
 import RangeManager from '../../services/range/manager';
-import { IRange } from '../../types';
+import { IRange, IAtom } from '../../types';
 import { IHandler } from '../../types/IHandler';
-import { IAtom, IEditor } from './index';
+import { IEditor } from "../../types/IEditor";
 
 @Service()
 export class EditorService implements IEditor {

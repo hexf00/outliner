@@ -1,17 +1,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import { IEditor } from '../../types/IEditor';
 
 import style from './index.module.scss';
-
-export interface IAtom {
-  type?: 'link' | 'space'
-  text: string
-}
-export interface IEditor {
-  msg: string
-  data: IAtom[]
-  mount (el: HTMLElement): void
-  unmount (): void
-}
 
 @Component
 export default class Editor extends Vue {

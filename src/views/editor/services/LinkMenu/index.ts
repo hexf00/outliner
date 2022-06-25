@@ -1,6 +1,6 @@
 import { Inject, Service } from "ioc-di";
 import ContextMenuService from "../../ContextMenu/service";
-import { IAtom } from "../../components/Editor";
+import { IAtom } from "../../types";
 import LinkRange from "../range/link";
 
 

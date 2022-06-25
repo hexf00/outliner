@@ -1,6 +1,4 @@
-import { IAtom } from '../../components/Editor';
-
-import type { IDataRange } from '../../types';
+import type { IDataRange, IAtom } from '../../types';
 
 /** 编辑器数据结构 */
 export default class Data {
