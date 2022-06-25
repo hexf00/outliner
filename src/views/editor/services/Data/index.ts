@@ -1,4 +1,4 @@
-import { IAtom } from '../../Editor';
+import { IAtom } from '../../components/Editor';
 
 import type { IDataRange } from '../../types';
 

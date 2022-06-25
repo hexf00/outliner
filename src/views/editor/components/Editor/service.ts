@@ -1,18 +1,18 @@
 import { Concat, Inject, Service } from 'ioc-di';
 
-import Data from '../services/Data';
-import El from '../services/El';
-import Drag from '../services/handlers/drag';
-import IME from '../services/handlers/IME';
-import Link from '../services/handlers/link';
-import Paste from '../services/handlers/paste';
-import Remove from '../services/handlers/remove';
-import LinkMenu from '../services/LinkMenu';
-import DomRange from '../services/range/dom';
-import LinkRange from '../services/range/link';
-import RangeManager from '../services/range/manager';
-import { IRange } from '../types';
-import { IHandler } from '../types/IHandler';
+import Data from '../../services/Data';
+import El from '../../services/El';
+import Drag from '../../services/handlers/drag';
+import IME from '../../services/handlers/IME';
+import Link from '../../services/handlers/link';
+import Paste from '../../services/handlers/paste';
+import Remove from '../../services/handlers/remove';
+import LinkMenu from '../../services/LinkMenu';
+import DomRange from '../../services/range/dom';
+import LinkRange from '../../services/range/link';
+import RangeManager from '../../services/range/manager';
+import { IRange } from '../../types';
+import { IHandler } from '../../types/IHandler';
 import { IAtom, IEditor } from './index';
 
 @Service()

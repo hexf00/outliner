@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { EditorService } from "@/views/editor/Editor/service"
+import { EditorService } from "@/views/editor/components/Editor/service"
 import { Concat, Root } from "ioc-di"
 
 

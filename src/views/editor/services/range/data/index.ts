@@ -3,7 +3,7 @@ import { Inject, Service } from 'ioc-di';
 import Data from '../../Data';
 
 import type { IDataRange } from '../../../types';
-import { IAtom } from '@/views/editor/Editor';
+import { IAtom } from '@/views/editor/components/Editor';
 
 /**
  * 选区，基于数据

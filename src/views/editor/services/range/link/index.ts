@@ -1,6 +1,6 @@
 import { Inject, Service } from 'ioc-di';
 
-import { IAtom } from '@/views/editor/Editor';
+import { IAtom } from '@/views/editor/components/Editor';
 
 import DataRange from '../data';
 import DomRange from '../dom';

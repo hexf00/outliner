@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
-import { IAtom } from "@/views/editor/Editor"
-import { EditorService } from "@/views/editor/Editor/service"
+import { IAtom } from "@/views/editor/components/Editor"
+import { EditorService } from "@/views/editor/components/Editor/service"
 import type { IDataRange } from "@/views/editor/types"
 import { Concat, Root } from "ioc-di"
 

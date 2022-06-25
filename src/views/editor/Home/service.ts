@@ -1,6 +1,6 @@
 
 import { Already, Inject, Service } from "ioc-di";
-import { EditorService } from "../Editor/service";
+import { EditorService } from "../components/Editor/service";
 import RangeManager from "../services/range/manager";
 
 @Service()

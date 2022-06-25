@@ -1,6 +1,6 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import ContextMenu from '../ContextMenu'
-import Editor from '../Editor'
+import Editor from '../components/Editor'
 import HomeService from './service'
 
 @Component
