@@ -9,11 +9,6 @@ export interface IAtom {
 export interface IEditor {
   msg: string
   data: IAtom[]
-  onBeforeInput (e: InputEvent): void
-  onCompositionStart (e: CompositionEvent): void
-  onCompositionEnd (e: CompositionEvent): void
-  onInput (e: InputEvent): void
-  onKeyDown (e: KeyboardEvent): void
   mount (el: HTMLElement): void
   unmount (): void
 }
