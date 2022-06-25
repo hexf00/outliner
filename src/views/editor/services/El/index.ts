@@ -6,7 +6,7 @@ import Callback from "@/services/Callback"
 export default class El {
   private el: HTMLElement | null = null
 
-  setElCallbacks = new Callback<(el: HTMLElement) => void>()
+  mountedCallbacks = new Callback<(el: HTMLElement) => void>()
 
   getEl (): HTMLElement {
     if (!this.el) {
@@ -15,23 +15,22 @@ export default class El {
     return this.el
   }
 
-  setEl (el: HTMLElement): void {
+  mount (el: HTMLElement): void {
     this.el = el
-    this.setElCallbacks.run(el)
+    this.mountedCallbacks.run(el)
   }
 
-  onSetEl (fn: (el: HTMLElement) => void) {
-    return this.setElCallbacks.add(fn)
+  unmount (): void {
+    this.el = null
   }
 
-  private _isMounted = false
 
-  mounted () {
-    this._isMounted = true
+  onMounted (fn: (el: HTMLElement) => void) {
+    return this.mountedCallbacks.add(fn)
   }
 
   /** 判断是否处于测试环境 */
   isMounted () {
-    return this._isMounted
+    return this.el
   }
 }

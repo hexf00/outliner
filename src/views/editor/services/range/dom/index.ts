@@ -15,7 +15,7 @@ export default class DomRange {
   // startOffset = 0
   // endOffset = 0
 
-  isRoot (el) {
+  isRoot (el: Node) {
     return el === this.elManager.getEl()
   }
 
@@ -140,6 +140,7 @@ export default class DomRange {
   setByDataRange (range: IDataRange) {
     // 没挂载不执行，如测试环境
     if (!this.elManager.isMounted()) return
+
 
     // 需要等待渲染完成
     Vue.nextTick(() => {

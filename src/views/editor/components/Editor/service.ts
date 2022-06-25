@@ -45,8 +45,12 @@ export class EditorService implements IEditor {
     return this.linkMenu.contextMenu
   }
 
-  setEl (el: HTMLElement): void {
-    this.elManger.setEl(el)
+  mount (el: HTMLElement): void {
+    this.elManger.mount(el)
+  }
+
+  unmount (): void {
+    this.elManger.unmount()
   }
 
   hideContextMenu () {

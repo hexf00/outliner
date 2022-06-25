@@ -14,7 +14,7 @@ function diNew (Class: any = Entry, args?: any) {
 
 const editor = Concat(diRoot, new EditorService())
 const el = document.createElement('div')
-editor.setEl(el)
+editor.mount(el)
 
 describe('domRange转换为dataRange', () => {
 

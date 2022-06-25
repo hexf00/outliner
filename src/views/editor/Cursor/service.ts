@@ -16,7 +16,7 @@ export default class CursorService {
 
   @Already
   init () {
-    this.el.onSetEl(el => {
+    this.el.onMounted(el => {
       el.addEventListener('focus', () => this.getSelectionXy(el))
       el.addEventListener('keyup', () => this.getSelectionXy(el))
       el.addEventListener('mouseup', () => this.getSelectionXy(el))

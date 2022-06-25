@@ -16,12 +16,12 @@ function diNew (Class: any = Entry, args?: any) {
 
 const editor = Concat(diRoot, new EditorService())
 const el = document.createElement('div')
-editor.setEl(el)
+editor.mount(el)
 
 describe('dataRange 操作数据测试', () => {
 
   it('空白插入文本', async () => {
-    const data = []
+    const data: IAtom[] = []
     editor.setData(data)
 
     const dataRange: IDataRange = { startIndex: 0, startOffset: 0, endIndex: 0, endOffset: 0 }
