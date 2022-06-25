@@ -1,19 +1,16 @@
 import { Concat, Service } from "ioc-di";
 import BaseHandler from "../base";
-// import { splitOffset } from '@/utils/string/splitOffset';
 import DataRange from "../../range/data";
 
+/** 删除实现 */
 @Service()
 export default class Remove extends BaseHandler {
 
   onBeforeInput (e: InputEvent) {
-    if (e.inputType !== 'deleteContentBackward') return
+    if (!(e.inputType === 'deleteContentBackward'/** 退格键 */
+      || e.inputType === 'deleteContentForward'/** 删除键 */)) return
 
-
-    // 说明：需要避免交互对dom的改动，比如说删除vue有记录的dom，则vue会按index删除
     e.preventDefault()
-    e.stopPropagation()
-
 
     // const raw = this.ranger.getRaw()
 
@@ -21,7 +18,8 @@ export default class Remove extends BaseHandler {
     range.setData(this.ranger.getData()!)
 
 
-    const dataRange = range.backward()
+
+    const dataRange = range.remove(e.inputType)
     this.domRange.setByDataRange(dataRange)
 
 
@@ -81,4 +79,7 @@ export default class Remove extends BaseHandler {
     // }
 
   }
+
+  onCompositionStart () { }
+  onCompositionEnd () { }
 }

@@ -31,13 +31,18 @@ export default class DataRange implements IDataRange {
   }
 
   /** 删除 */
-  backward () {
+  remove (type: 'deleteContentForward' | 'deleteContentBackward' = 'deleteContentBackward') {
     if (this.startIndex === this.endIndex && this.startOffset === this.endOffset /** 光标 */) {
       //计算出上一个字符的范围索引
-      const prev = this.data.getPrevPos({
-        index: this.startIndex,
-        offset: this.startOffset
-      })
+      const prev = type === 'deleteContentBackward'
+        ? this.data.getPrevPos({
+          index: this.startIndex,
+          offset: this.startOffset
+        })
+        : this.data.getNextPos({
+          index: this.startIndex,
+          offset: this.startOffset
+        })
 
       return this.data.updateByRange({
         startIndex: prev.index,

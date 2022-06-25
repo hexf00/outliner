@@ -1,9 +1,11 @@
 import { Concat, Inject, Service } from 'ioc-di';
-import { Vue } from 'vue-property-decorator';
 
-import { insertAt } from '../../../utils/string/insertAt';
 import Data from '../services/Data';
 import El from '../services/El';
+import Drag from '../services/handlers/drag';
+import IME from '../services/handlers/IME';
+import Link from '../services/handlers/link';
+import Paste from '../services/handlers/paste';
 import Remove from '../services/handlers/remove';
 import LinkMenu from '../services/LinkMenu';
 import DomRange from '../services/range/dom';
@@ -25,8 +27,15 @@ export class EditorService implements IEditor {
   @Inject(LinkMenu) linkMenu!: LinkMenu
   @Inject(RangeManager) ranger!: RangeManager
 
-
   msg = '富文本编辑器'
+
+  handlers: IHandler[] = [
+    Concat(this, new IME()),
+    Concat(this, new Remove()),
+    Concat(this, new Link()),
+    Concat(this, new Drag()),
+    Concat(this, new Paste())
+  ]
 
   get data () {
     return this._data.data
@@ -36,122 +45,59 @@ export class EditorService implements IEditor {
     return this.linkMenu.contextMenu
   }
 
-
-
   setEl (el: HTMLElement): void {
     this.elManger.setEl(el)
   }
-
-  // /** 
-  //  * 从一个空的div输入，或者光标位于顶级的不可编辑位置，需要特殊处理
-  //  * 不能让浏览器改变dom
-  //  * */
-  // firstInput (data: string) {
-  //   // 不能存储对象，因为对象会被改变
-  //   this.data.push({ text: data })
-  // 
-  //   // 渲染后恢复选区，可与setTimeout替换
-  //   // 不一定是在最后，此处需要修改
-  //   Vue.nextTick(() => {
-  //     const el = this.el
-  //     // 写死为1
-  //     const lastChild = el.childNodes.item(el.childNodes.length - 1)
-  //     window.getSelection()?.setBaseAndExtent(
-  //       lastChild, 1, lastChild, 1
-  //     )
-  //     el.dispatchEvent(new Event('input'))
-  //   })
-  // }
-
 
   hideContextMenu () {
     this.contextMenu.hide()
   }
 
-  handlers: IHandler[] = [
-    Concat(this, new Remove())
-  ]
+  onCompositionStart (e: CompositionEvent): void {
+    this.ranger.update()
+    this.handlers.forEach(it => it.onCompositionStart?.(e))
+  }
 
-  beforeInput (e: InputEvent): void {
-    const el = e.target as HTMLElement
+  onCompositionEnd (e: CompositionEvent): void {
+    this.ranger.update()
+    this.handlers.forEach(it => it.onCompositionEnd?.(e))
+  }
 
+  onBeforeInput (e: InputEvent): void {
+    console.warn('onBeforeInput', e.inputType, e)
     this.ranger.update()
     this.handlers.forEach(it => it.onBeforeInput(e))
+  }
 
-    console.log('beforeInput', e)
-    const { startContainer, startOffset, } = window.getSelection()!.getRangeAt(0)
-    if (['insertFromPaste' /** 粘贴 */,
-      'deleteByDrag' /** 拖拽删除 */,
-      'insertFromDrop' /** 拖拽插入 */,
-      'insertParagraph' /** 插入换行 */]
-      .includes(e.inputType)) {
-      // 这些交互会改变dom，导致render异常所以屏蔽
-      // 如果需要以后再额外实现
+  onKeyDown (e: KeyboardEvent): void {
+    // 改变焦点需要检查上下文菜单的展示状态
+    // 此时光标还未变化，需要延迟下
 
-      e.stopPropagation()
+    // console.log('keydown', e)
+
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+      // 禁止默认行为（光标改变到行首、行尾）
       e.preventDefault()
+    }
 
-    } else if (el === startContainer /** 容器插入 */ && e.data) {
-      // 说明:
-      // 浏览器默认行为是 在输入第一个字符后，会创建一个的新的textNode
-      // 需要 阻止默认行为
-      // 由于浏览器对 dom元素的变更，会导致Vue的diff机制异常，渲染异常
-      // 或者光标在顶级
-      e.stopPropagation()
+    if (e.key === 'Enter') {
       e.preventDefault()
+    }
 
-      //第一个被插入的[,也需要补全]
-
-      const curr = {
-        startIndex: startOffset,
-        startOffset: 0,
-        endIndex: startOffset,
-        endOffset: 0
-      }
-
-      if (e.data === '[') {
-        const newRange = this._data.updateByRange(curr, [{ text: '[]' }])
-        // 说明：光标置于[[]]中间
-        this.domRange.setByDataRange({
-          ...newRange,
-          startOffset: newRange.endOffset - 1,
-          endOffset: newRange.endOffset - 1
-        })
-
-      } else {
-        const newRange = this._data.updateByRange(curr, [{ text: e.data }])
-        this.domRange.setByDataRange(newRange)
-      }
-    } else if (e.data === '[') {
-      //1. 未选中时，自动补全]
-      //2. 选中时，自动不全]
-
-      e.stopPropagation()
-      e.preventDefault()
-
-      const range = window.getSelection()!.getRangeAt(0)
-      const { startContainer, startOffset, endContainer, endOffset } = range
-
-      // console.log(startContainer, startOffset, endContainer, endOffset)
-
-      // 相同节点，需要加上`[`的字符长度
-      const realEndOffset = startContainer === endContainer ? endOffset + 1 : endOffset
-
-      const [startIndex, endIndex] = this.getSelectionDataIndex(range)
-      // 插入左括号
-      this.data[startIndex].text = insertAt(this.data[startIndex].text, startOffset, '[')
-      // 插入右括号
-      this.data[endIndex].text = insertAt(this.data[endIndex].text, realEndOffset, ']')
-
-      // 渲染后需要更新选区
-      Vue.nextTick(() => {
-        window.getSelection()?.setBaseAndExtent(
-          startContainer!, startOffset + 1, endContainer!, realEndOffset
-        )
-        el.dispatchEvent(new Event('input'))
+    if (this.contextMenu.isShow) {
+      setTimeout(() => {
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+          this.checkLinkMenu()
+        }
       })
     }
   }
+
+  onInput (e: InputEvent): void {
+    // console.warn('input', e)
+    this.checkLinkMenu()
+  }
+
 
   /** 获取选区开头、结束在data对应的位置 */
   getSelectionDataIndex (range: IRange) {
@@ -168,50 +114,6 @@ export class EditorService implements IEditor {
     }
 
     return [startIndex, endIndex]
-  }
-
-  /** 记录和恢复选取 */
-  warpSelection (fn: () => void) {
-    // 不能存储对象，因为对象会被改变
-    const { anchorNode, anchorOffset, focusNode, focusOffset } = window.getSelection()!
-
-    fn()
-
-    //渲染后恢复选区，可与setTimeout替换
-    Vue.nextTick(() => {
-      window.getSelection()?.setBaseAndExtent(
-        anchorNode!, anchorOffset, focusNode!, focusOffset
-      )
-    })
-  }
-
-  /** 偷懒做法，在input之后从dom生成最新的ast数据，要求不能改变dom结构才能正常工作 */
-  dom2ast (dom: HTMLElement): IAtom[] {
-    const childNodes = dom.childNodes
-    const result: IAtom[] = []
-    for (let index = 0; index < childNodes.length; index++) {
-      const el = childNodes[index]
-      if (el.nodeType === 3/** text */) {
-
-        // old
-
-        if (el.textContent) {
-          result.push({ text: el.textContent })
-        }
-      } else {
-        const type = (el as HTMLElement).dataset.type
-        if (type === 'link') {
-          result.push({ type: 'link', text: el.textContent || '' })
-        } else if (type === 'space') {
-          result.push({ type: 'space', text: '' })
-        } else {
-          if (el.textContent) {
-            result.push({ text: el.textContent })
-          }
-        }
-      }
-    }
-    return result
   }
 
   /** 如果焦点在根元素，有一些逻辑不一样 */
@@ -311,8 +213,6 @@ export class EditorService implements IEditor {
     return true
   }
 
-
-
   checkLinkMenu () {
     if (this.isInLink()) {
       //显示双链菜单的逻辑放入了DataRange中，DataRange相当于是胶水层
@@ -320,44 +220,6 @@ export class EditorService implements IEditor {
       this.hideContextMenu()
     }
   }
-
-  keydown (e: KeyboardEvent): void {
-    // 改变焦点需要检查上下文菜单的展示状态
-    // 此时光标还未变化，需要延迟下
-
-    // console.log('keydown', e)
-
-    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-      // 禁止默认行为（光标改变到行首、行尾）
-      e.preventDefault()
-    }
-
-    if (e.key === 'Enter') {
-      e.preventDefault()
-    }
-
-    if (this.contextMenu.isShow) {
-      setTimeout(() => {
-        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-          this.checkLinkMenu()
-        }
-      })
-    }
-  }
-
-  //说明：这里偷懒使用dom来生成全新的ast，实际可以在beforeInput内处理完成
-  input (e: InputEvent): void {
-    console.log('input', e)
-    e.stopPropagation()
-    e.preventDefault()
-
-    // this.warpSelection(() => {
-    //   this._data.setData(this.dom2ast(e.target as HTMLElement))
-    // })
-
-    this.checkLinkMenu()
-  }
-
 
   setData (data: IAtom[]) {
     this._data.setData(data)

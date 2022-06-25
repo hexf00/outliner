@@ -49,9 +49,8 @@ export default class DomRange {
   }
 
 
-  /** 将浏览的选区转换为Data的选区 */
+  /** DOM选区转换为数据选区 */
   toDataRange (range: IRange): IDataRange {
-    console.log('range', range)
     // if (this.isRoot(range.startContainer) && this.isRoot(range.endContainer)) {
     //   // lv 0
     //   return {

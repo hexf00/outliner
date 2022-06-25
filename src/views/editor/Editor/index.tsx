@@ -9,9 +9,11 @@ export interface IAtom {
 export interface IEditor {
   msg: string
   data: IAtom[]
-  beforeInput (e: InputEvent): void
-  input (e: InputEvent): void
-  keydown (e: KeyboardEvent): void
+  onBeforeInput (e: InputEvent): void
+  onCompositionStart (e: CompositionEvent): void
+  onCompositionEnd (e: CompositionEvent): void
+  onInput (e: InputEvent): void
+  onKeyDown (e: KeyboardEvent): void
   setEl (el: HTMLElement): void
 
   elManger: {
@@ -48,9 +50,12 @@ export default class Editor extends Vue {
           contentEditable
           spellCheck="false"
           on={{
-            input: (e: InputEvent) => service.input(e),
-            beforeinput: (e: InputEvent) => service.beforeInput(e),
-            keydown: (e: KeyboardEvent) => service.keydown(e)
+            input: (e: InputEvent) => service.onInput(e),
+            beforeinput: (e: InputEvent) => service.onBeforeInput(e),
+            keydown: (e: KeyboardEvent) => service.onKeyDown(e),
+            compositionstart: (e: CompositionEvent) => service.onCompositionStart(e),
+            // compositionupdate: (e: InputEvent) => { console.warn('compositionupdate', e); e.stopPropagation(); e.preventDefault(); },
+            compositionend: (e: CompositionEvent) => service.onCompositionEnd(e)
           }}
         >
           {

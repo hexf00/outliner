@@ -32,24 +32,14 @@ export default class Data {
 
   /** 操作数据，并返回新索引 */
   updateByRange (range: IDataRange, nodes: IAtom[]): IDataRange {
-
     const data = this.data
-
-
-    // this.data
     const startNode = data[range.startIndex]
     const endNode = data[range.endIndex]
-
     const leftNode = startNode ? { text: startNode.text.slice(0, range.startOffset) } : null
     const rightNode = endNode ? { text: endNode.text.slice(range.endOffset) } : null
-
-
-
     const left: IAtom[] = [...data.slice(0, range.startIndex), ...(leftNode?.text ? [leftNode] : [])]
     const right: IAtom[] = [...(rightNode?.text ? [rightNode] : []), ...data.slice(range.endIndex + 1)]
     const center = JSON.parse(JSON.stringify(nodes))
-
-    console.log(leftNode, rightNode)
 
     //判断首尾是否需要合并
     const leftLast = left.slice(-1)[0]
@@ -64,7 +54,6 @@ export default class Data {
         left.pop()
       }
     }
-
 
     if (rightFirst && !rightFirst.type) {
       if (centerLast && !centerLast.type) {
@@ -81,13 +70,9 @@ export default class Data {
 
     this.setData(newData)
 
-    console.log('setData', newData)
-
     // 新节点的索引
-
     let endIndex: number
     let endOffset: number
-
 
     // 原则：基于能不能编辑来决定如何展示
     if (!centerLast || centerLast?.type) {
@@ -100,9 +85,7 @@ export default class Data {
       endOffset = (centerLast?.text.length || 0) - (rightFirst?.text.length || 0)
     }
 
-
-    console.warn('updateRange end', JSON.stringify(range), JSON.stringify(nodes), { index: endIndex, offset: endOffset });
-
+    // console.warn('updateRange end', JSON.stringify(range), JSON.stringify(nodes), { index: endIndex, offset: endOffset });
 
     return {
       endIndex,
@@ -136,6 +119,41 @@ export default class Data {
         return { index: index, offset: 0 }
       } else {
         return { index, offset: offset - 1 }
+      }
+    }
+  }
+
+
+
+  // TODO:重新实现
+  getNextPos ({ index, offset }: { index: number, offset: number }) {
+    const data = this.data
+
+    if (offset === 0 /** 返回索引在下一个元素 */) {
+
+      const next = data[index + 1]
+      if (next /** 存在下一个元素 */) {
+        if (next.type /** 需要整个删除 */) {
+          return { index: index + 1, offset: 0 }
+        } else {
+          return { index: index + 1, offset: offset + 1 }
+        }
+      } else {
+        // 到末尾了
+        return { index, offset: 0 }
+      }
+    } else {
+      const current = data[index]
+      if (current) {
+        //存在下一个元素
+        if (current.type /** 需要整个删除 */) {
+          console.warn('不应该出现这种情况', { index, offset })
+          return { index: index, offset: 0 }
+        } else {
+          return { index, offset: offset + 1 }
+        }
+      } else {
+        return { index, offset: 0 }
       }
     }
   }
