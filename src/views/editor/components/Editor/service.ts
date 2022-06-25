@@ -1,5 +1,6 @@
 import { Concat, Inject, Service } from 'ioc-di';
 
+import EventManager from '@/services/EventManager';
 import Data from '../../services/Data';
 import El from '../../services/El';
 import Drag from '../../services/handlers/drag';
@@ -26,6 +27,7 @@ export class EditorService implements IEditor {
   @Inject(LinkRange) linkRange !: LinkRange
   @Inject(LinkMenu) linkMenu!: LinkMenu
   @Inject(RangeManager) ranger!: RangeManager
+  @Inject(EventManager) events!: EventManager
 
   msg = '富文本编辑器'
 
@@ -47,9 +49,15 @@ export class EditorService implements IEditor {
 
   mount (el: HTMLElement): void {
     this.elManger.mount(el)
+    this.events.add(el, 'beforeinput', (e) => this.onBeforeInput(e as InputEvent))
+    this.events.add(el, 'input', (e) => this.onInput(e as InputEvent))
+    this.events.add(el, 'keydown', (e) => this.onKeyDown(e as KeyboardEvent))
+    this.events.add(el, 'compositionstart', (e) => this.onCompositionStart(e as CompositionEvent))
+    this.events.add(el, 'compositionend', (e) => this.onCompositionEnd(e as CompositionEvent))
   }
 
   unmount (): void {
+    this.events.clear(this.elManger.getEl())
     this.elManger.unmount()
   }
 

@@ -47,14 +47,6 @@ export default class Editor extends Vue {
           class={style.textarea}
           contentEditable
           spellCheck="false"
-          on={{
-            input: (e: InputEvent) => service.onInput(e),
-            beforeinput: (e: InputEvent) => service.onBeforeInput(e),
-            keydown: (e: KeyboardEvent) => service.onKeyDown(e),
-            compositionstart: (e: CompositionEvent) => service.onCompositionStart(e),
-            // compositionupdate: (e: InputEvent) => { console.warn('compositionupdate', e); e.stopPropagation(); e.preventDefault(); },
-            compositionend: (e: CompositionEvent) => service.onCompositionEnd(e)
-          }}
         >
           {
             service.data.map((it, index) => {
