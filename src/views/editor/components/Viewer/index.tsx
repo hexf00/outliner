@@ -1,27 +1,25 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { IEditor } from '../../types/IEditor';
+import { IAtom } from "../../types";
 
 import style from './index.module.scss';
 
+export interface IView {
+  data: IAtom[]
+  focus (el: HTMLElement): void
+  blur (): void
+}
+
 @Component
-export default class Editor extends Vue {
+export default class Viewer extends Vue {
   declare $props: {
-    service: IEditor
+    service: IView
   }
 
   declare $refs: {
     input: HTMLElement
   }
 
-  @Prop() service !: IEditor
-
-  mounted () {
-    this.service.mount(this.$refs.input)
-  }
-
-  beforeDestroy () {
-    this.service.unmount()
-  }
+  @Prop() service !: IView
 
   render () {
     const service = this.service
@@ -32,6 +30,8 @@ export default class Editor extends Vue {
           class={style.textarea}
           contentEditable
           spellCheck="false"
+          onfocus={() => service.focus(this.$refs.input)}
+          onblur={() => service.blur()}
         >
           {
             service.data.map((it, index) => {

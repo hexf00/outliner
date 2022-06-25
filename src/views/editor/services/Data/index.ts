@@ -1,8 +1,15 @@
+import Callback from '@/services/Callback';
 import type { IDataRange, IAtom } from '../../types';
 
 /** 编辑器数据结构 */
 export default class Data {
   data: IAtom[] = []
+
+  onSetDataCallbacks = new Callback<(data: IAtom[]) => void>()
+
+  onSetData (fn: (data: IAtom[]) => void) {
+    return this.onSetDataCallbacks.add(fn)
+  }
 
   /** 通过range获取文本 */
   getText ({ startIndex, startOffset, endIndex, endOffset }: IDataRange) {
@@ -162,5 +169,7 @@ export default class Data {
 
   setData (data: IAtom[]) {
     this.data = data
+
+    this.onSetDataCallbacks.run(data)
   }
 }
