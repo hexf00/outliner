@@ -1,4 +1,4 @@
-import { Concat, Destroy, Inject, Service } from 'ioc-di';
+import { Already, Concat, Destroy, Inject, Service } from 'ioc-di';
 
 import EventManager from '@/services/EventManager';
 import Viewer from '@/views/editor/components/Viewer';
@@ -7,15 +7,19 @@ import ViewerService from '@/views/editor/components/Viewer/service';
 import { IBlock } from '../types';
 import { IView } from './index';
 import ContextMenuService from '@/views/editor/ContextMenu/service';
+import { IAtom } from '@/views/editor/types';
 
 @Service()
-export default class BlockService extends ViewerService implements IBlock, IView {
+export default class BlockService implements IBlock, IView {
   @Inject(EventManager) events!: EventManager
   @Inject(ContextMenuService) contextMenu!: ContextMenuService
 
 
   // 随机字符串
   key = Math.random().toString(36).substr(2, 16)
+
+  editor = Concat(this, new ViewerService())
+
   content: string = ''
 
   /** 父节点，如果没有则为自身 */
@@ -27,7 +31,7 @@ export default class BlockService extends ViewerService implements IBlock, IView
 
   isHover = false
 
-  data = []
+  data: IAtom[] = []
 
   get isShowExpand (): boolean {
     return this.children.length > 0 && this.isHover
@@ -37,14 +41,20 @@ export default class BlockService extends ViewerService implements IBlock, IView
     return Viewer
   }
 
-  constructor () {
-    super()
-  }
-
   el: HTMLElement | null = null
 
+  constructor () {
+    this.init()
+  }
+
+
+  @Already
+  init () {
+    this.editor.bindOnFocus(el => this.onFocus(el))
+    this.editor.bindOnBlur(() => this.onBlur())
+  }
+
   onFocus (el: HTMLElement): void {
-    super.onFocus(el)
     this.el = el
 
 
@@ -100,7 +110,6 @@ export default class BlockService extends ViewerService implements IBlock, IView
   }
 
   onBlur (): void {
-    super.onBlur()
     this.events.clear(this.el!)
   }
 
@@ -162,6 +171,10 @@ export default class BlockService extends ViewerService implements IBlock, IView
     node.focus()
   }
 
+  focus () {
+    this.editor.focus()
+  }
+
   toPlain (lv = 0): string {
     let result = lv > 0 ? this.content + '\n' : ''
     result += this.children.map(child => (
@@ -182,7 +195,8 @@ export default class BlockService extends ViewerService implements IBlock, IView
   }
 
   setData (data: IBlock) {
-    this.content = data.content
+    this.data = data.data
+    this.editor.setData(data.data)
     this.setChildren(data.children.map(it => this.parse(it)))
   }
 
@@ -192,7 +206,7 @@ export default class BlockService extends ViewerService implements IBlock, IView
 
   getData (): IBlock {
     return {
-      content: this.content,
+      data: this.data,
       children: this.children.map(child => child.getData())
     }
   }

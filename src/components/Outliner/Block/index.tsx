@@ -1,6 +1,10 @@
-import classNames from 'classnames'
-import { Component, Prop, Vue } from 'vue-property-decorator'
-import style from './index.module.scss'
+import classNames from 'classnames';
+import { Component, Prop, Vue } from 'vue-property-decorator';
+
+import * as NViewer from '@/views/editor/components/Viewer';
+
+import style from './index.module.scss';
+
 export interface IView {
   setHover (status: boolean): void
   setExpand (status: boolean): void
@@ -8,7 +12,11 @@ export interface IView {
   children: IView[]
   key: string
   isShowExpand: boolean
+
+  /** 编辑器组件 */
   vueComponent: Vue.VueConstructor
+  /** 编辑器service */
+  editor: NViewer.IView
 }
 
 @Component
@@ -37,7 +45,7 @@ export default class Block extends Vue {
             !service.isExpand && style.close
           )} onclick={() => service.setExpand(!service.isExpand)}></span>
           <span class={classNames(style.bullet, !service.isExpand && style.close)}></span>
-          <service.vueComponent ref="input" class={style.input} service={service} />
+          <service.vueComponent class={style.input} service={service.editor} />
         </div>
         <div class={style.children}>
           {service.isExpand && service.children.map(it => <Block key={it.key} service={it} />)}

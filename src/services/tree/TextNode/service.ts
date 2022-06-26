@@ -5,6 +5,7 @@ import Node from "../Node/service";
  */
 export default class TextNode extends Node<TextNode> {
   content: string = ""
+  data: any[] = []
   spaceNumber: number = 0
 
   setData (data: { content: string, spaceNumber: number }) {

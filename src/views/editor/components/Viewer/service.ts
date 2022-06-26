@@ -1,3 +1,4 @@
+import Callback from '@/services/Callback';
 import { Inject, Service } from 'ioc-di';
 import Vue from 'vue';
 
@@ -18,6 +19,16 @@ export default class ViewerService implements IView {
 
   el: HTMLElement | null = null
 
+  onFocusCallbacks = new Callback<(el: HTMLElement) => void>()
+  bindOnFocus (fn: (el: HTMLElement) => void) {
+    return this.onFocusCallbacks.add(fn)
+  }
+
+  onBlurCallbacks = new Callback<() => void>()
+  bindOnBlur (fn: () => void) {
+    return this.onBlurCallbacks.add(fn)
+  }
+
   mount (el: HTMLElement): void {
     this.el = el
   }
@@ -32,12 +43,14 @@ export default class ViewerService implements IView {
     this.editor.mount(el)
     this.editor.setData(this.data)
     this._onSetData = this._data.onSetData(data => this.data = data)
+    this.onFocusCallbacks.run(el)
   }
 
   onBlur (): void {
     this._onSetData?.()
     this.editor.unmount()
     this.editor.setData([])
+    this.onBlurCallbacks.run()
   }
 
 
