@@ -26,12 +26,14 @@ export default class ContextMenuService implements IView {
     it.isExpand = !it.isExpand
   }
 
+  _remove: Function | null = null
+
   hide () {
     this.isShow = false
-    document.removeEventListener('keydown', this.keydownHandle)
+    this._remove?.()
   }
 
-  show ({ x, y }: { x: number, y: number }, items: IItem[]) {
+  show ({ x, y }: { x: number, y: number }, items: IItem[], el: Node = document) {
     this.isShow = true
     this.items = items.map((it, index) => {
       // 初始化属性，防止响应式丢失
@@ -46,23 +48,25 @@ export default class ContextMenuService implements IView {
     this.pos = { left: x + 'px', top: y + 'px' }
 
 
-    //避免上下文丢失
-    this.keydownHandle = (e: KeyboardEvent) => this.keydown(e)
     const hide = () => {
       this.hide()
       document.removeEventListener('click', hide)
     }
-    window.addEventListener('click', hide)
-    document.addEventListener('keydown', this.keydownHandle)
+    document.addEventListener('click', hide)
+
+    const keydownHandle = (e: KeyboardEvent) => this.keydown(e)
+    el.addEventListener('keydown', keydownHandle as EventListener)
+    this._remove = () => el.removeEventListener('keydown', keydownHandle as EventListener)
   }
 
-  //单纯是记录引用
-  keydownHandle = (e: KeyboardEvent) => { }
   keydown (e: KeyboardEvent) {
     console.log('keydown', e.key, this.activeItem)
 
     if (e.key === 'Enter' && this.activeItem) {
       this.activeItem.callback?.()
+
+      e.preventDefault()
+      e.stopPropagation()
     }
   }
 

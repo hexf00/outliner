@@ -1,14 +1,16 @@
 import { Inject, Service } from "ioc-di";
 import ContextMenuService from "../../ContextMenu/service";
 import { IAtom } from "../../types";
+import El from "../El";
 import LinkRange from "../range/link";
 
 
 /** 双链上下文菜单 */
 @Service()
 export default class LinkMenu {
-  contextMenu = new ContextMenuService()
+  @Inject(ContextMenuService) contextMenu!: ContextMenuService
   @Inject(LinkRange) linkRange !: LinkRange
+  @Inject(El) elManager!: El
 
   /**
    * 显示双链上下文菜单
@@ -57,7 +59,7 @@ export default class LinkMenu {
           this.contextMenu.hide()
         }
       },
-    ])
+    ], this.elManager.getEl())
   }
 
   /**
