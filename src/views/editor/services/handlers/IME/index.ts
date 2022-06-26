@@ -15,17 +15,17 @@ export default class IME extends BaseHandler {
   }
 
   onCompositionEnd (e: CompositionEvent) {
-    const range = this.ranger.getData()!
+    // const range = this.ranger.getData()!
 
     //通过撤销来恢复DOM
     document.execCommand('undo')
 
-    this.range.setData({
-      startIndex: this.range.startIndex,
-      startOffset: this.range.startOffset,
-      endIndex: range.endIndex,
-      endOffset: range.endOffset
-    })
+    // this.range.setData({
+    //   startIndex: this.range.startIndex,
+    //   startOffset: this.range.startOffset,
+    //   endIndex: range.endIndex,
+    //   endOffset: range.endOffset
+    // })
 
     this.domRange.setByDataRange(this.range.replace([{ text: e.data || '' }]))
   }
