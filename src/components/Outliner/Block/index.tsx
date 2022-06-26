@@ -3,8 +3,6 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import style from './index.module.scss'
 console.log('style', style)
 export interface IView {
-  bindFocus (fn: () => void): void
-  unbindFocus (fn: () => void): void
   setHover (status: boolean): void
   setExpand (status: boolean): void
   isExpand: boolean
@@ -37,38 +35,13 @@ export default class Block extends Vue {
     })
   }
 
-  // 说明: 为了引用唯一，销毁时要用
-  focus () {
-    const el = this.$refs.input
-    const textNode = el.childNodes[0] as Text | undefined
-
-    el.focus()
-
-    const range = document.createRange()
-    if (textNode) {
-      range.setStart(textNode, textNode.length)
-      range.setEnd(textNode, textNode.length)
-    } else {
-      range.setStart(el, 0)
-      range.setEnd(el, 0)
-    }
-
-    const selection = document.getSelection()
-    selection?.removeAllRanges()
-    selection?.addRange(range)
-  }
-
   mounted () {
-    console.log('mounted', this.service.key)
-
+    // console.log('mounted', this.service.key)
     this.service.mount(this.$refs.input)
-    this.service.bindFocus(this.focus)
   }
   beforeDestroy () {
-    console.log('beforeDestroy', this.service.key)
+    // console.log('beforeDestroy', this.service.key)
     this.service.unmount(this.$refs.input)
-
-    this.service.unbindFocus(this.focus)
   }
 
   render () {

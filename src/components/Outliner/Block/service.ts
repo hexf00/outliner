@@ -1,8 +1,10 @@
-import Block, { IView } from './index';
-import { Concat, Destroy, Inject, Service } from "ioc-di";
-import Callback from "../../../services/Callback";
-import { IBlock } from "../types";
+import { Concat, Destroy, Inject, Service } from 'ioc-di';
+import Vue from 'vue';
+
 import EventManager from '@/services/EventManager';
+
+import { IBlock } from '../types';
+import Block, { IView } from './index';
 
 @Service()
 export default class BlockService implements IBlock, IView {
@@ -17,8 +19,6 @@ export default class BlockService implements IBlock, IView {
   parent: BlockService | null = null
 
   children: BlockService[] = []
-
-  focusCallback = new Callback()
 
   isExpand = true
 
@@ -323,24 +323,32 @@ export default class BlockService implements IBlock, IView {
   //#region 焦点相关
 
   focus () {
-    setTimeout(() => {
-      // console.log('setTimeout focus')
-      this.focusCallback.run()
-    }, 0)
-  }
 
-  bindFocus (fn: () => void) {
-    this.focusCallback.add(fn)
-  }
+    Vue.nextTick(() => {
+      // 说明: 为了引用唯一，销毁时要用
+      const el = this.el!
+      const textNode = el.childNodes[0] as Text | undefined
 
-  unbindFocus (fn: () => void) {
-    this.focusCallback.remove(fn)
-  }
+      el.focus()
 
+      const range = document.createRange()
+      if (textNode) {
+        range.setStart(textNode, textNode.length)
+        range.setEnd(textNode, textNode.length)
+      } else {
+        range.setStart(el, 0)
+        range.setEnd(el, 0)
+      }
+
+      const selection = document.getSelection()
+      selection?.removeAllRanges()
+      selection?.addRange(range)
+    })
+
+  }
   //#endregion
 
   @Destroy
   destroy () {
-    this.focusCallback.destroy()
   }
 }
