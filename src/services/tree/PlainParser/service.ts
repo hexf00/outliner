@@ -1,3 +1,4 @@
+import { IAtom } from "@/views/editor/types"
 import TextNode from "../TextNode/service"
 
 export default class PlainParser {
@@ -11,8 +12,37 @@ export default class PlainParser {
       const spaceNumber = line.match(/^\s*/)?.[0].length || 0
       const content = line.replace(/^\s*/, '')
       const node = new TextNode()
+
+      //AST解析content中所有的双链[[]]语法, 如果是链接，则解析为LinkNode, 否则解析为TextNode
+      const data: IAtom[] = []
+      let index = 0
+      while (index < content.length) {
+        const start = content.indexOf('[[', index)
+        if (start === -1) {
+          data.push({
+            text: content.substring(index)
+          })
+          break
+        }
+        data.push({
+          text: content.substring(index, start)
+        })
+        const end = content.indexOf(']]', start)
+        if (end === -1) {
+          data.push({
+            text: content.substring(start)
+          })
+          break
+        }
+        data.push({
+          type: 'link',
+          text: content.substring(start + 2, end)
+        })
+        index = end + 2
+      }
+
       node.setData({
-        content,
+        data,
         spaceNumber
       })
 

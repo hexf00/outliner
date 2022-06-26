@@ -20,8 +20,6 @@ export default class BlockService implements IBlock, IView {
 
   editor = Concat(this, new ViewerService())
 
-  content: string = ''
-
   /** 父节点，如果没有则为自身 */
   parent: BlockService | null = null
 
@@ -176,7 +174,15 @@ export default class BlockService implements IBlock, IView {
   }
 
   toPlain (lv = 0): string {
-    let result = lv > 0 ? this.content + '\n' : ''
+    const content = this.editor.data.map(it => {
+      if (it.type === 'link') {
+        return `[[${it.text}]]`
+      } else {
+        return it.text
+      }
+    }).join('')
+
+    let result = lv > 0 ? content + '\n' : ''
     result += this.children.map(child => (
       Array(lv).fill("  ").join('') + child.toPlain(lv + 1)
     )).join('')
@@ -198,10 +204,6 @@ export default class BlockService implements IBlock, IView {
     this.data = data.data
     this.editor.setData(data.data)
     this.setChildren(data.children.map(it => this.parse(it)))
-  }
-
-  setContent (text: string) {
-    this.content = text
   }
 
   getData (): IBlock {
