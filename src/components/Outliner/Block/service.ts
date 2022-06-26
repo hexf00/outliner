@@ -2,12 +2,14 @@ import { Concat, Destroy, Inject, Service } from 'ioc-di';
 import Vue from 'vue';
 
 import EventManager from '@/services/EventManager';
+import Viewer from '@/views/editor/components/Viewer';
+import ViewerService from '@/views/editor/components/Viewer/service';
 
 import { IBlock } from '../types';
-import Block, { IView } from './index';
+import { IView } from './index';
 
 @Service()
-export default class BlockService implements IBlock, IView {
+export default class BlockService extends ViewerService implements IBlock, IView {
   @Inject(EventManager) events!: EventManager
 
 
@@ -24,15 +26,18 @@ export default class BlockService implements IBlock, IView {
 
   isHover = false
 
+  data = []
+
   get isShowExpand (): boolean {
     return this.children.length > 0 && this.isHover
   }
 
   get vueComponent () {
-    return Block
+    return Viewer
   }
 
   constructor () {
+    super()
   }
 
   el: HTMLElement | null = null
@@ -85,7 +90,6 @@ export default class BlockService implements IBlock, IView {
         this.tab('next')
       }
     })
-    this.events.add(el, 'blur', (e) => this.setContent((e.target as HTMLElement).innerText))
   }
 
   unmount (el: HTMLElement): void {

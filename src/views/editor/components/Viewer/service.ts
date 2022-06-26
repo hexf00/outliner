@@ -13,13 +13,13 @@ export default class ViewerService implements IView {
 
   _onSetData: Function | null = null
 
-  focus (el: HTMLElement): void {
+  onFocus (el: HTMLElement): void {
     this.editor.mount(el)
     this.editor.setData(this.data)
     this._onSetData = this._data.onSetData(data => this.data = data)
   }
 
-  blur (): void {
+  onBlur (): void {
     this._onSetData?.()
     this.editor.unmount()
     this.editor.setData([])

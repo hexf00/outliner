@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import style from './index.module.scss'
 console.log('style', style)
 export interface IView {
@@ -12,6 +12,7 @@ export interface IView {
   isShowExpand: boolean
   mount (el: HTMLElement): void
   unmount (el: HTMLElement): void
+  vueComponent: Vue.VueConstructor
 }
 
 @Component
@@ -21,27 +22,16 @@ export default class Block extends Vue {
   }
 
   declare $refs: {
-    input: HTMLDivElement
+    input: Vue
   }
 
   @Prop() service !: IView
 
-
-  /** hack:不知道为啥新增的节点只输入一个字符后失去焦点时调用setData后就会多一个字符 */
-  @Watch('service.content')
-  onContentChange () {
-    this.$nextTick(() => {
-      this.$refs.input.innerHTML = this.service.content
-    })
-  }
-
   mounted () {
-    // console.log('mounted', this.service.key)
-    this.service.mount(this.$refs.input)
+    this.service.mount(this.$refs.input.$el as HTMLElement)
   }
   beforeDestroy () {
-    // console.log('beforeDestroy', this.service.key)
-    this.service.unmount(this.$refs.input)
+    this.service.unmount(this.$refs.input.$el as HTMLElement)
   }
 
   render () {
@@ -58,9 +48,7 @@ export default class Block extends Vue {
             !service.isExpand && style.close
           )} onclick={() => service.setExpand(!service.isExpand)}></span>
           <span class={classNames(style.bullet, !service.isExpand && style.close)}></span>
-          <div ref="input" class={style.input} contentEditable>
-            {service.content}
-          </div>
+          <service.vueComponent ref="input" class={style.input} service={service} />
         </div>
         <div class={style.children}>
           {service.isExpand && service.children.map(it => <Block key={it.key} service={it} />)}
