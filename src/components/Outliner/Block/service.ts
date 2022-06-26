@@ -1,11 +1,12 @@
 import Block, { IView } from './index';
-import { Destroy } from "ioc-di";
+import { Concat, Destroy, Inject, Service } from "ioc-di";
 import Callback from "../../../services/Callback";
-import { focusNextElement } from "../../../utils";
 import { IBlock } from "../types";
+import EventManager from '@/services/EventManager';
 
+@Service()
 export default class BlockService implements IBlock, IView {
-
+  @Inject(EventManager) events!: EventManager
 
 
   // 随机字符串
@@ -33,6 +34,64 @@ export default class BlockService implements IBlock, IView {
 
   constructor () {
   }
+
+  el: HTMLElement | null = null
+
+  mount (el: HTMLElement): void {
+    this.el = el
+
+
+
+    this.events.add(el, 'keydown', (e: KeyboardEvent) => {
+      e.stopPropagation() // 阻止冒泡，只能在当前层级处理，不阻止就会每个父级都添加一个子节点
+
+      const text = (e.target as HTMLElement).innerText;
+      // console.log('onkeydown', e.key, e)
+      if (e.key === 'Enter') {
+        e.preventDefault() // 阻止默认换行行为，会把dom变乱
+        if (text === ''
+          && !this.hasDown()
+          && !this.isLv1()
+        ) {
+          this.toParentDown()
+        } else {
+          if (this.hasChildren()) {
+            this.addNewChild()
+          } else {
+            this.addNeighbor()
+          }
+        }
+      }
+
+      if (e.key === 'Backspace') {
+        if (text.length === 0) {
+          this.remove()
+        }
+      }
+
+      if (e.key === 'Tab') {
+        e.preventDefault() // 不改变焦点
+
+        if (e.shiftKey) {
+          this.toParentDown()
+        } else {
+          this.toBeUpChild()
+        }
+      }
+
+      if (e.key === 'ArrowUp') {
+        this.tab('prev')
+      } else if (e.key === 'ArrowDown') {
+        this.tab('next')
+      }
+    })
+    this.events.add(el, 'blur', (e) => this.setContent((e.target as HTMLElement).innerText))
+  }
+
+  unmount (el: HTMLElement): void {
+    this.events.clear(el)
+  }
+
 
   setExpand (status: boolean): void {
     this.isExpand = status
@@ -101,7 +160,7 @@ export default class BlockService implements IBlock, IView {
 
   /** 工厂函数，BlockService可以有不同实现 */
   create () {
-    return new BlockService()
+    return Concat(this, new BlockService())
   }
 
   parse (data: IBlock) {

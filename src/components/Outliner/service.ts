@@ -1,14 +1,15 @@
-import { parse } from 'csv-parse/browser/esm/sync';
+import { Concat, Service } from 'ioc-di';
 import PlainParser from '../../services/tree/PlainParser/service';
-import TextNode from "../../services/tree/TextNode/service";
 import BlockService from "./Block/service";
 import { IBlock } from "./types";
 
+
+@Service()
 export class OutlinerService {
 
-  pageBlock: BlockService = new BlockService()
+  pageBlock: BlockService = Concat(this, new BlockService())
 
-  menuBlock: BlockService = new BlockService()
+  menuBlock: BlockService = Concat(this, new BlockService())
 
   text = `1
   2
