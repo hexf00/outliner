@@ -1,5 +1,4 @@
 import { Concat, Destroy, Inject, Service } from 'ioc-di';
-import Vue from 'vue';
 
 import EventManager from '@/services/EventManager';
 import Viewer from '@/views/editor/components/Viewer';
@@ -7,10 +6,12 @@ import ViewerService from '@/views/editor/components/Viewer/service';
 
 import { IBlock } from '../types';
 import { IView } from './index';
+import ContextMenuService from '@/views/editor/ContextMenu/service';
 
 @Service()
 export default class BlockService extends ViewerService implements IBlock, IView {
   @Inject(EventManager) events!: EventManager
+  @Inject(ContextMenuService) contextMenu!: ContextMenuService
 
 
   // 随机字符串
@@ -42,12 +43,17 @@ export default class BlockService extends ViewerService implements IBlock, IView
 
   el: HTMLElement | null = null
 
-  mount (el: HTMLElement): void {
+  onFocus (el: HTMLElement): void {
+    super.onFocus(el)
     this.el = el
 
 
 
     this.events.add(el, 'keydown', (e: KeyboardEvent) => {
+      if (this.contextMenu.isShow) {
+        return
+      }
+
       e.stopPropagation() // 阻止冒泡，只能在当前层级处理，不阻止就会每个父级都添加一个子节点
 
       const text = (e.target as HTMLElement).innerText;
@@ -71,6 +77,7 @@ export default class BlockService extends ViewerService implements IBlock, IView
       if (e.key === 'Backspace') {
         if (text.length === 0) {
           this.remove()
+          e.preventDefault()
         }
       }
 
@@ -92,8 +99,9 @@ export default class BlockService extends ViewerService implements IBlock, IView
     })
   }
 
-  unmount (el: HTMLElement): void {
-    this.events.clear(el)
+  onBlur (): void {
+    super.onBlur()
+    this.events.clear(this.el!)
   }
 
 
@@ -322,35 +330,6 @@ export default class BlockService extends ViewerService implements IBlock, IView
     if (index === -1) return
     this.children.splice(index, 1)
   }
-
-
-  //#region 焦点相关
-
-  focus () {
-
-    Vue.nextTick(() => {
-      // 说明: 为了引用唯一，销毁时要用
-      const el = this.el!
-      const textNode = el.childNodes[0] as Text | undefined
-
-      el.focus()
-
-      const range = document.createRange()
-      if (textNode) {
-        range.setStart(textNode, textNode.length)
-        range.setEnd(textNode, textNode.length)
-      } else {
-        range.setStart(el, 0)
-        range.setEnd(el, 0)
-      }
-
-      const selection = document.getSelection()
-      selection?.removeAllRanges()
-      selection?.addRange(range)
-    })
-
-  }
-  //#endregion
 
   @Destroy
   destroy () {

@@ -7,6 +7,8 @@ export interface IView {
   data: IAtom[]
   onFocus (el: HTMLElement): void
   onBlur (): void
+  mount (el: HTMLElement): void
+  unmount (el: HTMLElement): void
 }
 
 @Component
@@ -21,12 +23,18 @@ export default class Viewer extends Vue {
 
   @Prop() service !: IView
 
+  mounted () {
+    this.service.mount(this.$refs.input)
+  }
+  beforeDestroy () {
+    this.service.unmount(this.$refs.input)
+  }
+
   render () {
     const service = this.service
     return (
       <div
         ref="input"
-        class={style.textarea}
         contentEditable
         spellCheck="false"
         onfocus={() => service.onFocus(this.$refs.input)}

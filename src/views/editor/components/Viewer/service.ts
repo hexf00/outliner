@@ -1,6 +1,8 @@
 import { Inject, Service } from 'ioc-di';
+import Vue from 'vue';
+
 import Data from '../../services/Data';
-import { IAtom } from "../../types";
+import { IAtom } from '../../types';
 import { EditorService } from '../Editor/service';
 import { IView } from './';
 
@@ -13,6 +15,19 @@ export default class ViewerService implements IView {
 
   _onSetData: Function | null = null
 
+
+  el: HTMLElement | null = null
+
+  mount (el: HTMLElement): void {
+    this.el = el
+  }
+
+  unmount (el: HTMLElement): void {
+    if (this.el === el) {
+      this.el = null
+    }
+  }
+
   onFocus (el: HTMLElement): void {
     this.editor.mount(el)
     this.editor.setData(this.data)
@@ -23,6 +38,21 @@ export default class ViewerService implements IView {
     this._onSetData?.()
     this.editor.unmount()
     this.editor.setData([])
+  }
+
+
+  focus () {
+    Vue.nextTick(() => {
+      const el = this.el!
+      el.focus()
+
+      const range = document.createRange()
+      range.setStart(el, el.childNodes.length)
+      range.setEnd(el, el.childNodes.length)
+      const selection = document.getSelection()
+      selection?.removeAllRanges()
+      selection?.addRange(range)
+    })
   }
 
   setData (data: IAtom[]) {

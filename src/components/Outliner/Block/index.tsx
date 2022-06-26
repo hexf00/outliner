@@ -1,17 +1,13 @@
 import classNames from 'classnames'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import style from './index.module.scss'
-console.log('style', style)
 export interface IView {
   setHover (status: boolean): void
   setExpand (status: boolean): void
   isExpand: boolean
   children: IView[]
-  content: string
   key: string
   isShowExpand: boolean
-  mount (el: HTMLElement): void
-  unmount (el: HTMLElement): void
   vueComponent: Vue.VueConstructor
 }
 
@@ -26,13 +22,6 @@ export default class Block extends Vue {
   }
 
   @Prop() service !: IView
-
-  mounted () {
-    this.service.mount(this.$refs.input.$el as HTMLElement)
-  }
-  beforeDestroy () {
-    this.service.unmount(this.$refs.input.$el as HTMLElement)
-  }
 
   render () {
     const service = this.service
