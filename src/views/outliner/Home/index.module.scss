@@ -1,0 +1,11 @@
+.editor {
+  display: flex;
+  .menu {
+    width: 200px;
+    background-color: #eee;
+    height: calc(100vh - 50px);
+  }
+  .content {
+    flex: 1;
+  }
+}

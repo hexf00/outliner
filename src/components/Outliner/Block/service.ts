@@ -41,7 +41,8 @@ export default class BlockService implements IBlock, IView {
 
   el: HTMLElement | null = null
 
-  constructor () {
+  constructor (data?: IBlock) {
+    if (data) this.setData(data)
     this.init()
   }
 
@@ -200,7 +201,8 @@ export default class BlockService implements IBlock, IView {
     return block
   }
 
-  setData (data: IBlock) {
+  setData (data: IBlock & { key?: string }) {
+    if (data.key) this.key = data.key
     this.data = data.data
     this.editor.setData(data.data)
     this.setChildren(data.children.map(it => this.parse(it)))

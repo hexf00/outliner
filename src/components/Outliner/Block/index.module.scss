@@ -66,6 +66,7 @@
     }
     .input {
       flex: 1;
+      overflow: hidden;
       &:focus-visible {
         outline: none !important;
       }
