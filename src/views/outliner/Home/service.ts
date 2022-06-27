@@ -15,7 +15,7 @@ export default class HomeService implements IView {
   @Inject(Vault) vault!: Vault
   @Inject(VaultManager) vaultManager!: VaultManager
   @Inject(EditorService) editor!: EditorService
-  @Inject(AutoSaver) autoSaver!: AutoSaver
+  @Inject(AutoSaver) saver!: AutoSaver
 
   loading = false
   page!: BlockService
