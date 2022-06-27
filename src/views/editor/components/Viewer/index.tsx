@@ -9,6 +9,7 @@ export interface IView {
   onBlur (): void
   mount (el: HTMLElement): void
   unmount (el: HTMLElement): void
+  linkClick (text: string): void
 }
 
 @Component
@@ -43,7 +44,7 @@ export default class Viewer extends Vue {
         {
           service.data.map((it, index) => {
             if (it.type === 'link') {
-              return <span key={'link' + index} data-type="link" class={style.link} contentEditable="false">{it.text}</span>
+              return <span key={'link' + index} onclick={() => service.linkClick(it.text)} data-type="link" class={style.link} contentEditable="false">{it.text}</span>
             } else if (it.type === 'space') {
               return <span data-type="space"></span>
             }

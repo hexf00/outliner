@@ -1,6 +1,8 @@
-import Callback from '@/services/Callback';
 import { Inject, Service } from 'ioc-di';
 import Vue from 'vue';
+
+import Callback from '@/services/Callback';
+import OPManager from '@/views/outliner/services/OPManager';
 
 import Data from '../../services/Data';
 import { IAtom } from '../../types';
@@ -11,6 +13,8 @@ import { IView } from './';
 export default class ViewerService implements IView {
   @Inject(EditorService) editor!: EditorService
   @Inject(Data) _data !: Data
+  @Inject(OPManager) opManager!: OPManager
+
 
   data: IAtom[] = []
 
@@ -70,5 +74,9 @@ export default class ViewerService implements IView {
 
   setData (data: IAtom[]) {
     this.data = data
+  }
+
+  linkClick (text: string): void {
+    this.opManager.emit('linkClick', text)
   }
 }

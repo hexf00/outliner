@@ -1,6 +1,7 @@
 import { Concat, Inject, Service } from 'ioc-di';
 
 import BlockService from '@/components/Outliner/Block/service';
+import PageBlockService from '@/components/Outliner/PageBlock/service';
 
 import { IBlock, IVault } from '../../types';
 import VaultManager from '../VaultManager';
@@ -49,5 +50,18 @@ export default class Vault implements IVault {
 
   save () {
     this.vaultManager.save(this)
+  }
+
+  getPage (text: string) {
+    return this.blocks.find(it => it.key === text)
+  }
+
+  createPage (text: string): BlockService {
+    const block = Concat(this, new PageBlockService())
+    // TODO:考虑如何优化
+    block.key = text
+
+    this.blocks.push(block)
+    return block
   }
 }

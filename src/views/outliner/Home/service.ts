@@ -9,6 +9,7 @@ import Vault from '../services/Vault';
 import VaultManager from '../services/VaultManager';
 import { IView } from './';
 import AutoSaver from '../services/AutoSaver';
+import TabManager from '../services/TabManager';
 
 @Service()
 export default class HomeService implements IView {
@@ -16,10 +17,15 @@ export default class HomeService implements IView {
   @Inject(VaultManager) vaultManager!: VaultManager
   @Inject(EditorService) editor!: EditorService
   @Inject(AutoSaver) saver!: AutoSaver
+  @Inject(TabManager) tab!: TabManager
 
   loading = false
-  page!: BlockService
+
   menu!: BlockService
+
+  get page () {
+    return this.tab.current
+  }
 
   constructor () {
     this.init()
@@ -32,11 +38,12 @@ export default class HomeService implements IView {
     if (data) {
       this.vault.setData(data)
       this.menu = this.vault.getMenu()!
-      this.page = this.vault.getLastBlock()!
+      this.tab.setCurrent(this.vault.getLastBlock()!)
     } else {
       // 初始化一个Vault
       const menu = this.menu = Concat(this, new PageBlockService())
-      const page = this.page = Concat(this, new PageBlockService())
+      const page = Concat(this, new PageBlockService())
+      this.tab.setCurrent(page)
 
       console.log(this.menu.key)
       this.vault.setData({
