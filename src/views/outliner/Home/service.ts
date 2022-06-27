@@ -8,12 +8,14 @@ import { EditorService } from '@/views/editor/components/Editor/service';
 import Vault from '../services/Vault';
 import VaultManager from '../services/VaultManager';
 import { IView } from './';
+import AutoSaver from '../services/AutoSaver';
 
 @Service()
 export default class HomeService implements IView {
   @Inject(Vault) vault!: Vault
   @Inject(VaultManager) vaultManager!: VaultManager
   @Inject(EditorService) editor!: EditorService
+  @Inject(AutoSaver) autoSaver!: AutoSaver
 
   loading = false
   page!: BlockService

@@ -22,8 +22,9 @@ export default class Vault implements IVault {
 
   getJSON (): IVault {
     const mapper = (it: BlockService): IBlock => {
+      const { data } = it.getData()
       return {
-        data: it.data,
+        data,
         children: it.children.map(mapper),
         key: it.key
       }

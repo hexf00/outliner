@@ -8,12 +8,13 @@ import { IBlock } from '../types';
 import { IView } from './index';
 import ContextMenuService from '@/views/editor/ContextMenu/service';
 import { IAtom } from '@/views/editor/types';
+import OPManager from '@/views/outliner/services/OPManager';
 
 @Service()
 export default class BlockService implements IBlock, IView {
   @Inject(EventManager) events!: EventManager
   @Inject(ContextMenuService) contextMenu!: ContextMenuService
-
+  @Inject(OPManager) opManager!: OPManager
 
   // 随机字符串
   key = Math.random().toString(36).substr(2, 16)
@@ -161,6 +162,8 @@ export default class BlockService implements IBlock, IView {
     const node = this.create()
     this.parent?.addChild(node, index + 1)
     node.focus()
+
+    this.opManager.emit('addBlock', node)
   }
 
   /** 在头部插入子节点 */
@@ -168,6 +171,8 @@ export default class BlockService implements IBlock, IView {
     const node = this.create()
     this.addChild(node, 0)
     node.focus()
+
+    this.opManager.emit('addBlock', node)
   }
 
   focus () {
@@ -210,7 +215,7 @@ export default class BlockService implements IBlock, IView {
 
   getData (): IBlock {
     return {
-      data: this.data,
+      data: this.editor.data,
       children: this.children.map(child => child.getData())
     }
   }
@@ -296,6 +301,8 @@ export default class BlockService implements IBlock, IView {
     this.parent?.children.splice(index, 1)
     up?.addChild(this)
     this.focus()
+
+    this.opManager.emit('moveBlock', this)
   }
 
   /** 移动到父节点的下一个相邻节点位置 */
@@ -320,6 +327,8 @@ export default class BlockService implements IBlock, IView {
     // 说明：不适用setTimeout,mounted在beforeDestroy前面触发
     parent.parent?.addChild(this, parentIndex + 1)
     this.focus()
+
+    this.opManager.emit('moveBlock', this)
   }
 
 
@@ -341,6 +350,8 @@ export default class BlockService implements IBlock, IView {
 
     this.getPrev()?.focus()
     this.parent?.removeChild(this)
+
+    this.opManager.emit('removeBlock', this)
   }
 
   removeChild (node: BlockService) {

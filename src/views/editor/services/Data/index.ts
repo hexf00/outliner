@@ -1,8 +1,12 @@
 import Callback from '@/services/Callback';
+import OPManager from '@/views/outliner/services/OPManager';
+import { Inject, Service } from 'ioc-di';
 import type { IDataRange, IAtom } from '../../types';
 
 /** 编辑器数据结构 */
+@Service()
 export default class Data {
+  @Inject(OPManager) opManager!: OPManager
   data: IAtom[] = []
 
   onSetDataCallbacks = new Callback<(data: IAtom[]) => void>()
@@ -74,6 +78,8 @@ export default class Data {
     ]
 
     this.setData(newData)
+
+    this.opManager.emit('textChange')
 
     // 新节点的索引
     let endIndex: number
