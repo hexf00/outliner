@@ -40,6 +40,10 @@ export default class LinkMenu {
           const replaceNodes: IAtom[] = [{
             type: "link",
             text
+          },
+          // 插入一个空格，可以临时解决输入光标丢失的问题
+          {
+            text: ' '
           }]
 
           //  TODO: 如果2个link相邻，需要在中间插入一个空白间隔，用于修复光标显示的bug

@@ -1,7 +1,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { IAtom } from "../../types";
 
-import style from './index.module.scss';
+import $ from './index.module.scss';
 
 export interface IView {
   data: IAtom[]
@@ -44,11 +44,11 @@ export default class Viewer extends Vue {
         {
           service.data.map((it, index) => {
             if (it.type === 'link') {
-              return <span key={'link' + index} onclick={() => service.linkClick(it.text)} data-type="link" class={style.link} contentEditable="false">{it.text}</span>
+              return <span key={'link' + index} onclick={() => service.linkClick(it.text)} data-type="link" class={$.link} contentEditable="false">{it.text}</span>
             } else if (it.type === 'space') {
               return <span data-type="space"></span>
             }
-            return <span data-type="text">{it.text}</span>
+            return <span class={$.text} data-type="text">{it.text}</span>
           })
         }
       </div>
