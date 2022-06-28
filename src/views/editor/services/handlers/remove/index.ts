@@ -23,6 +23,8 @@ export default class Remove extends BaseHandler {
     this.domRange.setByDataRange(dataRange)
 
 
+    // input事件内判断是否要显示双链菜单
+    this.elManager.getEl().dispatchEvent(new Event('input'))
 
     // if (raw?.collapsed === false /** 区域 */) {
 

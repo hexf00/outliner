@@ -28,5 +28,8 @@ export default class IME extends BaseHandler {
     // })
 
     this.domRange.setByDataRange(this.range.replace([{ text: e.data || '' }]))
+
+    // input事件内判断是否要显示双链菜单
+    this.elManager.getEl().dispatchEvent(new Event('input'))
   }
 }
