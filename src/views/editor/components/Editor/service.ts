@@ -28,6 +28,7 @@ export class EditorService implements IEditor {
   @Inject(LinkMenu) linkMenu!: LinkMenu
   @Inject(RangeManager) ranger!: RangeManager
   @Inject(EventManager) events!: EventManager
+  @Inject(Paste) pasteHandler: Paste = Concat(this, new Paste())
 
   msg = '富文本编辑器'
 
@@ -36,7 +37,7 @@ export class EditorService implements IEditor {
     Concat(this, new Remove()),
     Concat(this, new Link()),
     Concat(this, new Drag()),
-    Concat(this, new Paste())
+    this.pasteHandler
   ]
 
   get data () {
@@ -54,6 +55,7 @@ export class EditorService implements IEditor {
     this.events.add(el, 'keydown', (e) => this.onKeyDown(e as KeyboardEvent))
     this.events.add(el, 'compositionstart', (e) => this.onCompositionStart(e as CompositionEvent))
     this.events.add(el, 'compositionend', (e) => this.onCompositionEnd(e as CompositionEvent))
+    this.events.add(el, 'paste', (e) => this.pasteHandler.onPaste(e as ClipboardEvent))
   }
 
   unmount (): void {

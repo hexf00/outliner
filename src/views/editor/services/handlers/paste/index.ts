@@ -1,4 +1,5 @@
-import { Service } from 'ioc-di';
+import { Concat, Service } from 'ioc-di';
+import DataRange from '../../range/data';
 
 import BaseHandler from '../base';
 
@@ -7,9 +8,20 @@ import BaseHandler from '../base';
 export default class Paste extends BaseHandler {
   onBeforeInput (e: InputEvent) {
     if (!(e.inputType === 'insertFromPaste')) return
-
     e.preventDefault()
-    // TODO: 实现复制粘贴
+  }
+
+  onPaste (e: ClipboardEvent) {
+    const data = e.clipboardData?.getData("text/plain")
+    if (data === undefined) return
+
+    const range = Concat(this, new DataRange())
+    range.setData(this.ranger.getData()!)
+
+    this.domRange.setByDataRange(range.replace([{ text: data.replace(/\n/g, '') }]))
+
+    // input事件内判断是否要显示双链菜单
+    this.elManager.getEl().dispatchEvent(new Event('input'))
   }
 
   onCompositionStart () { }
