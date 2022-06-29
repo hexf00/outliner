@@ -5,6 +5,7 @@ import PageBlockService from '@/components/Outliner/PageBlock/service';
 
 import { IBlock, IVault } from '../../types';
 import * as VaultApi from '../../api/vault';
+import { saveAs } from '@/utils';
 
 @Service()
 export default class Vault implements IVault {
@@ -61,5 +62,19 @@ export default class Vault implements IVault {
 
     this.blocks.push(block)
     return block
+  }
+
+  export () {
+
+    saveAs(
+      new Blob(
+        [JSON.stringify({
+          ...this.getJSON(),
+          export_time: new Date()
+        })],
+        { type: 'text/json;charset=utf-8' }
+      ),
+      `${this.name}.json`
+    )
   }
 }

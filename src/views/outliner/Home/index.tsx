@@ -17,6 +17,9 @@ export interface IView {
     changes: number
     save (): void
   }
+  vault: {
+    export (): void
+  }
   menu: BlockService
   page: BlockService
   editor: EditorService
@@ -33,7 +36,11 @@ export default class Home extends Vue {
     if (!service.loading) return <div>loading....</div>
 
     return <div>
-      <div class={classNames($.tip, service.saver.changes === 0 && $.success)}>{service.saver.changes}个变更未保存，<button onclick={() => service.saver.save()}>保存</button></div>
+      <div class={classNames($.tip, service.saver.changes === 0 && $.success)}>
+        {service.saver.changes}个变更未保存，<button onclick={() => service.saver.save()}>保存</button>
+
+        <button onclick={() => { service.vault.export() }}>导出</button>
+      </div>
 
       <VaultList service={service.vaults} />
 
