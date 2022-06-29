@@ -52,8 +52,8 @@ export default class Vault implements IVault {
     this.vaultManager.save(this)
   }
 
-  getPage (text: string) {
-    return this.blocks.find(it => it.key === text)
+  getPage (key: string) {
+    return this.blocks.find(it => it.key === key)
   }
 
   createPage (text: string): BlockService {
