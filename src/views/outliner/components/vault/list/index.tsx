@@ -8,9 +8,13 @@ export interface IView {
   hideAdd (): void
   open (vault: IVaultMeta): void
   adder: NAdd.IView
+  import (e: InputEvent): void
 }
 @Component
 export default class List extends Vue {
+  declare $refs: {
+    file: HTMLInputElement
+  }
   declare $props: {
     service: IView
   }
@@ -20,6 +24,12 @@ export default class List extends Vue {
 
     return <div>
       <button onclick={() => service.showAdd()}>添加</button>
+
+      <button onclick={() => this.$refs.file.click()}>导入</button>
+      <input ref="file" type="file" accept="text/json" oninput={(e: InputEvent) => {
+        service.import(e)
+        this.$refs.file.value = ''
+      }} style="display:none;" />
 
       {service.isShowAdd && (
         <div>

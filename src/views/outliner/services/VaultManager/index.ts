@@ -83,6 +83,46 @@ export default class VaultManager implements IView {
     vault.save()
 
     this.save()
+
+    return vault
+  }
+
+  import (e: InputEvent): void {
+    const file = (e.target as HTMLInputElement).files?.[0]
+    if (!file) return
+
+    var reader = new FileReader();
+    reader.readAsText(file)
+    reader.onload = () => {
+      const data = JSON.parse(reader.result as string)
+
+      const getName = (name: string): string => {
+        const index = this.data.findIndex(it => it.name === name)
+        if (index === -1) {
+          return name
+        } else {
+          return getName(`${name}_导入`)
+        }
+      }
+
+      const name = getName(data.name)
+      const vault = this.add({
+        ...data,
+        name
+      })
+
+      vault.setData({
+        ...data,
+        name
+      })
+
+      vault.save()
+
+      setTimeout(() => {
+        console.log(JSON.stringify(vault.getJSON()))
+      }, 5000)
+
+    }
   }
 
   load () {

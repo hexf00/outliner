@@ -9,5 +9,7 @@ export const load = (name = 'default') => {
 
 export const save = (vault: Vault) => {
   const data = vault.getJSON()
+
+  console.warn('save', data)
   set('vault_data_' + vault.name, data)
 }
