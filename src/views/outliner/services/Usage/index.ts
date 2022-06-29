@@ -8,7 +8,7 @@ import UsageManager from '../UsageManager';
 export default class Usage implements IUsage {
   @Inject(UsageManager) usageManager!: UsageManager
 
-  name: string = ''
+  name: string = 'default'
   lastKey: string = ''
 
   setData (data: IUsage) {

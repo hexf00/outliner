@@ -10,7 +10,7 @@ import VaultManager from '../VaultManager';
 export default class Vault implements IVault {
 
   @Inject(VaultManager) vaultManager!: VaultManager
-  name: string = ''
+  name: string = 'default'
   blocks: BlockService[] = []
   menuKey: string | undefined = undefined
 
