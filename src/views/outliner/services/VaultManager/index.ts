@@ -5,11 +5,11 @@ import Vault from '../Vault';
 
 export default class VaultManager {
   load (name = 'default') {
-    return get<IVault>(name + '_data')
+    return get<IVault>('vault_data_' + name)
   }
 
   save (vault: Vault) {
     const data = vault.getJSON()
-    set(vault.name + '_data', data)
+    set('vault_data_' + vault.name, data)
   }
 }
