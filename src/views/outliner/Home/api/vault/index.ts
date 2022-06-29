@@ -1,9 +1,9 @@
 import { get, set } from 'idb-keyval';
 
-import { IVault } from '../../types';
-import Vault from '../Vault';
+import { IVault } from '../../../types';
+import Vault from '../../../services/Vault';
 
-export default class VaultManager {
+export default class VaultApi {
   load (name = 'default') {
     return get<IVault>('vault_data_' + name)
   }

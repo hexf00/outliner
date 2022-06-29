@@ -31,6 +31,11 @@ export default class Home extends Vue {
 
     return <div>
       <div class={classNames($.tip, service.saver.changes === 0 && $.success)}>{service.saver.changes}个变更未保存，<button onclick={() => service.saver.save()}>保存</button></div>
+
+      <div class={$.vaultList}>
+
+      </div>
+
       <div class={$.editor}>
         <PageBlock class={$.menu} service={service.menu} />
         <div class={$.content}>

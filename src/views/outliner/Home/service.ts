@@ -10,12 +10,12 @@ import TabManager from '../services/TabManager';
 import Usage from '../services/Usage';
 import UsageManager from '../services/UsageManager';
 import Vault from '../services/Vault';
-import VaultManager from '../services/VaultManager';
+import VaultApi from './api/vault';
 import { IView } from './';
 @Service()
 export default class HomeService implements IView {
   @Inject(Vault) vault!: Vault
-  @Inject(VaultManager) vaultManager!: VaultManager
+  @Inject(VaultApi) vaultManager!: VaultApi
   @Inject(UsageManager) usageManager!: UsageManager
   @Inject(Usage) usage!: Usage
 

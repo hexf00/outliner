@@ -4,12 +4,12 @@ import BlockService from '@/components/Outliner/Block/service';
 import PageBlockService from '@/components/Outliner/PageBlock/service';
 
 import { IBlock, IVault } from '../../types';
-import VaultManager from '../VaultManager';
+import VaultApi from '../../Home/api/vault';
 
 @Service()
 export default class Vault implements IVault {
 
-  @Inject(VaultManager) vaultManager!: VaultManager
+  @Inject(VaultApi) vaultManager!: VaultApi
   name: string = 'default'
   blocks: BlockService[] = []
   menuKey: string | undefined = undefined
