@@ -1,5 +1,11 @@
 import { IBlock } from "./IBlock"
 
+
+export interface IVaultMeta {
+  /** vault 名称 */
+  name: string
+}
+
 export interface IVault {
   name: string
   blocks: IBlock[]

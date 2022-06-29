@@ -1,15 +1,13 @@
-import { Concat, Inject, Service } from 'ioc-di';
+import { Concat, Service } from 'ioc-di';
 
 import BlockService from '@/components/Outliner/Block/service';
 import PageBlockService from '@/components/Outliner/PageBlock/service';
 
 import { IBlock, IVault } from '../../types';
-import VaultApi from '../../Home/api/vault';
+import * as VaultApi from '../../api/vault';
 
 @Service()
 export default class Vault implements IVault {
-
-  @Inject(VaultApi) vaultManager!: VaultApi
   name: string = 'default'
   blocks: BlockService[] = []
   menuKey: string | undefined = undefined
@@ -49,7 +47,7 @@ export default class Vault implements IVault {
   }
 
   save () {
-    this.vaultManager.save(this)
+    VaultApi.save(this)
   }
 
   getPage (key: string) {

@@ -5,6 +5,8 @@ import PageBlock from '@/components/Outliner/PageBlock';
 import { EditorService } from '@/views/editor/components/Editor/service';
 import ContextMenu from '@/views/editor/ContextMenu';
 
+import VaultList, * as NVaultList from '../components/vault/list'
+
 import $ from './index.module.scss';
 import classNames from 'classnames';
 
@@ -18,6 +20,7 @@ export interface IView {
   menu: BlockService
   page: BlockService
   editor: EditorService
+  vaults: NVaultList.IView
 }
 @Component
 export default class Home extends Vue {
@@ -32,9 +35,7 @@ export default class Home extends Vue {
     return <div>
       <div class={classNames($.tip, service.saver.changes === 0 && $.success)}>{service.saver.changes}个变更未保存，<button onclick={() => service.saver.save()}>保存</button></div>
 
-      <div class={$.vaultList}>
-
-      </div>
+      <VaultList service={service.vaults} />
 
       <div class={$.editor}>
         <PageBlock class={$.menu} service={service.menu} />
