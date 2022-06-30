@@ -9,6 +9,7 @@ export interface IView {
   open (vault: IVaultMeta): void
   adder: NAdd.IView
   import (e: InputEvent): void
+  remove (vault: IVaultMeta): void
 }
 @Component
 export default class List extends Vue {
@@ -39,7 +40,10 @@ export default class List extends Vue {
       )}
 
       <div>
-        {service.data.map(it => <div onclick={() => service.open(it)}>{it.name}</div>)}
+        {service.data.map(it => <div >
+          <span onclick={() => service.open(it)}>{it.name}</span>
+          <span onclick={() => service.remove(it)} >x</span>
+        </div>)}
       </div>
     </div>
   }

@@ -1,4 +1,4 @@
-import { get, set } from 'idb-keyval';
+import { get, set, del } from 'idb-keyval';
 import { IVaultMeta } from '../../types';
 
 import { IView } from '../../components/vault/list/index'
@@ -12,6 +12,7 @@ import Usage from '../Usage';
 import TabManager from '../TabManager';
 import Menu from '../Menu';
 import PageBlockService from '@/components/Outliner/PageBlock/service';
+import { confirm } from '@/components/Confirm';
 /** 多Vault */
 @Service()
 export default class VaultManager implements IView {
@@ -30,6 +31,7 @@ export default class VaultManager implements IView {
   constructor () {
     this.init()
   }
+
   async init () {
     this.data = await this.load() || []
   }
@@ -123,6 +125,19 @@ export default class VaultManager implements IView {
       }, 5000)
 
     }
+  }
+
+  async remove (vault: IVaultMeta) {
+    await confirm('确定删除该Vault吗？')
+
+    const index = this.data.findIndex(it => it.name === vault.name)
+    if (index !== -1) {
+      this.data.splice(index, 1)
+    }
+
+    del('vault_usage_' + vault.name)
+    del('vault_data_' + vault.name)
+    this.save()
   }
 
   load () {
