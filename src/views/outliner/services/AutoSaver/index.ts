@@ -35,7 +35,7 @@ export default class AutoSaver {
       if (this.changes > 0) {
         this.save()
       }
-    }, 1000 * 5)
+    }, 1000)
   }
 
   save () {
