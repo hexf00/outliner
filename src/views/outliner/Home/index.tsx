@@ -18,6 +18,7 @@ export interface IView {
     save (): void
   }
   vault: {
+    name: string
     export (): void
   }
   menu: BlockService
@@ -43,11 +44,14 @@ export default class Home extends Vue {
       </div>
 
       <VaultList service={service.vaults} />
+      <div>
+        当前Vault: {service.vault.name},
+        标题: {service.page.key}
+      </div>
 
       <div class={$.editor}>
         <PageBlock class={$.menu} service={service.menu} />
         <div class={$.content}>
-          标题: {service.page.key}
           <PageBlock service={service.page} />
         </div>
       </div>
