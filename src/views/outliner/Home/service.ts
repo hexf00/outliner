@@ -6,6 +6,7 @@ import { EditorService } from '@/views/editor/components/Editor/service';
 
 import AutoSaver from '../services/AutoSaver';
 import Menu from '../services/Menu';
+import PageSync from '../services/Sync/page';
 import TabManager from '../services/TabManager';
 import Usage from '../services/Usage';
 import UsageManager from '../services/UsageManager';
@@ -27,6 +28,8 @@ export default class HomeService implements IView {
   @Inject(VaultManager) vaults!: VaultManager
 
   @Inject(Menu) _menu!: Menu
+
+  @Inject(PageSync) pageSync!: PageSync
 
   loading = false
 

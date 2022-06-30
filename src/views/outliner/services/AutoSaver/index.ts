@@ -1,6 +1,7 @@
 import { Already, Destroy, Inject, Service } from 'ioc-di';
 
 import OPManager from '../OPManager';
+import PageSync from '../Sync/page';
 import Vault from '../Vault';
 
 /** 操作总线 */
@@ -8,6 +9,7 @@ import Vault from '../Vault';
 export default class AutoSaver {
   @Inject(OPManager) opManager!: OPManager
   @Inject(Vault) vault!: Vault
+  @Inject(PageSync) pageSync!: PageSync
 
   /** 未保存的修改计数 */
   changes = 0
@@ -41,6 +43,7 @@ export default class AutoSaver {
   save () {
     this.changes = 0
     this.vault.save()
+    this.pageSync.emitSave()
     console.log('数据已保存')
   }
 

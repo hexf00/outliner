@@ -13,7 +13,6 @@ export default class Vault implements IVault {
   blocks: BlockService[] = []
   menuKey: string | undefined = undefined
 
-
   setData (data: IVault) {
     this.blocks = data.blocks.map(it => Concat(this, new BlockService(it)))
     this.name = data.name

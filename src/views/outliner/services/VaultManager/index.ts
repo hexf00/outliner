@@ -65,6 +65,22 @@ export default class VaultManager implements IView {
     }
   }
 
+  // 刷新当前开打页面
+  async refresh () {
+    //重新载入当前vault的数据
+    const data = await VaultApi.load(this.vault.name)
+    if (data) {
+      this.vault.setData(data)
+
+      //替换当前页面的数据
+      this.menu.setData(this.vault.getMenu()!)
+
+      this.tab.setCurrent(
+        this.vault.getPage(this.tab.current.key)!
+      )
+    }
+  }
+
   add (vaultData: IVaultMeta) {
     this.data.push({
       name: vaultData.name
