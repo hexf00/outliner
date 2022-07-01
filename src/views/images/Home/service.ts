@@ -1,7 +1,8 @@
 
-import { Already, Inject, Service } from "ioc-di";
-import DirProxy from "../services/DirProxy";
-import { IFileProxy } from "../services/FileProxy";
+import { Already, Inject, Service } from 'ioc-di';
+
+import DirProxy from '@/services/webfs/DirProxy';
+import { IFileProxy } from '@/services/webfs/FileProxy';
 
 @Service()
 export default class HomeService {

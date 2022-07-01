@@ -1,4 +1,4 @@
-import Cache from "../Cache"
+import Cache from "../../Cache"
 import FileProxy, { IFileProxy } from "../FileProxy"
 
 export interface IDirProxy {

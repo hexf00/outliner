@@ -1,9 +1,11 @@
 import { get, set } from "idb-keyval"
 export default class Cache {
+  prefix = 'cache_'
+
   key: string = ''
 
   setKey (key: string) {
-    this.key = key
+    this.key = this.prefix + key
   }
 
   get () {
