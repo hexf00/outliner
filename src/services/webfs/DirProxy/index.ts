@@ -1,14 +1,11 @@
-import Cache from "../../Cache"
 import FileProxy, { IFileProxy } from "../FileProxy"
 
 export interface IDirProxy {
-  init (): void
   getFiles (): Promise<IFileProxy[]>
 }
 
 export default class DirProxy implements IDirProxy {
 
-  cache = new Cache()
 
   handler: FileSystemDirectoryHandle | null = null
 
@@ -16,20 +13,8 @@ export default class DirProxy implements IDirProxy {
 
   files: IFileProxy[] = []
 
-  constructor () {
-    // 改为外部初始化，因为init是异步动作，内部初始化外部无法判断初始化完成的时机
-    // this.init()
-  }
-
-  async init () {
-    this.cache.setKey('dirHandler')
-    const cacheHandler = await this.cache.get()
-    // console.log('cacheHandler', cacheHandler, cacheHandler instanceof FileSystemDirectoryHandle)
-    if (cacheHandler instanceof FileSystemDirectoryHandle) {
-      this.handler = cacheHandler
-      // 此处不管权限，权限在外部管理
-      return
-    }
+  setHandler (handler: FileSystemDirectoryHandle) {
+    this.handler = handler
   }
 
   // 该方法需要由用户的手动触发
@@ -52,7 +37,6 @@ export default class DirProxy implements IDirProxy {
     return false;
   }
 
-
   async showDirPicker () {
     const handler = await window.showDirectoryPicker()
     const status = await this.verifyPermission(handler)
@@ -61,7 +45,7 @@ export default class DirProxy implements IDirProxy {
     // 授权成功才变化目录信息
     this.handler = handler
     this.hasAuth = status
-    await this.cache.set(handler)
+    return handler
   }
 
   // 需要先请求权限
