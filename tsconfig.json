@@ -23,7 +23,8 @@
     "emitDecoratorMetadata": true,
     "baseUrl": "./",
     "types": [
-      "jest"
+      "jest",
+      "wicg-file-system-access"
     ],
     "paths": {
       "@/*": [
