@@ -208,8 +208,8 @@ export default class BlockService implements IBlock, IView {
 
   setData (data: IBlock & { key?: string }) {
     if (data.key) this.key = data.key
-    this.data = data.data
-    this.editor.setData(data.data)
+    this.data = data.data || []
+    this.editor.setData(data.data || [])
     this.setChildren(data.children.map(it => this.parse(it)))
   }
 
