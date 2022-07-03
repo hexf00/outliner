@@ -1,12 +1,12 @@
-
 import { Already, Inject, Service } from 'ioc-di';
 
-import DirProxy from '@/services/webfs/DirProxy';
-import { IFileProxy } from '@/services/webfs/FileProxy';
 import Cache from '@/services/Cache';
+import DirProxy from '@/services/webfs/DirProxy';
+
+import { IView } from './';
 
 @Service()
-export default class HomeService {
+export default class DirHandlerService implements IView {
   @Inject(DirProxy) dirProxy !: DirProxy
 
   get handler () {
@@ -18,13 +18,9 @@ export default class HomeService {
 
   cache = new Cache()
 
-  constructor () {
-    this.cache.setKey('dirHandler')
-    this.init()
-  }
-
   @Already
-  async init () {
+  async init (key = 'dirHandler') {
+    this.cache.setKey(key)
     const cacheHandler = await this.cache.get()
     if (cacheHandler instanceof FileSystemDirectoryHandle) {
       this.dirProxy.setHandler(cacheHandler)
@@ -36,29 +32,16 @@ export default class HomeService {
     const hasAuth = await this.dirProxy.verifyPermission()
     if (!hasAuth) throw Error('没有权限')
     this.dirProxy.hasAuth = hasAuth
-    this.getFiles()
   }
 
   async getAuth () {
     const hasAuth = await this.dirProxy.verifyPermission()
     if (!hasAuth) throw Error('用户拒绝了授权')
     this.dirProxy.hasAuth = hasAuth
-    this.getFiles()
   }
 
   async changeDir () {
     const handler = await this.dirProxy.showDirPicker()
     this.cache.set(handler)
-    this.getFiles()
-  }
-
-  async getFiles () {
-    console.log(await this.dirProxy.getFiles())
-  }
-
-  async preview (file: IFileProxy) {
-    if (file.type.includes('image')) {
-      document.body.append(await file.getContents())
-    }
   }
 }

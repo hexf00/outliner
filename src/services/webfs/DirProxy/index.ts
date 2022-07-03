@@ -73,4 +73,14 @@ export default class DirProxy implements IDirProxy {
 
     return result
   }
+
+
+  /** 覆盖写入文件 */
+  async writeFile (name: string, content: string) {
+    if (!this.handler) throw Error('handler is null')
+
+    const newFileHandle = await this.handler.getFileHandle(name, { create: true });
+    const accessHandle = await newFileHandle.createWritable();
+    await accessHandle.write(content);
+  }
 }

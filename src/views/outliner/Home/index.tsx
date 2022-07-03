@@ -9,6 +9,7 @@ import VaultList, * as NVaultList from '../components/vault/list'
 
 import $ from './index.module.scss';
 import classNames from 'classnames';
+import DirHandler, * as NDirHandler from '@/components/DirHandler';
 
 export interface IView {
   loading: boolean
@@ -25,6 +26,7 @@ export interface IView {
   page: BlockService
   editor: EditorService
   vaults: NVaultList.IView
+  dirHandler: NDirHandler.IView
 }
 @Component
 export default class Home extends Vue {
@@ -39,8 +41,8 @@ export default class Home extends Vue {
     return <div>
       <div class={classNames($.tip, service.saver.changes === 0 && $.success)}>
         {service.saver.changes}个变更未保存，<button onclick={() => service.saver.save()}>保存</button>
-
         <button onclick={() => { service.vault.export() }}>导出</button>
+        <DirHandler service={this.service.dirHandler} />
       </div>
 
       <VaultList service={service.vaults} />
