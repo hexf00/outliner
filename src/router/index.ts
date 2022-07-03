@@ -45,6 +45,11 @@ export const routers = [
     name: 'pos',
     component: () => import("../views/pos/Home"),
     Service: () => import("../views/pos/Home/service"),
+  },
+  {
+    name: 'faker',
+    component: () => import("../views/faker/Home"),
+    Service: () => import("../views/faker/Home/service"),
   }
 ] as const
 
