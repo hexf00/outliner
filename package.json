@@ -19,6 +19,7 @@
     "ioc-di": "github:hexf00/ioc-di",
     "jspdf": "^2.5.1",
     "jsplumb": "^2.15.6",
+    "qs": "^6.11.0",
     "resize-observer-polyfill": "^1.5.1",
     "sass": "^1.49.10",
     "tslib": "^2.4.0",
@@ -28,6 +29,7 @@
   },
   "devDependencies": {
     "@types/jest": "^28.1.1",
+    "@types/qs": "^6.9.7",
     "@vue/babel-helper-vue-jsx-merge-props": "^1.2.1",
     "jest": "^28.1.0",
     "jest-environment-jsdom": "^28.1.1",

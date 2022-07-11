@@ -15,6 +15,8 @@ import Vault from '../services/Vault';
 import VaultManager from '../services/VaultManager';
 import { IView } from './';
 import FsBackup from '../services/backup/fs';
+// import qs from 'qs';
+
 
 @Service()
 export default class HomeService implements IView {
@@ -44,6 +46,17 @@ export default class HomeService implements IView {
 
   constructor () {
     this.init()
+
+    // console.log(
+    //   decodeURI(qs.stringify({
+    //     sortField: [{
+    //       fieldName: 'field2',
+    //       sortType: 1,
+    //     }]
+    //   }, {
+    //     allowDots: true
+    //   }))
+    // )
   }
 
   @Already
