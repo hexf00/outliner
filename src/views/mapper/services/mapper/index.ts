@@ -2,12 +2,14 @@ import PageBlockService from "@/components/Outliner/PageBlock/service";
 import Cache from "@/services/Cache";
 import OPManager from "@/views/outliner/services/OPManager";
 import { Already, Concat, Inject, Service } from "ioc-di";
+import MapService from "../../services/map/map";
 import Pather from "../pather";
 
 @Service()
 export default class Mapper {
   @Inject(OPManager) opManager!: OPManager
   @Inject(Pather) pather!: Pather
+  @Inject(MapService) map !: MapService
 
   editor = Concat(this, new PageBlockService())
 

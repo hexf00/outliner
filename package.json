@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@types/wicg-file-system-access": "^2020.9.5",
+    "@uiw/react-amap-types": "^3.0.4",
     "classnames": "^2.3.1",
     "csv": "^6.0.5",
     "csv-parse": "^5.0.4",

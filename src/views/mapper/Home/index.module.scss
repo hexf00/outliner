@@ -1,0 +1,12 @@
+.box {
+  display: flex;
+  overflow: hidden;
+  height: calc(100vh - 30px);
+
+  .left {
+    width: 500px;
+  }
+  .right {
+    flex: 1;
+  }
+}

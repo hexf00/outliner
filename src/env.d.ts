@@ -25,3 +25,20 @@ declare namespace JSX {
     $props: any
   }
 }
+
+
+
+// 高德地图
+declare interface Window {
+  _AMapSecurityConfig: {
+    securityJsCode: string
+  }
+}
+
+declare namespace AMap {
+  class Geocoder {
+    constructor (opts: { city: string }): void
+
+    getLocation (addr: string, fn: (status: any, result: any) => void)
+  }
+}

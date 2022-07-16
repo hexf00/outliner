@@ -24,7 +24,8 @@
     "baseUrl": "./",
     "types": [
       "jest",
-      "wicg-file-system-access"
+      "wicg-file-system-access",
+      "@uiw/react-amap-types"
     ],
     "paths": {
       "@/*": [
