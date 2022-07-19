@@ -2,21 +2,24 @@ import { Destroy, Service } from 'ioc-di';
 
 import BlockService from '@/components/Outliner/Block/service';
 import Callback from '@/services/Callback';
+import EventEmitter from '@/services/EventEmitter';
 
 /** 操作总线 */
 @Service()
-export default class OPManager {
+export default class OPManager extends EventEmitter {
 
   onChangeCallbacks = new Callback()
 
   onLinkClickCallbacks = new Callback<(text: string) => void>()
 
+
   emit (event: 'textChange'): void
   // emit (event: 'blockChange', service: BlockService): void
-  emit (event: 'addBlock', service: BlockService): void
-  emit (event: 'removeBlock', service: BlockService): void
-  emit (event: 'moveBlock', service: BlockService): void
+  emit (event: 'addBlock', block: BlockService): void
+  emit (event: 'removeBlock', block: BlockService): void
+  emit (event: 'moveBlock', block: BlockService): void
   emit (event: 'linkClick', text: string): void
+  emit (event: 'focusBlock', block: BlockService): void
   emit (event: string, ...args: any[]) {
     if (event === 'textChange'
       || event === 'blockChange'
@@ -28,6 +31,11 @@ export default class OPManager {
 
     if (event === 'linkClick') {
       this.onLinkClickCallbacks.run(args[0])
+    }
+
+    if (event === 'focusBlock') {
+      //TODO:
+      super.emit(event, args[0])
     }
   }
 
@@ -43,5 +51,6 @@ export default class OPManager {
   destroy () {
     this.onChangeCallbacks.destroy()
     this.onLinkClickCallbacks.destroy()
+    this.off()
   }
 }

@@ -58,6 +58,7 @@ export default class BlockService implements IBlock, IView {
     this.el = el
 
 
+    this.opManager.emit('focusBlock', this)
 
     this.events.add(el, 'keydown', (e: KeyboardEvent) => {
       if (this.contextMenu.isShow) {

@@ -10,3 +10,21 @@
     flex: 1;
   }
 }
+
+:global {
+  .markerlnglat {
+    width: 25px;
+    height: 34px;
+  }
+  .marker {
+    position: absolute;
+    color: #fff;
+    padding: 4px 10px;
+    box-shadow: 1px 1px 1px rgb(10 10 10 / 20%);
+    white-space: nowrap;
+    font-size: 12px;
+    font-family: "";
+    background-color: #25a5f7;
+    border-radius: 3px;
+  }
+}
