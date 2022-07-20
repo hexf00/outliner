@@ -11,6 +11,7 @@ specifiers:
   csv-parse: ^5.0.4
   csv-stringify: ^6.0.5
   dayjs: ^1.11.0
+  fsrs.js: ^0.0.4
   html2canvas: ^1.4.1
   idb-keyval: ^6.1.0
   ioc-di: github:hexf00/ioc-di
@@ -40,6 +41,7 @@ dependencies:
   csv-parse: registry.npmmirror.com/csv-parse/5.0.4
   csv-stringify: registry.npmmirror.com/csv-stringify/6.0.5
   dayjs: registry.npmmirror.com/dayjs/1.11.2
+  fsrs.js: registry.npmmirror.com/fsrs.js/0.0.4
   html2canvas: registry.npmmirror.com/html2canvas/1.4.1
   idb-keyval: registry.npmmirror.com/idb-keyval/6.1.0
   ioc-di: github.com/hexf00/ioc-di/88447aaa0554d5ee916e0cd147983d74af592305
@@ -2129,7 +2131,7 @@ packages:
       lodash: ^4.17.20
       marko: ^3.14.4
       mote: ^0.2.0
-      mustache: ^4.0.1
+      mustache: ^3.0.0
       nunjucks: ^3.2.2
       plates: ~0.4.11
       pug: ^3.0.0
@@ -3169,6 +3171,12 @@ packages:
     os: [darwin]
     requiresBuild: true
     optional: true
+
+  registry.npmmirror.com/fsrs.js/0.0.4:
+    resolution: {integrity: sha512-lFIzslNlfB3spIjWp4tSw3qAltp5Fesh8OTNUXpp3LSG7pnbhkDILgmyTt/n76UhRhkIR9Sel8kF5/GhyH+ZOA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/fsrs.js/-/fsrs.js-0.0.4.tgz}
+    name: fsrs.js
+    version: 0.0.4
+    dev: false
 
   registry.npmmirror.com/function-bind/1.1.1:
     resolution: {integrity: sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==, registry: http://npm.jkservice.org:7001/, tarball: https://registry.npmmirror.com/function-bind/-/function-bind-1.1.1.tgz}
