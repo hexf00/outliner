@@ -34,6 +34,7 @@ export default class Nav extends Vue {
             <RouteLink to={{ name: 'mapper' }}>mapper</RouteLink>
             <RouteLink to={{ name: 'memory' }}>memory</RouteLink>
             <RouteLink to={{ name: 'goldenLayout' }}>goldenLayout</RouteLink>
+            <RouteLink to={{ name: 'menu' }}>menu</RouteLink>
           </div>
         </div>
       )

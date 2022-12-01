@@ -65,6 +65,11 @@ export const routers = [
     name: 'goldenLayout',
     component: () => import("../views/goldenLayout/Home"),
     Service: () => import("../views/goldenLayout/Home/service"),
+  },
+  {
+    name: 'menu',
+    component: () => import("../views/menu/Home"),
+    Service: () => import("../views/menu/Home/service"),
   }
 ] as const
 
